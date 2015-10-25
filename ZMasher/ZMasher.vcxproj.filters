@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{92e305b5-b975-4e90-bfca-dba326729be4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ZMasherMain.h" />
+    <ClInclude Include="dllHeader.h" />
+    <ClInclude Include="ZMD3DInterface.h" />
+    <ClInclude Include="ZMVertexTypes.h" />
+    <ClInclude Include="ZMAPIStructs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ZMasherMain.cpp" />
+    <ClCompile Include="ZMD3DInterface.cpp" />
+  </ItemGroup>
+</Project>
