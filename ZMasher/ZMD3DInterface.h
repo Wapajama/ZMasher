@@ -52,7 +52,7 @@ private:
 	bool InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc);
 	bool CreateViewPort(ZMInitArgs args);
 	bool CreateDepthStencil(ZMInitArgs args);
-
+	bool CreateRasterizerState(ZMInitArgs args);
 
 };
 

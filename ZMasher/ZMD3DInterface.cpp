@@ -1,5 +1,7 @@
 #include "ZMD3DInterface.h"
 
+#define ZERO_MEM(var) ZeroMemory(&var, sizeof(decltype(var)))
+
 #define RETURN_IF_FAILED(hres) 	\
 	if (FAILED(result))\
 	{\
@@ -169,7 +171,67 @@ bool ZMD3DInterface::CreateDeviceAndSwapChain(ZMInitArgs args)
 
 bool ZMD3DInterface::CreateDepthStencil(ZMInitArgs args)
 {
+	HRESULT result = S_OK;
 
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
+	depthBufferDesc.Width = args.m_Resolution.x;
+	depthBufferDesc.Height = args.m_Resolution.y;
+	depthBufferDesc.MipLevels = 1;
+	depthBufferDesc.ArraySize = 1;
+	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthBufferDesc.SampleDesc.Count = 1;
+	depthBufferDesc.SampleDesc.Quality = 0;
+	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthBufferDesc.CPUAccessFlags = 0;
+	depthBufferDesc.MiscFlags = 0;
+
+	result = m_Device->CreateTexture2D(&depthBufferDesc, NULL, &m_DepthStencilBuffer);
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xff;
+	depthStencilDesc.StencilWriteMask = 0xff;
+	
+	//front facing stencil operations
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	//back
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	result = m_Device->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+	RETURN_IF_FAILED(result);
+
+	m_Context->OMSetDepthStencilState(m_DepthStencilState,1);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	ZERO_MEM(depthStencilViewDesc);
+
+	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+	result = m_Device->CreateDepthStencilView(	m_DepthStencilBuffer,
+												&depthStencilViewDesc, 
+												&m_DepthStencil);
+	RETURN_IF_FAILED(result);
+
+	m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
+
+	return true;
 }
 
 bool ZMD3DInterface::InitDevice(ZMInitArgs args)
@@ -219,8 +281,42 @@ bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_c
 	return true;
 }
 
+
+
+bool ZMD3DInterface::CreateRasterizerState( ZMInitArgs args )
+{
+	HRESULT result = S_OK;
+
+	D3D11_RASTERIZER_DESC rasterDesc;
+	
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.f;
+
+	result = m_Device->CreateRasterizerState(&rasterDesc, &m_RasterizerState);
+
+	RETURN_IF_FAILED(result);
+
+	m_Context->RSSetState(m_RasterizerState);
+	return true;
+
+}
+
 bool ZMD3DInterface::CreateViewPort(ZMInitArgs args)
 {
+
+	//D3D11_VIEWPORT viewport;
+
+	//float fieldOfView = 0;
+	//float screenAspect = 0;
+
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
