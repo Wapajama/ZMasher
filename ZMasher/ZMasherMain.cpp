@@ -5,7 +5,9 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 
 ZMasherMain::ZMasherMain()
 {
+	Vector2f testCompile;
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
+	testCompile += Vector2f(0,1);
 }
 
 ZMasherMain::~ZMasherMain()

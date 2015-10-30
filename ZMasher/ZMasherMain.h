@@ -5,7 +5,6 @@
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
 
-
 #define ZMASHER_TITLE_BAR_NAME "ZMasher"
 
 class ZMASHER_DLL ZMasherMain
@@ -18,7 +17,6 @@ public:
 	bool Update();
 	
 private:
-
 
 	ZMasherMain();
 	~ZMasherMain();

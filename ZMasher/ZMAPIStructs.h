@@ -12,6 +12,10 @@ struct ZMASHER_DLL ZMWinApiCointainer
 
 	//not winApi, Should make better interface?
 	Vector2i m_Resolution;
+	float m_ScreenDepth;
+	float m_ScreenNear;
+	bool m_VSync;
+	bool m_Fullscreen;
 };
 
 struct ZMASHER_DLL ZMViewPort
