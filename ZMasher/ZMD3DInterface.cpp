@@ -1,12 +1,21 @@
 #include "ZMD3DInterface.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #define ZERO_MEM(var) ZeroMemory(&var, sizeof(decltype(var)))
-
+#define RELEASE(ptr) ptr->Release();ptr = nullptr;
 #define RETURN_IF_FAILED(hres) 	\
 	if (FAILED(result))\
 	{\
+		assert(false);\
 		return false;\
 	}\
+
+#define INIT(functionReturn) if(functionReturn == false)\
+							{\
+								assert(false);\
+								return false;\
+							}\
 
 ZMD3DInterface::ZMD3DInterface()
 {
@@ -22,7 +31,6 @@ ZMD3DInterface::ZMD3DInterface()
 	m_Denominator = 0;
 }
 
-
 ZMD3DInterface::~ZMD3DInterface()
 {
 }
@@ -30,15 +38,13 @@ ZMD3DInterface::~ZMD3DInterface()
 bool ZMD3DInterface::Init(ZMInitArgs args)
 {
 	m_VSync = args.m_VSync;
+	
+	INIT(GetDisplayModeInfo(args));
+	INIT(CreateDeviceAndSwapChain(args));
+	INIT(CreateRasterizerState(args));
+	INIT(CreateViewPort(args));
+	INIT(InitMatrices(args));
 
-	//if (this->CreateDevice(args) == false)
-	//{
-	//	return false;
-	//}
-	//if (this->CreateViewPort(args) == false)
-	//{
-	//	return false;
-	//}
 	return true;
 }
 
@@ -169,76 +175,6 @@ bool ZMD3DInterface::CreateDeviceAndSwapChain(ZMInitArgs args)
 	return true;
 }
 
-bool ZMD3DInterface::CreateDepthStencil(ZMInitArgs args)
-{
-	HRESULT result = S_OK;
-
-	D3D11_TEXTURE2D_DESC depthBufferDesc;
-	depthBufferDesc.Width = args.m_Resolution.x;
-	depthBufferDesc.Height = args.m_Resolution.y;
-	depthBufferDesc.MipLevels = 1;
-	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthBufferDesc.SampleDesc.Count = 1;
-	depthBufferDesc.SampleDesc.Quality = 0;
-	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthBufferDesc.CPUAccessFlags = 0;
-	depthBufferDesc.MiscFlags = 0;
-
-	result = m_Device->CreateTexture2D(&depthBufferDesc, NULL, &m_DepthStencilBuffer);
-
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	
-	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-	depthStencilDesc.StencilEnable = true;
-	depthStencilDesc.StencilReadMask = 0xff;
-	depthStencilDesc.StencilWriteMask = 0xff;
-	
-	//front facing stencil operations
-	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	//back
-	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	result = m_Device->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
-	RETURN_IF_FAILED(result);
-
-	m_Context->OMSetDepthStencilState(m_DepthStencilState,1);
-
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-	ZERO_MEM(depthStencilViewDesc);
-
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-	result = m_Device->CreateDepthStencilView(	m_DepthStencilBuffer,
-												&depthStencilViewDesc, 
-												&m_DepthStencil);
-	RETURN_IF_FAILED(result);
-
-	m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
-
-	return true;
-}
-
-bool ZMD3DInterface::InitDevice(ZMInitArgs args)
-{
-	return true;
-}
-
 bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc)
 {
 	
@@ -281,7 +217,70 @@ bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_c
 	return true;
 }
 
+bool ZMD3DInterface::CreateDepthStencil(ZMInitArgs args)
+{
+	HRESULT result = S_OK;
 
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
+	depthBufferDesc.Width = args.m_Resolution.x;
+	depthBufferDesc.Height = args.m_Resolution.y;
+	depthBufferDesc.MipLevels = 1;
+	depthBufferDesc.ArraySize = 1;
+	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthBufferDesc.SampleDesc.Count = 1;
+	depthBufferDesc.SampleDesc.Quality = 0;
+	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthBufferDesc.CPUAccessFlags = 0;
+	depthBufferDesc.MiscFlags = 0;
+
+	result = m_Device->CreateTexture2D(&depthBufferDesc, NULL, &m_DepthStencilBuffer);
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xff;
+	depthStencilDesc.StencilWriteMask = 0xff;
+
+	//front facing stencil operations
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	//back
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	result = m_Device->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+	RETURN_IF_FAILED(result);
+
+	m_Context->OMSetDepthStencilState(m_DepthStencilState, 1);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	ZERO_MEM(depthStencilViewDesc);
+
+	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+	result = m_Device->CreateDepthStencilView(m_DepthStencilBuffer,
+											  &depthStencilViewDesc,
+											  &m_DepthStencil);
+	RETURN_IF_FAILED(result);
+
+	m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
+
+	return true;
+}
 
 bool ZMD3DInterface::CreateRasterizerState( ZMInitArgs args )
 {
@@ -311,12 +310,6 @@ bool ZMD3DInterface::CreateRasterizerState( ZMInitArgs args )
 
 bool ZMD3DInterface::CreateViewPort(ZMInitArgs args)
 {
-
-	//D3D11_VIEWPORT viewport;
-
-	//float fieldOfView = 0;
-	//float screenAspect = 0;
-
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
@@ -324,41 +317,92 @@ bool ZMD3DInterface::CreateViewPort(ZMInitArgs args)
 	viewport.TopLeftY = 0;
 	viewport.Width = args.m_Resolution.x;
 	viewport.Height = args.m_Resolution.y;
+	viewport.MaxDepth = 1.f;
+	viewport.MinDepth = 0.f;
 
 	m_Context->RSSetViewports(1, &viewport);
+	return true;
+}
+
+bool ZMD3DInterface::InitMatrices(ZMInitArgs args)
+{
+	float fov = M_PI * 0.25f;
+	float aspect =	(float)args.m_Resolution.x /
+					(float)args.m_Resolution.y;
+
+	m_ProjectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspect, args.m_ScreenNear, args.m_ScreenDepth);
+	m_WorldMatrix = DirectX::XMMatrixIdentity();
+	m_OrthoganalMatrix = DirectX::XMMatrixOrthographicLH((float)args.m_Resolution.x, (float)args.m_Resolution.y, args.m_ScreenNear, args.m_ScreenDepth);
 
 	return true;
 }
 
 void ZMD3DInterface::BeginScene()
 {
+	Clear();
 
 }
 
 void ZMD3DInterface::EndScene()
 {
-
+	const int vsync = m_VSync ? 1 : 0;
+	m_SwapChain->Present(vsync,0);
 }
 
 bool ZMD3DInterface::Render()
 {
 
-	m_SwapChain->Present(0, 0);
+	//m_SwapChain->Present(0, 0);
 	return true;
 }
 
 bool ZMD3DInterface::Clear()
 {
-	float clear_color[] = { 0.0, 0.2f, 0.4f, 1.0f };
-	m_Context->ClearRenderTargetView(m_RenderTarget, clear_color);	
+	float clear_color[] = { 0.0f, 0.f, 0.f, 1.0f };
+	m_Context->ClearRenderTargetView(m_RenderTarget, clear_color);
+	m_Context->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 	return true;
 }
 
 void ZMD3DInterface::Release()
 {
 	// close and release all existing COM objects
-	m_SwapChain->Release();
-	m_Device->Release();
-	m_Context->Release();
-	m_RenderTarget->Release();
+	if (m_SwapChain != nullptr)
+	{
+		m_SwapChain->SetFullscreenState(false, NULL);
+	}
+	RELEASE(m_RasterizerState);
+	RELEASE(m_DepthStencil);
+	RELEASE(m_DepthStencilState);
+	RELEASE(m_DepthStencilBuffer);
+	RELEASE(m_RenderTarget);
+	RELEASE(m_Context);
+	RELEASE(m_Device);
+	RELEASE(m_SwapChain);
+
+}
+
+ID3D11DeviceContext* ZMD3DInterface::GetContext()
+{
+	return m_Context;
+}
+
+ID3D11Device* ZMD3DInterface::GetDevice()
+{
+	return m_Device;
+}
+
+void ZMD3DInterface::GetProjectionMatrix(DirectX::XMMATRIX& projmatrix)
+{
+	projmatrix = m_ProjectionMatrix;
+}
+
+void ZMD3DInterface::GetWorldMatrix(DirectX::XMMATRIX& worldmatrix)
+{
+	worldmatrix = m_WorldMatrix;
+}
+
+void ZMD3DInterface::GetOrthoMatrix(DirectX::XMMATRIX& orthomatrix)
+{
+	orthomatrix = m_OrthoganalMatrix;
 }

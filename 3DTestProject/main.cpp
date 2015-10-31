@@ -7,7 +7,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine,
 				   int nCmdShow)
 {
-	ZMasherMain::Instance()->Init();
+	const bool test = ZMasherMain::Instance()->Init();
+
+	assert(test);
 
 	while (ZMasherMain::Instance()->Update())
 	{

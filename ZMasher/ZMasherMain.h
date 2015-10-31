@@ -4,6 +4,9 @@
 #include <Vector\Vector.h>
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
+#include "CameraClass.h"
+#include "ModelClass.h"
+#include "ColorClassShader.h"
 
 #define ZMASHER_TITLE_BAR_NAME "ZMasher"
 
@@ -18,6 +21,8 @@ public:
 	
 private:
 
+	void Render();
+
 	ZMasherMain();
 	~ZMasherMain();
 
@@ -26,9 +31,13 @@ private:
 	ZMWinApiCointainer m_WinVals;
 	ZMD3DInterface m_D3DInterface;
 
+	CameraClass* m_Camera;
+	ModelClass* m_Model;
+	ColorClassShader* m_Shader;
+
 	void InitWindowClass();
 	void CreateViewPort();
-	void CreateD3D();
+	bool CreateD3D();
 
 	bool HandleWinMsg();
 
