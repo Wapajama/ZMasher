@@ -23,6 +23,7 @@ ColorClassShader::~ColorClassShader()
 {
 }
 
+
 bool ColorClassShader::Init(ID3D11Device* device, HWND windowHandle)
 {
 	bool result = false;
@@ -41,10 +42,10 @@ void ColorClassShader::ShutDown()
 }
 
 
-bool ColorClassShader::Render(ID3D11DeviceContext* context, int indexCount,
-			const DirectX::XMMATRIX& world,
-			const DirectX::XMMATRIX& view,
-			const DirectX::XMMATRIX& projection)
+bool ColorClassShader::SetShaderVars(	ID3D11DeviceContext* context, 
+								const DirectX::XMMATRIX& world,
+								const DirectX::XMMATRIX& view,
+								const DirectX::XMMATRIX& projection)
 {
 	bool success = false;
 
@@ -54,7 +55,7 @@ bool ColorClassShader::Render(ID3D11DeviceContext* context, int indexCount,
 		return false;
 	}
 
-	RenderShader(context, indexCount);
+	SetVariables(context);
 
 	return true;
 }
@@ -281,11 +282,9 @@ bool ColorClassShader::SetShaderParameters(ID3D11DeviceContext* context,
 	return true;
 }
 
-
-void ColorClassShader::RenderShader(ID3D11DeviceContext* context, int indexCount)
+void ColorClassShader::SetVariables(ID3D11DeviceContext* context)
 {
 	context->IASetInputLayout(m_Layout);
 	context->VSSetShader(m_VertexShader, NULL, 0);
 	context->PSSetShader(m_PixelShader, NULL, 0);
-	context->DrawIndexed(indexCount, 0, 0);
 }

@@ -11,7 +11,7 @@ public:
 	void SetPosition(const Vector3f& pos);
 	void SetRotation(const Vector3f& rot);
 
-	void Render();
+	void UpdateViewMatrix();
 	void GetViewMatrix(DirectX::XMMATRIX& matrix);
 
 	DirectX::XMFLOAT3 GetPositionDX();

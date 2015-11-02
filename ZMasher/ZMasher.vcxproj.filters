@@ -8,56 +8,68 @@
     <Filter Include="Source">
       <UniqueIdentifier>{92e305b5-b975-4e90-bfca-dba326729be4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Core">
+      <UniqueIdentifier>{921ef45a-5e18-4ad8-86cb-ad873f0fd216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ContentSpecific">
+      <UniqueIdentifier>{8c048ee5-e717-4695-b637-66e108a083fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dllHeader.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="ZMAPIStructs.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="ZMasherMain.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="ZMD3DInterface.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="ZMVertexTypes.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="CameraClass.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="ColorClassShader.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="ZMD3DInterface.h">
+      <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="ModelClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorClassShader.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="dllHeader.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMasherUtilities.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="ZMD3DInterface.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="CameraClass.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
     <ClCompile Include="ColorClassShader.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
     <ClCompile Include="ModelClass.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMasherUtilities.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
-      <Filter>Source</Filter>
+      <Filter>Source\ContentSpecific</Filter>
     </None>
     <None Include="color.vs">
-      <Filter>Source</Filter>
+      <Filter>Source\ContentSpecific</Filter>
     </None>
   </ItemGroup>
 </Project>

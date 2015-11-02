@@ -56,7 +56,7 @@ bool ZMasherMain::HandleWinMsg()
 bool ZMasherMain::Init()
 {
 	InitWindowClass();
-	CreateViewPort();
+	CreateWinApiWindow();
 	const bool test = CreateD3D();
 	assert(test);
 
@@ -68,8 +68,8 @@ bool ZMasherMain::Init()
 
 	m_Shader = new ColorClassShader();
 
-	const bool test2 = m_Shader->Init(m_D3DInterface.GetDevice(),
-				   m_WinVals.m_WindowHandle);
+	const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
+										m_WinVals.m_WindowHandle);
 
 	assert(test2);
 
@@ -78,6 +78,7 @@ bool ZMasherMain::Init()
 
 void ZMasherMain::InitWindowClass()
 {
+	//this works on Windows 8, laptop. 
 	//m_WinVals.m_ExtWindowClass.cbSize = sizeof(WNDCLASSEX);
 	//m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW;
 	//m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
@@ -85,6 +86,7 @@ void ZMasherMain::InitWindowClass()
 	//m_WinVals.m_ExtWindowClass.lpszClassName = m_WinVals.m_TitleBarName;
 	//m_WinVals.m_ExtWindowClass.hCursor = (HCURSOR)(LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED));
 
+	//this works on Windows 7
 	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
 	m_WinVals.m_ExtWindowClass.cbClsExtra = 0;
@@ -101,7 +103,7 @@ void ZMasherMain::InitWindowClass()
 	RegisterClassEx(&m_WinVals.m_ExtWindowClass);
 }
 
-void ZMasherMain::CreateViewPort()
+void ZMasherMain::CreateWinApiWindow()
 {
 	Vector2i windowDims(m_WinVals.m_Resolution.x,
 						m_WinVals.m_Resolution.y);
@@ -125,7 +127,11 @@ void ZMasherMain::CreateViewPort()
 											  NULL,
 											  m_WinVals.m_ExtWindowClass.hInstance,
 											  NULL);
-	bool result = ShowWindow(m_WinVals.m_WindowHandle, 1);
+
+	//when does this return false? 
+	//It sure as hell isn't when it failed to open the window :p
+	ShowWindow(m_WinVals.m_WindowHandle, 1);
+
 }
 
 bool ZMasherMain::CreateD3D()
@@ -150,20 +156,54 @@ void ZMasherMain::Render()
 	bool result;
 	m_D3DInterface.BeginScene();
 	
-	m_Camera->Render();
+	m_Camera->UpdateViewMatrix();
 
 	m_D3DInterface.GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3DInterface.GetProjectionMatrix(projectionMatrix);
 
-	m_Model->Render(m_D3DInterface.GetContext());
+	m_Model->SetRenderVars(m_D3DInterface.GetContext());
 
-	m_Shader->Render(m_D3DInterface.GetContext(), m_Model->GetIndexCount(),
+	m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
 					 worldMatrix,
 					 viewMatrix,
 					 projectionMatrix);
 
+	m_D3DInterface.GetContext()->DrawIndexed(m_Model->GetIndexCount(), 0, 0);
+
 	m_D3DInterface.EndScene();
+}
+
+const float global_speed = 3.f;
+
+void ZMasherMain::MoveForward()
+{
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, global_speed * 0.016f));
+}
+
+void ZMasherMain::MoveBackwards()
+{
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, -global_speed * 0.016f));
+}
+
+void ZMasherMain::MoveRight()
+{
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(global_speed * 0.016f, 0,0));
+}
+
+void ZMasherMain::MoveLeft()
+{
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(-global_speed * 0.016f, 0,0));
+}
+
+void ZMasherMain::RotateRight()
+{
+	m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, global_speed * 0.016f * 3.f, 0));
+}
+
+void ZMasherMain::RotateLeft()
+{
+	m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, -global_speed * 0.016f * 3.f, 0));
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
@@ -174,7 +214,37 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 
 		// If ESC key is pressed, close the app
 		if (wparam == VK_ESCAPE)
+		{
 			SendMessage(hwnd, WM_CLOSE, 0, 0);
+		}
+
+		/*
+			TODO: replace this with legitimate gameplay code
+		*/
+		if (wparam == 'W')
+		{
+			ZMasherMain::Instance()->MoveForward();
+		}
+		if(wparam == 'S')
+		{
+			ZMasherMain::Instance()->MoveBackwards();
+		}
+		if (wparam == 'A')
+		{
+			ZMasherMain::Instance()->MoveLeft();
+		}
+		if (wparam == 'D')
+		{			
+			ZMasherMain::Instance()->MoveRight();
+		}
+		if (wparam == VK_LEFT)
+		{
+			ZMasherMain::Instance()->RotateLeft();				
+		}
+		if (wparam == VK_RIGHT)
+		{
+			ZMasherMain::Instance()->RotateRight();
+		}
 
 		return 0;
 

@@ -1,14 +1,11 @@
 #include "CameraClass.h"
+#include "ZMasherUtilities.h"
 
-#define _USE_MATH_DEFINES
-
-#include <math.h>
-
+using namespace ZMasher;
 
 CameraClass::CameraClass()
 {
 }
-
 
 CameraClass::~CameraClass()
 {
@@ -23,7 +20,7 @@ void CameraClass::SetRotation(const Vector3f& rot)
 	m_Rotation = rot;
 }
 
-void CameraClass::Render()
+void CameraClass::UpdateViewMatrix()
 {
 	DirectX::XMFLOAT3 up;
 	up.x = 0.f;
@@ -41,24 +38,20 @@ void CameraClass::Render()
 	DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&up);
 	DirectX::XMVECTOR positionVector = DirectX::XMLoadFloat3(&position);
 	DirectX::XMVECTOR lookAtVector = DirectX::XMLoadFloat3(&lookAt);
-	float pitch;
-	float yaw;
-	float roll;
-
-	pitch = m_Rotation.x * (M_PI / 180.f);
-	yaw = m_Rotation.y * (M_PI / 180.f);
-	roll = m_Rotation.z * (M_PI / 180.f);
+	
+	float pitch =	GetRadians(m_Rotation.x);
+	float yaw =		GetRadians(m_Rotation.y);
+	float roll =	GetRadians(m_Rotation.z);
 
 	DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
-	lookAtVector = DirectX::XMVector3TransformCoord(lookAtVector, rotationMatrix);
-	upVector = DirectX::XMVector3TransformCoord(upVector, rotationMatrix);
+	lookAtVector =	DirectX::XMVector3TransformCoord(lookAtVector, rotationMatrix);
+	lookAtVector =	DirectX::XMVectorAdd(positionVector, lookAtVector);
+	upVector =		DirectX::XMVector3TransformCoord(upVector, rotationMatrix);	
 
-	lookAtVector = DirectX::XMVectorAdd(positionVector, lookAtVector);
-
-	m_ViewMatrix = DirectX::XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
-
+	m_ViewMatrix =	DirectX::XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
 }
+
 void CameraClass::GetViewMatrix(DirectX::XMMATRIX& matrix)
 {
 	matrix = m_ViewMatrix;
@@ -81,6 +74,7 @@ Vector3f CameraClass::GetPosition()
 {
 	return m_Position;
 }
+
 Vector3f CameraClass::GetRotation()
 {
 	return m_Rotation;

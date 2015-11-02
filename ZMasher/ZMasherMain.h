@@ -18,7 +18,19 @@ public:
 
 	bool Init();
 	bool Update();
+
+	/*
+		TODO: remove and replace with legitimate game code
+	*/
 	
+	void MoveForward();
+	void MoveBackwards();
+	void MoveRight();
+	void MoveLeft();
+
+	void RotateRight();
+	void RotateLeft();
+
 private:
 
 	void Render();
@@ -36,7 +48,7 @@ private:
 	ColorClassShader* m_Shader;
 
 	void InitWindowClass();
-	void CreateViewPort();
+	void CreateWinApiWindow();
 	bool CreateD3D();
 
 	bool HandleWinMsg();

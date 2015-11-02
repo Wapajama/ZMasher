@@ -16,7 +16,7 @@ public:
 
 	bool Init(ID3D11Device* device);
 	void ShutDown();
-	void Render(ID3D11DeviceContext* context);
+	void SetRenderVars(ID3D11DeviceContext* context);
 
 	int GetIndexCount();
 
@@ -24,7 +24,7 @@ private:
 
 	bool InitBuffers(ID3D11Device* device);
 	void ShutDownBuffers();
-	void RenderBuffers(ID3D11DeviceContext* context);
+	void SetBufferVars(ID3D11DeviceContext* context);
 
 	ID3D11Buffer* m_VertexBuffer;
 	ID3D11Buffer* m_IndexBuffer;

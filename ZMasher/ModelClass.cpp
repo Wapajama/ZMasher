@@ -32,9 +32,9 @@ void ModelClass::ShutDown()
 {
 	ShutDownBuffers();
 }
-void ModelClass::Render(ID3D11DeviceContext* context)
+void ModelClass::SetRenderVars(ID3D11DeviceContext* context)
 {
-	RenderBuffers(context);
+	SetBufferVars(context);
 }
 
 int ModelClass::GetIndexCount()
@@ -137,7 +137,7 @@ void ModelClass::ShutDownBuffers()
 		m_VertexBuffer = 0;
 	}
 }
-void ModelClass::RenderBuffers(ID3D11DeviceContext* context)
+void ModelClass::SetBufferVars(ID3D11DeviceContext* context)
 {
 	unsigned int stride = sizeof(VertexType);
 	unsigned int offset = 0;
