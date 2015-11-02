@@ -8,7 +8,7 @@
 #include "ModelClass.h"
 #include "ColorClassShader.h"
 
-#define ZMASHER_TITLE_BAR_NAME "ZMasher"
+#define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
 class ZMASHER_DLL ZMasherMain
 {

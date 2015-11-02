@@ -78,12 +78,25 @@ bool ZMasherMain::Init()
 
 void ZMasherMain::InitWindowClass()
 {
-	m_WinVals.m_ExtWindowClass.cbSize = sizeof(WNDCLASSEX);
-	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW;
+	//m_WinVals.m_ExtWindowClass.cbSize = sizeof(WNDCLASSEX);
+	//m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW;
+	//m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
+	//m_WinVals.m_ExtWindowClass.hInstance = GetModuleHandle(NULL);
+	//m_WinVals.m_ExtWindowClass.lpszClassName = m_WinVals.m_TitleBarName;
+	//m_WinVals.m_ExtWindowClass.hCursor = (HCURSOR)(LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED));
+
+	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
+	m_WinVals.m_ExtWindowClass.cbClsExtra = 0;
+	m_WinVals.m_ExtWindowClass.cbWndExtra = 0;
 	m_WinVals.m_ExtWindowClass.hInstance = GetModuleHandle(NULL);
+	m_WinVals.m_ExtWindowClass.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	m_WinVals.m_ExtWindowClass.hIconSm = m_WinVals.m_ExtWindowClass.hIcon;
+	m_WinVals.m_ExtWindowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	m_WinVals.m_ExtWindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	m_WinVals.m_ExtWindowClass.lpszMenuName = NULL;
 	m_WinVals.m_ExtWindowClass.lpszClassName = m_WinVals.m_TitleBarName;
-	m_WinVals.m_ExtWindowClass.hCursor = (HCURSOR)(LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED));
+	m_WinVals.m_ExtWindowClass.cbSize = sizeof(WNDCLASSEX);
 
 	RegisterClassEx(&m_WinVals.m_ExtWindowClass);
 }
@@ -112,7 +125,7 @@ void ZMasherMain::CreateViewPort()
 											  NULL,
 											  m_WinVals.m_ExtWindowClass.hInstance,
 											  NULL);
-	ShowWindow(m_WinVals.m_WindowHandle, 1);
+	bool result = ShowWindow(m_WinVals.m_WindowHandle, 1);
 }
 
 bool ZMasherMain::CreateD3D()
