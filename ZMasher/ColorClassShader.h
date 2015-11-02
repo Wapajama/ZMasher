@@ -15,7 +15,7 @@
 #include <DirectXMath.h>
 #include <fstream>
 
-typedef  WCHAR* FileType;
+typedef WCHAR* FileType;
 
 class ColorClassShader
 {

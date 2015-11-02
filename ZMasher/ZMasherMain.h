@@ -7,6 +7,7 @@
 #include "CameraClass.h"
 #include "ModelClass.h"
 #include "ColorClassShader.h"
+#include "TextureShaderClass.h"
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
@@ -45,7 +46,9 @@ private:
 
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
-	ColorClassShader* m_Shader;
+	//ColorClassShader* m_Shader;
+
+	TextureShaderClass* m_TextureShader;
 
 	void InitWindowClass();
 	void CreateWinApiWindow();

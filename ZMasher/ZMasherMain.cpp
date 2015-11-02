@@ -48,7 +48,6 @@ bool ZMasherMain::HandleWinMsg()
 	{
 		Render();
 		Sleep(1);
-
 	}
 	return true;
 }
@@ -66,10 +65,13 @@ bool ZMasherMain::Init()
 	m_Model = new ModelClass();
 	m_Model->Init(m_D3DInterface.GetDevice());
 
-	m_Shader = new ColorClassShader();
+	//m_Shader = new ColorClassShader();
+	m_TextureShader = new TextureShaderClass();
 
-	const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
-										m_WinVals.m_WindowHandle);
+	//const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
+	//									m_WinVals.m_WindowHandle);
+
+	const bool test2 = m_TextureShader->Init(m_D3DInterface.GetDevice(), m_WinVals.m_WindowHandle);
 
 	assert(test2);
 
@@ -164,10 +166,18 @@ void ZMasherMain::Render()
 
 	m_Model->SetRenderVars(m_D3DInterface.GetContext());
 
-	m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
-					 worldMatrix,
-					 viewMatrix,
-					 projectionMatrix);
+	//const bool test = m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
+	//				 worldMatrix,
+	//				 viewMatrix,
+	//				 projectionMatrix);
+
+	const bool test = m_TextureShader->SetShaderVars(	m_D3DInterface.GetContext(),
+									worldMatrix,
+									viewMatrix,
+									projectionMatrix,
+									m_Model->GetTexture());
+	
+	assert(test);
 
 	m_D3DInterface.GetContext()->DrawIndexed(m_Model->GetIndexCount(), 0, 0);
 

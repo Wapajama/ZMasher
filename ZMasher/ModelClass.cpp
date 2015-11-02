@@ -26,11 +26,26 @@ bool ModelClass::Init(ID3D11Device* device)
 		assert(false);
 		return false;
 	}
+
+	success = LoadTexture( device, L"../../ZMasher/Data/seafloor.dds");
+
+	if (success == false)
+	{
+		assert(false);
+		return false;
+	}
+
 	return true;
 }
 void ModelClass::ShutDown()
 {
 	ShutDownBuffers();
+	if (m_Texture != nullptr)
+	{
+		m_Texture->Release();
+		delete m_Texture;
+		m_Texture = nullptr;
+	}
 }
 void ModelClass::SetRenderVars(ID3D11DeviceContext* context)
 {
@@ -41,10 +56,10 @@ int ModelClass::GetIndexCount()
 {
 	return m_IndexCount;
 }
-
+typedef ModelClass::VertexTextureType CurrentVertexType;
 bool ModelClass::InitBuffers(ID3D11Device* device)
 {
-	VertexType* vertices;
+	CurrentVertexType* vertices;
 	unsigned long* indices;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
@@ -54,7 +69,7 @@ bool ModelClass::InitBuffers(ID3D11Device* device)
 
 	m_IndexCount = 3;
 
-	vertices = new VertexType[m_VertexCount];
+	vertices = new CurrentVertexType[m_VertexCount];
 	if (!vertices)
 	{
 		return false;
@@ -67,14 +82,16 @@ bool ModelClass::InitBuffers(ID3D11Device* device)
 	}
 
 	vertices[0].position = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	vertices[0].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//vertices[0].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
 
 	vertices[1].position = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top middle.
-	vertices[1].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//vertices[1].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[1].tex = DirectX::XMFLOAT2(0.5f, 0.0f);
 
 	vertices[2].position = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	vertices[2].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-
+	//vertices[2].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 
 	indices[0] = 0;  // Bottom left.
 	indices[1] = 1;  // Top middle.
@@ -82,7 +99,7 @@ bool ModelClass::InitBuffers(ID3D11Device* device)
 	
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_VertexCount;
+	vertexBufferDesc.ByteWidth = sizeof(CurrentVertexType) * m_VertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
@@ -139,10 +156,29 @@ void ModelClass::ShutDownBuffers()
 }
 void ModelClass::SetBufferVars(ID3D11DeviceContext* context)
 {
-	unsigned int stride = sizeof(VertexType);
+	unsigned int stride = sizeof(CurrentVertexType);
 	unsigned int offset = 0;
 
 	context->IASetVertexBuffers(0, 1, &m_VertexBuffer, &stride, &offset);
 	context->IASetIndexBuffer(m_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+ID3D11ShaderResourceView* ModelClass::GetTexture()
+{
+	return m_Texture->GetTexture();
+}
+
+bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* path )
+{
+	if (m_Texture != nullptr)
+	{
+		m_Texture->Release();
+		delete m_Texture;
+	}
+	m_Texture = new TextureClass();
+
+	const bool success = m_Texture->Init(device, path);
+
+	return success;
 }

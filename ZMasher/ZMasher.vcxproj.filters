@@ -43,6 +43,8 @@
     <ClInclude Include="ZMasherUtilities.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="TextureClass.h" />
+    <ClInclude Include="TextureShaderClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -63,12 +65,20 @@
     <ClCompile Include="ZMasherUtilities.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="TextureClass.cpp" />
+    <ClCompile Include="TextureShaderClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
       <Filter>Source\ContentSpecific</Filter>
     </None>
     <None Include="color.vs">
+      <Filter>Source\ContentSpecific</Filter>
+    </None>
+    <None Include="texture.vs">
+      <Filter>Source\ContentSpecific</Filter>
+    </None>
+    <None Include="texture.ps">
       <Filter>Source\ContentSpecific</Filter>
     </None>
   </ItemGroup>
