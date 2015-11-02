@@ -281,8 +281,6 @@ bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_c
 	return true;
 }
 
-
-
 bool ZMD3DInterface::CreateRasterizerState( ZMInitArgs args )
 {
 	HRESULT result = S_OK;
