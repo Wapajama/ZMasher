@@ -10,14 +10,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ZMasherMain.h" />
-    <ClInclude Include="dllHeader.h" />
-    <ClInclude Include="ZMD3DInterface.h" />
-    <ClInclude Include="ZMVertexTypes.h" />
-    <ClInclude Include="ZMAPIStructs.h" />
+    <ClInclude Include="dllHeader.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMAPIStructs.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMasherMain.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMD3DInterface.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMVertexTypes.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorClassShader.h" />
+    <ClInclude Include="ModelClass.h" />
+    <ClInclude Include="CameraClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZMasherMain.cpp" />
-    <ClCompile Include="ZMD3DInterface.cpp" />
+    <ClCompile Include="ZMasherMain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMD3DInterface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorClassShader.cpp" />
+    <ClCompile Include="ModelClass.cpp" />
+    <ClCompile Include="CameraClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="color.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

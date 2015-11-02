@@ -1,0 +1,51 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+*.Build.CppClean.log
+*.vcxprojResolveAssemblyReference.cache
+*.vsp
+*.psess
+*.sdf
+*.opensdf
+*.tlog
+*.log
+*.pdb
+*.db
+*.user
+*.suo
+*.idb
+Debug/*
+*/Debug/
+
+ipch/*
+*.vcxproj
+*.txt
+*.filters
+*.vcxproj.*
+*/x64/*

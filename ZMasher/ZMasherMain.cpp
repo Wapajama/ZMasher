@@ -8,6 +8,8 @@ ZMasherMain::ZMasherMain()
 	Vector2f testCompile;
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
 	testCompile += Vector2f(0,1);
+	m_WinVals.m_Resolution.x = 1280;
+	m_WinVals.m_Resolution.y = 720;
 }
 
 ZMasherMain::~ZMasherMain()
@@ -44,9 +46,9 @@ bool ZMasherMain::HandleWinMsg()
 	}
 	else
 	{
-		m_D3DInterface.Render();
-		m_D3DInterface.Clear();
+		Render();
 		Sleep(1);
+
 	}
 	return true;
 }
@@ -55,7 +57,21 @@ bool ZMasherMain::Init()
 {
 	InitWindowClass();
 	CreateViewPort();
-	CreateD3D();
+	const bool test = CreateD3D();
+	assert(test);
+
+	m_Camera = new CameraClass();
+	m_Camera->SetPosition(Vector3f(0, 0, -10.f));
+
+	m_Model = new ModelClass();
+	m_Model->Init(m_D3DInterface.GetDevice());
+
+	m_Shader = new ColorClassShader();
+
+	const bool test2 = m_Shader->Init(m_D3DInterface.GetDevice(),
+				   m_WinVals.m_WindowHandle);
+
+	assert(test2);
 
 	return true;
 }
@@ -74,7 +90,8 @@ void ZMasherMain::InitWindowClass()
 
 void ZMasherMain::CreateViewPort()
 {
-	Vector2i windowDims(600, 800);
+	Vector2i windowDims(m_WinVals.m_Resolution.x,
+						m_WinVals.m_Resolution.y);
 
 	RECT windowRect = { 0, 0, windowDims.x,windowDims.y };
 
@@ -98,9 +115,42 @@ void ZMasherMain::CreateViewPort()
 	ShowWindow(m_WinVals.m_WindowHandle, 1);
 }
 
-void ZMasherMain::CreateD3D()
+bool ZMasherMain::CreateD3D()
 {
-	m_D3DInterface.Init(m_WinVals);
+	m_WinVals.m_Fullscreen = false;
+	m_WinVals.m_ScreenDepth = 1000.f;
+	m_WinVals.m_ScreenNear = 0.1f;
+	m_WinVals.m_VSync = true;
+
+	const bool test = m_D3DInterface.Init(m_WinVals);
+	if (test == false)
+	{
+		assert(test);
+		return false;
+	}
+	return true;
+}
+
+void ZMasherMain::Render()
+{
+	DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	bool result;
+	m_D3DInterface.BeginScene();
+	
+	m_Camera->Render();
+
+	m_D3DInterface.GetWorldMatrix(worldMatrix);
+	m_Camera->GetViewMatrix(viewMatrix);
+	m_D3DInterface.GetProjectionMatrix(projectionMatrix);
+
+	m_Model->Render(m_D3DInterface.GetContext());
+
+	m_Shader->Render(m_D3DInterface.GetContext(), m_Model->GetIndexCount(),
+					 worldMatrix,
+					 viewMatrix,
+					 projectionMatrix);
+
+	m_D3DInterface.EndScene();
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

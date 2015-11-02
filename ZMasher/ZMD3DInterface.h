@@ -24,6 +24,13 @@ public:
 	bool Clear();
 	void Release();
 
+	ID3D11DeviceContext* GetContext();
+	ID3D11Device* GetDevice();
+	
+	void GetProjectionMatrix(DirectX::XMMATRIX& projmatrix);
+	void GetWorldMatrix(DirectX::XMMATRIX& worldmatrix);
+	void GetOrthoMatrix(DirectX::XMMATRIX& orthomatrix);
+
 private:
 
 	ID3D11DeviceContext* m_Context;
@@ -48,11 +55,11 @@ private:
 
 	bool GetDisplayModeInfo(ZMInitArgs args);
 	bool CreateDeviceAndSwapChain(ZMInitArgs args);
-	bool InitDevice(ZMInitArgs args);
 	bool InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc);
 	bool CreateViewPort(ZMInitArgs args);
 	bool CreateDepthStencil(ZMInitArgs args);
 	bool CreateRasterizerState(ZMInitArgs args);
+	bool InitMatrices(ZMInitArgs args);
 
 };
 
