@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZMasherUtilWhiteroom", "ZMasherUtilWhiteroom\ZMasherUtilWhiteroom.vcxproj", "{245A8758-FE8E-4A69-BFB3-B25E9DCB5730}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tester", "Tester\Tester.vcxproj", "{8635A447-CBF4-4FC3-BE62-7411CF518E97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{245A8758-FE8E-4A69-BFB3-B25E9DCB5730}.Debug|Win32.ActiveCfg = Debug|Win32
+		{245A8758-FE8E-4A69-BFB3-B25E9DCB5730}.Debug|Win32.Build.0 = Debug|Win32
+		{245A8758-FE8E-4A69-BFB3-B25E9DCB5730}.Release|Win32.ActiveCfg = Release|Win32
+		{245A8758-FE8E-4A69-BFB3-B25E9DCB5730}.Release|Win32.Build.0 = Release|Win32
+		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Debug|Win32.Build.0 = Debug|Win32
+		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Release|Win32.ActiveCfg = Release|Win32
+		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
