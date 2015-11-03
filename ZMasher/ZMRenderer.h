@@ -1,7 +1,7 @@
 #pragma once
 #include <vector> // TODO: create an in-house data structure for managing models
 #include "ZMModel.h"
-
+#include "ZMModelInstance.h"
 
 class CameraClass;
 class ZMD3DInterface;
@@ -25,7 +25,7 @@ private:
 	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders
 	CameraClass* m_Camera;
 	std::vector<ZMModel> m_Models;
-
+	std::vector<ZMModelInstance> m_ModelInstances;
 };
 
 __forceinline void ZMRenderer::SetCamera(CameraClass* camera)

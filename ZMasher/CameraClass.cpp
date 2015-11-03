@@ -26,10 +26,12 @@ void CameraClass::UpdateViewMatrix()
 	up.x = 0.f;
 	up.y = 1.f;
 	up.z = 0.f;
+
 	DirectX::XMFLOAT3 position;
 	position.x = m_Position.x;
 	position.y = m_Position.y;
 	position.z = m_Position.z;
+
 	DirectX::XMFLOAT3 lookAt;
 	lookAt.x = 0.f;
 	lookAt.y = 0.f;

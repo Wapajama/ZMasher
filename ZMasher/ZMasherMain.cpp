@@ -188,7 +188,7 @@ void ZMasherMain::Render()
 	m_D3DInterface.EndScene();
 }
 
-const float global_speed = 3.f;
+const float global_speed = 30.f;
 
 void ZMasherMain::MoveForward()
 {
