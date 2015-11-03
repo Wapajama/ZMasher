@@ -14,6 +14,9 @@
     <Filter Include="Source\ContentSpecific">
       <UniqueIdentifier>{8c048ee5-e717-4695-b637-66e108a083fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Shaders">
+      <UniqueIdentifier>{75103fa4-0d09-4ebd-9b83-c5a7074b76ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMAPIStructs.h">
@@ -45,6 +48,7 @@
     </ClInclude>
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TextureShaderClass.h" />
+    <ClInclude Include="ZMRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -67,19 +71,26 @@
     </ClCompile>
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TextureShaderClass.cpp" />
+    <ClCompile Include="ZMRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
-      <Filter>Source\ContentSpecific</Filter>
+      <Filter>Source\Shaders</Filter>
     </None>
     <None Include="color.vs">
-      <Filter>Source\ContentSpecific</Filter>
+      <Filter>Source\Shaders</Filter>
     </None>
-    <None Include="texture.vs">
-      <Filter>Source\ContentSpecific</Filter>
+    <None Include="SharedPixelShaderData.ps">
+      <Filter>Source\Shaders</Filter>
+    </None>
+    <None Include="SharedVertexShaderData.vs">
+      <Filter>Source\Shaders</Filter>
     </None>
     <None Include="texture.ps">
-      <Filter>Source\ContentSpecific</Filter>
+      <Filter>Source\Shaders</Filter>
+    </None>
+    <None Include="texture.vs">
+      <Filter>Source\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

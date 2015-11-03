@@ -2,21 +2,12 @@
 #include <D3D11.h>
 #include <DirectXMath.h>
 #include "TextureClass.h"
+#include "ZMVertexTypes.h"
+
+typedef VertexPosUV CurrentVertexType;
 
 class ModelClass
 {
-public:
-	//struct VertexType
-	//{
-	//	DirectX::XMFLOAT3 position;
-	//	DirectX::XMFLOAT4 color;
-	//};
-
-	struct VertexTextureType
-	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT2 tex;		
-	};
 		
 public:
 	ModelClass();
@@ -33,6 +24,8 @@ public:
 private:
 
 	bool InitBuffers(ID3D11Device* device);
+
+	void SinfulHardcoding(CurrentVertexType*& vertexes, unsigned long*& indexes);
 	void ShutDownBuffers();
 	void SetBufferVars(ID3D11DeviceContext* context);
 
