@@ -1,7 +1,7 @@
 #ifndef VECTOR4DECL_H
 #define VECTOR4DECL_H
 
-namespace CommonUtilities
+namespace ZMasher
 {
 	template<typename T>
 	class Vector4

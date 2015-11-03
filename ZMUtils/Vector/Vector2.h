@@ -1,7 +1,7 @@
 #ifndef VECTOR2_H
 #define VECTOR2_H
 
-namespace CommonUtilities
+namespace ZMasher
 {
 	template<typename T>
 	float Length(const Vector2<T>& aVector)
