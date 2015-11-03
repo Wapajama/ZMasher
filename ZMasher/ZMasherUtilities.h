@@ -1,5 +1,7 @@
 #pragma once
 
+#define ZERO_MEMORY(var) ZeroMemory(&var, sizeof(decltype(var)))
+
 
 namespace ZMasher
 {

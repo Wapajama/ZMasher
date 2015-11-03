@@ -1,8 +1,8 @@
-#include "ModelClass.h"
+#include "ZMModel.h"
 
 
 
-ModelClass::ModelClass()
+ZMModel::ZMModel()
 {
 	m_VertexCount = 3;
 	m_IndexCount = 3;
@@ -12,11 +12,11 @@ ModelClass::ModelClass()
 }
 
 
-ModelClass::~ModelClass()
+ZMModel::~ZMModel()
 {
 }
 
-bool ModelClass::Init(ID3D11Device* device)
+bool ZMModel::Init(ID3D11Device* device)
 {
 	bool success = false;
 
@@ -37,7 +37,7 @@ bool ModelClass::Init(ID3D11Device* device)
 
 	return true;
 }
-void ModelClass::ShutDown()
+void ZMModel::ShutDown()
 {
 	ShutDownBuffers();
 	if (m_Texture != nullptr)
@@ -47,17 +47,17 @@ void ModelClass::ShutDown()
 		m_Texture = nullptr;
 	}
 }
-void ModelClass::SetRenderVars(ID3D11DeviceContext* context)
+void ZMModel::SetRenderVars(ID3D11DeviceContext* context)
 {
 	SetBufferVars(context);
 }
 
-int ModelClass::GetIndexCount()
+int ZMModel::GetIndexCount()
 {
 	return m_IndexCount;
 }
 
-bool ModelClass::InitBuffers(ID3D11Device* device)
+bool ZMModel::InitBuffers(ID3D11Device* device)
 {
 	CurrentVertexType* vertices = nullptr;
 	unsigned long* indices = nullptr;
@@ -109,7 +109,7 @@ bool ModelClass::InitBuffers(ID3D11Device* device)
 
 	return true;
 }
-void ModelClass::ShutDownBuffers()
+void ZMModel::ShutDownBuffers()
 {
 	if (m_IndexBuffer)
 	{
@@ -123,7 +123,7 @@ void ModelClass::ShutDownBuffers()
 		m_VertexBuffer = 0;
 	}
 }
-void ModelClass::SetBufferVars(ID3D11DeviceContext* context)
+void ZMModel::SetBufferVars(ID3D11DeviceContext* context)
 {
 	unsigned int stride = sizeof(CurrentVertexType);
 	unsigned int offset = 0;
@@ -133,12 +133,12 @@ void ModelClass::SetBufferVars(ID3D11DeviceContext* context)
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-ID3D11ShaderResourceView* ModelClass::GetTexture()
+ID3D11ShaderResourceView* ZMModel::GetTexture()
 {
 	return m_Texture->GetTexture();
 }
 
-bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* path )
+bool ZMModel::LoadTexture(ID3D11Device* device, WCHAR* path )
 {
 	if (m_Texture != nullptr)
 	{
@@ -152,10 +152,9 @@ bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* path )
 	return success;
 }
 
-void ModelClass::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& indices)
+void ZMModel::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& indices)
 {
 	m_VertexCount = 36;
-
 	m_IndexCount = 36;
 
 	vertices = new CurrentVertexType[m_VertexCount];

@@ -62,18 +62,21 @@ bool ZMasherMain::Init()
 	m_Camera = new CameraClass();
 	m_Camera->SetPosition(Vector3f(0, 0, -10.f));
 
-	m_Model = new ModelClass();
-	m_Model->Init(m_D3DInterface.GetDevice());
+	m_Renderer.Init();
+	m_Renderer.SetCamera(m_Camera);
 
-	//m_Shader = new ColorClassShader();
-	m_TextureShader = new TextureShaderClass();
+	//m_Model = new ZMModel();
+	//m_Model->Init(m_D3DInterface.GetDevice());
 
-	//const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
-	//									m_WinVals.m_WindowHandle);
+	////m_Shader = new ColorClassShader();
+	//m_TextureShader = new TextureShaderClass();
 
-	const bool test2 = m_TextureShader->Init(m_D3DInterface.GetDevice(), m_WinVals.m_WindowHandle);
+	////const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
+	////									m_WinVals.m_WindowHandle);
 
-	assert(test2);
+	//const bool test2 = m_TextureShader->Init(m_D3DInterface.GetDevice(), m_WinVals.m_WindowHandle);
+
+	//assert(test2);
 
 	return true;
 }
@@ -154,32 +157,33 @@ bool ZMasherMain::CreateD3D()
 
 void ZMasherMain::Render()
 {
-	DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	bool result;
 	m_D3DInterface.BeginScene();
+
+	m_Renderer.Render(m_D3DInterface);
 	
-	m_Camera->UpdateViewMatrix();
+	//DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	//m_Camera->UpdateViewMatrix();
 
-	m_D3DInterface.GetWorldMatrix(worldMatrix);
-	m_Camera->GetViewMatrix(viewMatrix);
-	m_D3DInterface.GetProjectionMatrix(projectionMatrix);
+	//m_D3DInterface.GetWorldMatrix(worldMatrix);
+	//m_Camera->GetViewMatrix(viewMatrix);
+	//m_D3DInterface.GetProjectionMatrix(projectionMatrix);
 
-	m_Model->SetRenderVars(m_D3DInterface.GetContext());
+	//m_Model->SetRenderVars(m_D3DInterface.GetContext());
 
-	//const bool test = m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
-	//				 worldMatrix,
-	//				 viewMatrix,
-	//				 projectionMatrix);
+	////const bool test = m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
+	////				 worldMatrix,
+	////				 viewMatrix,
+	////				 projectionMatrix);
 
-	const bool test = m_TextureShader->SetShaderVars(	m_D3DInterface.GetContext(),
-									worldMatrix,
-									viewMatrix,
-									projectionMatrix,
-									m_Model->GetTexture());
-	
-	assert(test);
+	//const bool test = m_TextureShader->SetShaderVars(	m_D3DInterface.GetContext(),
+	//								worldMatrix,
+	//								viewMatrix,
+	//								projectionMatrix,
+	//								m_Model->GetTexture());
+	//
+	//assert(test);
 
-	m_D3DInterface.GetContext()->DrawIndexed(m_Model->GetIndexCount(), 0, 0);
+	//m_D3DInterface.GetContext()->DrawIndexed(m_Model->GetIndexCount(), 0, 0);
 
 	m_D3DInterface.EndScene();
 }

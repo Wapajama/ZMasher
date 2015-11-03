@@ -6,12 +6,11 @@
 
 typedef VertexPosUV CurrentVertexType;
 
-class ModelClass
+class ZMModel
 {
-		
 public:
-	ModelClass();
-	~ModelClass();
+	ZMModel();
+	~ZMModel();
 
 	bool Init(ID3D11Device* device);
 	void ShutDown();

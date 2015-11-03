@@ -31,9 +31,6 @@
     <ClInclude Include="ZMD3DInterface.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
     <ClInclude Include="CameraClass.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
@@ -48,7 +45,15 @@
     </ClInclude>
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TextureShaderClass.h" />
-    <ClInclude Include="ZMRenderer.h" />
+    <ClInclude Include="ZMModel.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMRenderer.h">
+      <Filter>Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMModelInstance.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -63,15 +68,20 @@
     <ClCompile Include="ColorClassShader.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="ModelClass.cpp">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClCompile>
     <ClCompile Include="ZMasherUtilities.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TextureShaderClass.cpp" />
-    <ClCompile Include="ZMRenderer.cpp" />
+    <ClCompile Include="ZMModel.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMRenderer.cpp">
+      <Filter>Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMModelInstance.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">

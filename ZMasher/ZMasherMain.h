@@ -5,9 +5,10 @@
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
 #include "CameraClass.h"
-#include "ModelClass.h"
+#include "ZMModel.h"
 #include "ColorClassShader.h"
 #include "TextureShaderClass.h"
+#include "ZMRenderer.h"
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
@@ -32,6 +33,8 @@ public:
 	void RotateRight();
 	void RotateLeft();
 
+	inline ZMD3DInterface* GetD3DInterface();
+
 private:
 
 	void Render();
@@ -45,10 +48,11 @@ private:
 	ZMD3DInterface m_D3DInterface;
 
 	CameraClass* m_Camera;
-	ModelClass* m_Model;
+	//ZMModel* m_Model;
+	ZMRenderer m_Renderer;
 	//ColorClassShader* m_Shader;
 
-	TextureShaderClass* m_TextureShader;
+	//TextureShaderClass* m_TextureShader;
 
 	void InitWindowClass();
 	void CreateWinApiWindow();
@@ -57,3 +61,8 @@ private:
 	bool HandleWinMsg();
 
 };
+
+inline ZMD3DInterface* ZMasherMain::GetD3DInterface()
+{
+	return &m_D3DInterface;
+}
