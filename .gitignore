@@ -42,6 +42,8 @@
 *.idb
 Debug/*
 */Debug/
+*Debug*
+*Release*
 
 ipch/*
 *.vcxproj

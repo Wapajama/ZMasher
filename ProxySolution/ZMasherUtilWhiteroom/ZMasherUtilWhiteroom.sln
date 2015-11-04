@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZMasherUtilWhiteroom", "ZMa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tester", "Tester\Tester.vcxproj", "{8635A447-CBF4-4FC3-BE62-7411CF518E97}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestExe", "TestExe\TestExe.vcxproj", "{7AF09BDE-238F-4292-BAC7-6F8E8813DA8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,8 +21,15 @@ Global
 		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Debug|Win32.Build.0 = Debug|Win32
 		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Release|Win32.ActiveCfg = Release|Win32
 		{8635A447-CBF4-4FC3-BE62-7411CF518E97}.Release|Win32.Build.0 = Release|Win32
+		{7AF09BDE-238F-4292-BAC7-6F8E8813DA8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7AF09BDE-238F-4292-BAC7-6F8E8813DA8A}.Debug|Win32.Build.0 = Debug|Win32
+		{7AF09BDE-238F-4292-BAC7-6F8E8813DA8A}.Release|Win32.ActiveCfg = Release|Win32
+		{7AF09BDE-238F-4292-BAC7-6F8E8813DA8A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
