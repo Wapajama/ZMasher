@@ -2,6 +2,7 @@
 
 #include <smmintrin.h>
 #include <dvec.h>
+#include <Windows.h>
 
 //#define ZMASHER_VECTOR3_TEMPLATE_DECL template<typename T>
 #define ZMASHER_VECTOR3_TEMPLATE_DECL 
@@ -15,10 +16,11 @@ namespace ZMasher
 	class __declspec(align(16)) Vector3f
 	{
 	public:
-		Vector3f();
+		inline Vector3f();
+		inline Vector3f(const Vector3f& copy);
 		inline Vector3f(const __m128& data);
 		inline Vector3f(const float x, const float y, const float z);
-		~Vector3f();
+		inline ~Vector3f();
 
 		union
 		{
@@ -36,11 +38,16 @@ namespace ZMasher
 	};
 
 	ZMASHER_VECTOR3_TEMPLATE_DECL
-	Vector3f::Vector3f()
+	inline Vector3f::Vector3f()
 	{
 		x = CAST(0);
 		y = CAST(0);
 		z = CAST(0);
+	}
+
+	inline Vector3f::Vector3f(const Vector3f& copy)
+	{
+		m_Data = copy.m_Data;
 	}
 
 	ZMASHER_VECTOR3_TEMPLATE_DECL
@@ -57,7 +64,7 @@ namespace ZMasher
 	}
 
 	ZMASHER_VECTOR3_TEMPLATE_DECL
-	Vector3f::~Vector3f()
+	inline Vector3f::~Vector3f()
 	{
 	}
 
@@ -74,10 +81,19 @@ namespace ZMasher
 
 	inline void Vector3f::operator+=(const Vector3f& operand)
 	{
-		//m_Data = _mm_add_ps(m_Data, operand.m_Data);
-		x = x + operand.x;
-		y = y + operand.y;
-		z = z + operand.z;
+		
+		//6-8 SIMD
+		m_Data = _mm_add_ps(m_Data, operand.m_Data);
+
+		//3-5 
+		//x += operand.x;
+		//y += operand.y;
+		//z += operand.z;
+
+		//0-2
+		//x = x + operand.x;
+		//y = y + operand.y;
+		//z = z + operand.z;
 	}
 }
 
