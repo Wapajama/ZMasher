@@ -1,7 +1,7 @@
 #ifndef VECTOR2DECL_H
 #define VECTOR2DECL_H
 
-namespace CommonUtilities
+namespace ZMasher
 {
 	template<typename T>
 	class Vector2

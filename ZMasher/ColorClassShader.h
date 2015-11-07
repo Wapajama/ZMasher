@@ -15,7 +15,7 @@
 #include <DirectXMath.h>
 #include <fstream>
 
-typedef  WCHAR* FileType;
+typedef WCHAR* FileType;
 
 class ColorClassShader
 {
@@ -33,10 +33,12 @@ public:
 
 	bool Init(ID3D11Device* device, HWND windowHandle);
 	void ShutDown();
-	bool Render(ID3D11DeviceContext* context, int,
+	bool SetShaderVars(ID3D11DeviceContext* context,
 				const DirectX::XMMATRIX& world,
 				const DirectX::XMMATRIX& view,
 				const DirectX::XMMATRIX& projection);
+
+private:
 	bool InitShader(ID3D11Device* device, HWND windowHandle, FileType vsFileName, FileType psFileName);
 	void ShutDownShader();
 	void OutputShaderErrorMessage(ID3D10Blob* blob, HWND windowHandle, FileType);
@@ -45,7 +47,7 @@ public:
 							 const DirectX::XMMATRIX& world,
 							 const DirectX::XMMATRIX& view,
 							 const DirectX::XMMATRIX& projection);
-	void RenderShader(ID3D11DeviceContext* context, int);
+	void SetVariables(ID3D11DeviceContext* context);
 
 	ID3D11VertexShader* m_VertexShader;
 	ID3D11PixelShader* m_PixelShader;

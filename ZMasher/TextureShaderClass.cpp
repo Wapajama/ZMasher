@@ -1,34 +1,37 @@
-#include "ColorClassShader.h"
+#include "TextureShaderClass.h"
 #include <D3DX11async.h>
+#include "ZMasherUtilities.h"
+#include <d3dx11async.h>
 
 #define RETURNF_IF_FAILED(result) if (FAILED(result))\
 	{\
 		return false;\
 	}\
 
-ColorClassShader::ColorClassShader()
+TextureShaderClass::TextureShaderClass()
 {
 	m_VertexShader = nullptr;
 	m_PixelShader = nullptr;
 	m_Layout = nullptr;
 	m_MatrixBuffer = nullptr;
+
+	m_SampleState = nullptr;
 }
 
-ColorClassShader::ColorClassShader(const ColorClassShader& copy)
+TextureShaderClass::TextureShaderClass(const TextureShaderClass& copy)
 {
 
 }
 
-ColorClassShader::~ColorClassShader()
+TextureShaderClass::~TextureShaderClass()
 {
 }
 
-
-bool ColorClassShader::Init(ID3D11Device* device, HWND windowHandle)
+bool TextureShaderClass::Init(ID3D11Device* device, HWND windowHandle)
 {
 	bool result = false;
 
-	result = this->InitShader(device, windowHandle, L"../ZMasher/color.vs", L"../ZMasher/color.ps");
+	result = this->InitShader(device, windowHandle, L"../ZMasher/texture.vs", L"../ZMasher/texture.ps");
 	if (result == false)
 	{
 		return false;
@@ -36,20 +39,21 @@ bool ColorClassShader::Init(ID3D11Device* device, HWND windowHandle)
 	return true;
 }
 
-void ColorClassShader::ShutDown()
+void TextureShaderClass::Shutdown()
 {
-	ShutDownShader();
+	ShutdownShader();
 }
 
 
-bool ColorClassShader::SetShaderVars(	ID3D11DeviceContext* context, 
+bool TextureShaderClass::SetShaderVars(	ID3D11DeviceContext* context, 
 								const DirectX::XMMATRIX& world,
 								const DirectX::XMMATRIX& view,
-								const DirectX::XMMATRIX& projection)
+								const DirectX::XMMATRIX& projection,
+								ID3D11ShaderResourceView* texture)
 {
 	bool success = false;
 
-	success = SetShaderParameters(context, world, view, projection);
+	success = SetShaderParameters(context, world, view, projection, texture);
 	if (success == false)
 	{
 		return false;
@@ -60,7 +64,7 @@ bool ColorClassShader::SetShaderVars(	ID3D11DeviceContext* context,
 	return true;
 }
 
-bool ColorClassShader::InitShader(ID3D11Device* device, HWND windowHandle, 
+bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle, 
 								  FileType vsFileName, FileType psFileName)
 {
 	HRESULT infoResult = S_OK;
@@ -75,7 +79,7 @@ bool ColorClassShader::InitShader(ID3D11Device* device, HWND windowHandle,
 	dwShaderFlags |= D3D10_SHADER_DEBUG;
 #endif
 
-	infoResult = D3DX11CompileFromFile(vsFileName, 0, 0, "ColorVertexShader",
+	infoResult = D3DX11CompileFromFile(vsFileName, 0, 0, "TextureVertexShader",
 									   "vs_5_0",
 									   dwShaderFlags,
 									   0,
@@ -102,7 +106,7 @@ bool ColorClassShader::InitShader(ID3D11Device* device, HWND windowHandle,
 	lengthTest = psFileName;
 
 
-	infoResult = D3DX11CompileFromFile(psFileName, 0, 0, "ColorPixelShader",
+	infoResult = D3DX11CompileFromFile(psFileName, 0, 0, "TexturePixelShader",
 									   "ps_5_0",
 									   dwShaderFlags,
 									   0,
@@ -145,9 +149,10 @@ bool ColorClassShader::InitShader(ID3D11Device* device, HWND windowHandle,
 	polygonLayout[0].AlignedByteOffset = 0;
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
-	polygonLayout[1].SemanticName = "COLOR";
+
+	polygonLayout[1].SemanticName = "TEXCOORD";
 	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
 	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -182,10 +187,35 @@ bool ColorClassShader::InitShader(ID3D11Device* device, HWND windowHandle,
 	{
 		return false;
 	}
+
+	D3D11_SAMPLER_DESC samplerDesc;
+
+	// Create a texture sampler state description.
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the texture sampler state.
+	infoResult = device->CreateSamplerState(&samplerDesc, &m_SampleState);
+	if(FAILED(infoResult))
+	{
+		return false;
+	}
+
 	return true;
 }
 
-void ColorClassShader::ShutDownShader()
+void TextureShaderClass::ShutdownShader()
 {
 	if (m_MatrixBuffer != nullptr)
 	{
@@ -215,7 +245,7 @@ void ColorClassShader::ShutDownShader()
 }
 
 //copy+pasted
-void ColorClassShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, FileType shaderFilename)
+void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, FileType shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -250,10 +280,11 @@ void ColorClassShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	return;
 }
 
-bool ColorClassShader::SetShaderParameters(ID3D11DeviceContext* context,
+bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* context,
 										   const DirectX::XMMATRIX& world,
 										   const DirectX::XMMATRIX& view,
-										   const DirectX::XMMATRIX& projection)
+										   const DirectX::XMMATRIX& projection,
+										   ID3D11ShaderResourceView* texture)
 {
 	HRESULT infoResult = S_OK;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -279,12 +310,16 @@ bool ColorClassShader::SetShaderParameters(ID3D11DeviceContext* context,
 
 	context->VSSetConstantBuffers(bufferNumber, 1, &m_MatrixBuffer);
 
+	context->PSSetShaderResources(0,1, &texture);
+
 	return true;
 }
 
-void ColorClassShader::SetVariables(ID3D11DeviceContext* context)
+void TextureShaderClass::SetVariables(ID3D11DeviceContext* context)
 {
 	context->IASetInputLayout(m_Layout);
 	context->VSSetShader(m_VertexShader, NULL, 0);
 	context->PSSetShader(m_PixelShader, NULL, 0);
+
+	context->PSSetSamplers( 0, 1, &m_SampleState);
 }

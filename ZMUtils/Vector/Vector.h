@@ -9,7 +9,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
-using namespace CommonUtilities;
+using namespace ZMasher;
 
 
 #endif

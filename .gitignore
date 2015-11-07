@@ -42,9 +42,12 @@
 *.idb
 Debug/*
 */Debug/
+*Debug*
+*Release*
 
 ipch/*
 *.vcxproj
 *.txt
 *.filters
 *.vcxproj.*
+*/x64/*

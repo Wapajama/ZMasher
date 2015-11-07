@@ -2,7 +2,7 @@
 #define VECTOR3_H
 #include <assert.h>
 
-namespace CommonUtilities
+namespace ZMasher
 {
 	template<typename T>
 	float Length(const Vector3<T>& aVector)

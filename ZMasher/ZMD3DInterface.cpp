@@ -126,7 +126,6 @@ bool ZMD3DInterface::GetDisplayModeInfo(ZMInitArgs args)
 	dxgiFact->Release();
 	dxgiFact = nullptr;
 
-
 	return true;
 }
 
@@ -134,13 +133,12 @@ bool ZMD3DInterface::CreateDeviceAndSwapChain(ZMInitArgs args)
 {
 	HRESULT result = S_OK;
 	
-	//Los factory, nothing complicated! DXGI = Direct X Graphics Interface
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc;
-
 	bool success = InitSwapChain(args, swap_chain_desc);
 
 	if (success == false)
 	{
+		assert(false);
 		return false;
 	}
 
@@ -161,7 +159,6 @@ bool ZMD3DInterface::CreateDeviceAndSwapChain(ZMInitArgs args)
 
 	RETURN_IF_FAILED(result);
 
-
 	ID3D11Texture2D* back_buffer;
 	result = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&back_buffer);
 	RETURN_IF_FAILED(result);
@@ -172,48 +169,6 @@ bool ZMD3DInterface::CreateDeviceAndSwapChain(ZMInitArgs args)
 	back_buffer->Release();
 	m_Context->OMSetRenderTargets(1, &m_RenderTarget, NULL);
 
-	return true;
-}
-
-bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc)
-{
-	
-	ZeroMemory(&swap_chain_desc, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-	swap_chain_desc.BufferCount = 1;
-	swap_chain_desc.BufferDesc.Width  = args.m_Resolution.x;
-	swap_chain_desc.BufferDesc.Height = args.m_Resolution.y;
-
-	swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	/*
-		TODO: find out what this here is good for, 
-		it has something to do with refreshrate
-	*/
-	if (m_VSync == true)
-	{
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Numerator;
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Denominator;
-	}
-	else
-	{
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 0;
-		swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
-	}
-
-	swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_desc.OutputWindow = args.m_WindowHandle;
-	//this turns off multisampling
-	swap_chain_desc.SampleDesc.Count = 1;
-	swap_chain_desc.SampleDesc.Quality = 0;
-
-	//"scan line ordering?"
-	swap_chain_desc.Windowed = args.m_Fullscreen == false;
-	swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-	swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	swap_chain_desc.Flags = 0;
 	return true;
 }
 
@@ -277,8 +232,50 @@ bool ZMD3DInterface::CreateDepthStencil(ZMInitArgs args)
 											  &m_DepthStencil);
 	RETURN_IF_FAILED(result);
 
+
 	m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
 
+	return true;
+}
+
+bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc)
+{	
+	ZeroMemory(&swap_chain_desc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+	swap_chain_desc.BufferCount = 1;
+	swap_chain_desc.BufferDesc.Width  = args.m_Resolution.x;
+	swap_chain_desc.BufferDesc.Height = args.m_Resolution.y;
+
+	swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	/*
+		TODO: find out what this here is good for, 
+		it has something to do with refreshrate
+	*/
+	if (m_VSync == true)
+	{
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Numerator;
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Denominator;
+	}
+	else
+	{
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 0;
+		swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
+	}
+
+	swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swap_chain_desc.OutputWindow = args.m_WindowHandle;
+	//this turns off multisampling
+	swap_chain_desc.SampleDesc.Count = 1;
+	swap_chain_desc.SampleDesc.Quality = 0;
+
+	//"scan line ordering?"
+	swap_chain_desc.Windowed = args.m_Fullscreen == false;
+	swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+	swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swap_chain_desc.Flags = 0;
 	return true;
 }
 
@@ -332,27 +329,27 @@ bool ZMD3DInterface::InitMatrices(ZMInitArgs args)
 
 	m_ProjectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspect, args.m_ScreenNear, args.m_ScreenDepth);
 	m_WorldMatrix = DirectX::XMMatrixIdentity();
-	m_OrthoganalMatrix = DirectX::XMMatrixOrthographicLH((float)args.m_Resolution.x, (float)args.m_Resolution.y, args.m_ScreenNear, args.m_ScreenDepth);
-
+	m_OrthoganalMatrix = DirectX::XMMatrixOrthographicLH((float)args.m_Resolution.x,
+														 (float)args.m_Resolution.y,
+														        args.m_ScreenNear,
+														        args.m_ScreenDepth);
 	return true;
 }
 
 void ZMD3DInterface::BeginScene()
 {
 	Clear();
-
 }
 
 void ZMD3DInterface::EndScene()
 {
-	const int vsync = m_VSync ? 1 : 0;
-	m_SwapChain->Present(vsync,0);
+	Render();
 }
 
 bool ZMD3DInterface::Render()
 {
-
-	//m_SwapChain->Present(0, 0);
+	const int vsync = m_VSync ? 1 : 0;
+	m_SwapChain->Present(vsync,0);
 	return true;
 }
 
