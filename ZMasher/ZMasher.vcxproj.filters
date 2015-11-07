@@ -25,9 +25,15 @@
     <ClInclude Include="ZMVertexTypes.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="ColorClassShader.h" />
-    <ClInclude Include="ModelClass.h" />
-    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="CameraClass.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorClassShader.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelClass.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -36,9 +42,15 @@
     <ClCompile Include="ZMD3DInterface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="ColorClassShader.cpp" />
-    <ClCompile Include="ModelClass.cpp" />
-    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="CameraClass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorClassShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelClass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
