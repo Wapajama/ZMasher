@@ -1,11 +1,42 @@
 #pragma once
 #include "ZMMatrix44.h"
-#define ZM_ALWAYS_INLINE __forceinline
-//#define ZM_MATH_USE_SIMD
+#include "mathdefines.h"
 
 //#define ZM_PERMUTE_PS( v, c ) _mm_shuffle_ps( v, v, c )
 namespace ZMasher
 {
+	extern ZM_ALWAYS_INLINE const Vector4f Vector4MulScalar(const Vector4f& operand, const float scalar);
+
+	ZM_ALWAYS_INLINE const Vector4f Vector4MulMatrix44(const Vector4f& operand, const Matrix44f& matrix)
+	{
+		Vector4f result;
+
+#ifdef ZM_MATH_USE_SIMD
+
+		Vector4f x = Vector4f(_mm_mul_ps(operand.m_Data, Vector4f(matrix.m11, matrix.m21, matrix.m31, matrix.m41).m_Data));
+		Vector4f y = Vector4f(_mm_mul_ps(operand.m_Data, Vector4f(matrix.m12, matrix.m22, matrix.m32, matrix.m42).m_Data));
+		Vector4f z = Vector4f(_mm_mul_ps(operand.m_Data, Vector4f(matrix.m13, matrix.m23, matrix.m33, matrix.m43).m_Data));
+		Vector4f w = Vector4f(_mm_mul_ps(operand.m_Data, Vector4f(matrix.m14, matrix.m24, matrix.m34, matrix.m44).m_Data));
+
+
+		result.x += x.x += x.y += x.z += x.w;
+		result.y += y.x += y.y += y.z += y.w;
+		result.z += z.x += z.y += z.z += z.w;
+		result.w += w.x += w.y += w.z += w.w;
+#else
+
+#endif // ZM_MATH_USE_SIMD
+
+		
+
+		return result;
+	}
+
+	ZM_ALWAYS_INLINE const Matrix44f Matrix44MulVector4(const Matrix44f& matrix, const Vector4f& operand)
+	{
+		assert(false);
+	}
+
 	ZM_ALWAYS_INLINE const Matrix44f Matrix44Add(const Matrix44f& operand1, const Matrix44f& operand2)
 	{
 #ifdef ZM_MATH_USE_SIMD
@@ -171,6 +202,18 @@ namespace ZMasher
 		return result;
 	}
 
+	ZM_ALWAYS_INLINE const Matrix44f Matrix44SMulScal(const Matrix44f& operand, const float scalar)
+	{
+		Matrix44f result;
+
+		result.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
+		result.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
+		result.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
+		result.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
+		
+		return result;
+	}
+
 
 	ZM_ALWAYS_INLINE void Matrix44AddDir(Matrix44f& operand1, const Matrix44f& operand2)
 	{
@@ -286,6 +329,13 @@ namespace ZMasher
 #endif // !ZM_MATH_USE_SIMD
 	}
 
+	ZM_ALWAYS_INLINE void Matrix44MulScalDir(Matrix44f& operand, const float scalar)
+	{
+		operand.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
+		operand.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
+		operand.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
+		operand.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
+	}
 
 	//rip these guys out to a designated .inl file
 
@@ -307,44 +357,126 @@ namespace ZMasher
 
 	inline Matrix44f& Matrix44f::operator+=(const Matrix44f& operand)
 	{
-
+		Matrix44AddDir(*this, operand);
 	}
 
 	inline Matrix44f& Matrix44f::operator-=(const Matrix44f& operand)
 	{
-
+		Matrix44SubDir(*this, operand);
 	}
 
 	inline Matrix44f& Matrix44f::operator*=(const Matrix44f& operand)
 	{
+		Matrix44MulDir(*this, operand);
+	}
+
+
+	inline Vector4f Matrix44f::operator*(const Vector4f& operand)const
+	{
+		Vector4f result;
+
+		
+
+		return result;
+	}
+
+	inline Vector4f& Matrix44f::operator*=(const Vector4f& operand)
+	{
 
 	}
+
+
+	Matrix44f Matrix44f::operator*(const float scalar)const
+	{
+		return Matrix44SMulScal(*this, scalar);
+	}
+
+	Matrix44f& Matrix44f::operator*=(const float scalar)
+	{
+		Matrix44MulScalDir(*this, scalar);
+		return *this;
+	}
+
 
 	inline void Matrix44f::SetTranslation(const Vector4f& operand)
 	{
 		m14 = operand.x;
 		m24 = operand.y;
 		m34 = operand.z;
-		m44 = operand.w;
+		m44 = operand.w;//think twice before changing m44!
 	}
 
 	inline Vector4f Matrix44f::GetTranslation()const
 	{
-
+		return Vector4f(m14, m24, m34, m44);
 	}
+
 
 	inline void Matrix44f::RotateX(const float radians)
 	{
-
+		(*this) *= CreateRotationMatrixX(radians);
 	}
+
 	inline void Matrix44f::RotateY(const float radians)
 	{
-
+		(*this) *= CreateRotationMatrixY(radians);
 	}
+
 	inline void Matrix44f::RotateZ(const float radians)
 	{
-
+		(*this) *= CreateRotationMatrixZ(radians);
 	}
 
+
+	inline const Matrix44f Matrix44f::Identity()
+	{
+		return Matrix44f(1.f, 0.f, 0.f, 0.f,
+						 0.f, 1.f, 0.f, 0.f,
+						 0.f, 0.f, 1.f, 0.f,
+						 0.f, 0.f, 0.f, 1.f);
+	}
+
+
+	inline const Matrix44f Matrix44f::CreateRotationMatrixX(const float radians)
+	{
+		Matrix44f rotationMatrix = Identity();
+		const float cosine = cos(radians);
+		const float sine = sin(radians);
+
+		rotationMatrix.m22 = cosine;
+		rotationMatrix.m23 = -sine;
+		rotationMatrix.m32 = sine;
+		rotationMatrix.m33 = cosine;
+
+		return rotationMatrix;
+	}
+
+	inline const Matrix44f Matrix44f::CreateRotationMatrixY(const float radians)
+	{
+		Matrix44f rotationMatrix = Identity();
+		const float cosine = cos(radians);
+		const float sine = sin(radians);
+
+		rotationMatrix.m11 = cosine;
+		rotationMatrix.m13 = sine;
+		rotationMatrix.m31 = -sine;
+		rotationMatrix.m33 = cosine;
+
+		return rotationMatrix;
+	}
+
+	inline const Matrix44f Matrix44f::CreateRotationMatrixZ(const float radians)
+	{
+		Matrix44f rotationMatrix = Identity();
+		const float cosine = cos(radians);
+		const float sine = sin(radians);
+
+		rotationMatrix.m11 = cosine;
+		rotationMatrix.m12 = -sine;
+		rotationMatrix.m21 = sine;
+		rotationMatrix.m22 = cosine;
+
+		return rotationMatrix;
+	}
 
 }

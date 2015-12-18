@@ -62,6 +62,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="mathdefines.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="ZMMatrix44.h" />
     <ClInclude Include="ZMVector.h" />
@@ -69,12 +70,17 @@
     <ClInclude Include="ZMVector4.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ZMMath.inl">
+    <ClInclude Include="ZMMatrixMath.inl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
       <FileType>Document</FileType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </DeploymentContent>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ZMVectorMath.inl">
+      <FileType>Document</FileType>
     </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

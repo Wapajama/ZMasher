@@ -30,7 +30,13 @@
     <ClInclude Include="Quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ZMMath.inl">
+    <ClInclude Include="ZMVectorMath.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMMatrixMath.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathdefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -119,9 +119,9 @@ namespace ZMasher
 
 			//operators with vector
 
-		inline Matrix44f operator*(const Vector4f& operand)const;
+		inline Vector4f operator*(const Vector4f& operand)const;
 
-		inline Matrix44f& operator*=(const Vector4f& operand);
+		inline Vector4f& operator*=(const Vector4f& operand);
 
 			//operators with scalar
 
@@ -129,15 +129,7 @@ namespace ZMasher
 
 		Matrix44f& operator*=(const float scalar);
 
-
 		//utility
-		inline static const Matrix44f Identity()
-		{
-			return Matrix44f(1.f, 0.f, 0.f, 0.f,
-							 0.f, 1.f, 0.f, 0.f,
-							 0.f, 0.f, 1.f, 0.f,
-							 0.f, 0.f, 0.f, 1.f);
-		}
 
 		inline void SetTranslation(const Vector4f& operand);
 		inline Vector4f GetTranslation()const;
@@ -150,11 +142,14 @@ namespace ZMasher
 		inline float GetRotationY()const;
 		inline float GetRotationZ()const;
 
+		inline static const Matrix44f Identity();
+
+		inline static const Matrix44f CreateRotationMatrixX(const float radians);
+		inline static const Matrix44f CreateRotationMatrixY(const float radians);
+		inline static const Matrix44f CreateRotationMatrixZ(const float radians);
+
 	};
-
-
-
 
 }
 
-#include <ZMMath.inl>
+#include <ZMMatrixMath.inl>
