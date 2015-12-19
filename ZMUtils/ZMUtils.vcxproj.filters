@@ -14,26 +14,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vector\Vector.h">
+    <ClInclude Include="mathdefines.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector2.h">
+    <ClInclude Include="Quaternion.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector2decl.h">
+    <ClInclude Include="ZMMatrix44.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector3.h">
+    <ClInclude Include="ZMVector.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector3decl.h">
+    <ClInclude Include="ZMVector3.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector4.h">
+    <ClInclude Include="ZMVector4.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector\Vector4decl.h">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ZMMatrixMath.inl">
       <Filter>Source Files\Math</Filter>
-    </ClInclude>
+    </None>
+    <None Include="ZMVectorMath.inl">
+      <Filter>Source Files\Math</Filter>
+    </None>
   </ItemGroup>
 </Project>

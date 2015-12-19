@@ -1,13 +1,14 @@
 #include "ZMasherMain.h"
+#include <ZMVector.h>
 
+using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
+
 ZMasherMain::ZMasherMain()
 {
-	Vector2f testCompile;
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
-	testCompile += Vector2f(0,1);
 	m_WinVals.m_Resolution.x = 1280;
 	m_WinVals.m_Resolution.y = 720;
 }
@@ -110,8 +111,7 @@ void ZMasherMain::InitWindowClass()
 
 void ZMasherMain::CreateWinApiWindow()
 {
-	Vector2i windowDims(m_WinVals.m_Resolution.x,
-						m_WinVals.m_Resolution.y);
+	POINT windowDims = m_WinVals.m_Resolution;
 
 	RECT windowRect = { 0, 0, windowDims.x,windowDims.y };
 

@@ -1,7 +1,7 @@
 #pragma once
 //#include "ZMModel.h"
 #include <DirectXMath.h>
-#include <Vector/Vector.h>
+#include <ZMVector.h>
 
 class ZMModel;
 
@@ -11,11 +11,11 @@ public:
 	ZMModelInstance(void);
 	~ZMModelInstance(void);
 
-	inline void SetPosition(const Vector3f& position);
+	inline void SetPosition(const ZMasher::Vector3f& position);
 	inline void Rotate(const float degrees);
 
-	inline Vector3f GetPosition();
-	inline Vector3f GetRotation();
+	inline ZMasher::Vector3f GetPosition();
+	inline ZMasher::Vector3f GetRotation();
 
 	__forceinline ZMModel* GetModel();
 	__forceinline void SetModel(ZMModel* model);
@@ -30,32 +30,32 @@ private:
 				For now, DirectX math
 	*/
 
-	Vector3f m_Position;
-	Vector3f m_Rotation;
+	ZMasher::Vector3f m_Position;
+	ZMasher::Vector3f m_Rotation;
 
 };
 
-inline void				ZMModelInstance::SetPosition(const Vector3f& position)
+inline void					ZMModelInstance::SetPosition(const ZMasher::Vector3f& position)
 {
 	m_Position = position;
 }
-inline void				ZMModelInstance::Rotate(const float degrees)
+inline void					ZMModelInstance::Rotate(const float degrees)
 {
 	assert(false);//NOT IMPLEMENTED!!
 }
-inline Vector3f			ZMModelInstance::GetPosition()
+inline ZMasher::Vector3f	ZMModelInstance::GetPosition()
 {
 	return m_Position;
 }
-inline Vector3f			ZMModelInstance::GetRotation()
+inline ZMasher::Vector3f	ZMModelInstance::GetRotation()
 {
 	return m_Rotation;
 }
-__forceinline ZMModel*	ZMModelInstance::GetModel()
+__forceinline ZMModel*		ZMModelInstance::GetModel()
 {
 	return m_Model;
 }
-__forceinline void		ZMModelInstance::SetModel(ZMModel* model)
+__forceinline void			ZMModelInstance::SetModel(ZMModel* model)
 {
 	m_Model = model;
 }

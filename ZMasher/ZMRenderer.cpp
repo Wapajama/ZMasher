@@ -34,7 +34,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 		//				 viewMatrix,
 		//				 projectionMatrix);
 		
-		Vector3f vPosition = m_ModelInstances[i].GetPosition();
+		ZMasher::Vector3f vPosition = m_ModelInstances[i].GetPosition();
 		__m128 posArray;
 		posArray.m128_f32[0] = vPosition.x;
 		posArray.m128_f32[1] = vPosition.y;
@@ -71,7 +71,7 @@ void ZMRenderer::Init()
 	model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	m_Models.push_back(model);
 
-	Vector3f position(5.f * 3.f,0,0.f);
+	ZMasher::Vector3f position(5.f * 3.f,0,0.f);
 
 	for (int i = 0; i < 10; ++i)
 	{

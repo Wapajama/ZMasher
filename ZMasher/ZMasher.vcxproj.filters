@@ -40,13 +40,25 @@
     <ClInclude Include="dllHeader.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h" />
-    <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="TextureShaderClass.h" />
-    <ClInclude Include="ZMasherUtilities.h" />
-    <ClInclude Include="ZMModel.h" />
-    <ClInclude Include="ZMModelInstance.h" />
     <ClInclude Include="ZMRenderer.h" />
+    <ClInclude Include="ZMModelInstance.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureShaderClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMasherUtilities.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMModel.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -61,12 +73,22 @@
     <ClCompile Include="ColorClassShader.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="TextureClass.cpp" />
-    <ClCompile Include="TextureShaderClass.cpp" />
-    <ClCompile Include="ZMasherUtilities.cpp" />
-    <ClCompile Include="ZMModel.cpp" />
-    <ClCompile Include="ZMModelInstance.cpp" />
     <ClCompile Include="ZMRenderer.cpp" />
+    <ClCompile Include="TextureClass.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureShaderClass.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMasherUtilities.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMModel.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMModelInstance.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">

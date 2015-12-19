@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "dllHeader.h"
-#include <Vector\Vector.h>
+#include <ZMVector.h>
 
 struct ZMASHER_DLL ZMWinApiCointainer
 {
@@ -11,7 +11,7 @@ struct ZMASHER_DLL ZMWinApiCointainer
 	LPCWSTR m_TitleBarName;
 
 	//not winApi, Should make better interface?
-	Vector2i m_Resolution;
+	POINT m_Resolution;
 	float m_ScreenDepth;
 	float m_ScreenNear;
 	bool m_VSync;
