@@ -66,18 +66,6 @@ bool ZMasherMain::Init()
 	m_Renderer.Init();
 	m_Renderer.SetCamera(m_Camera);
 
-	//m_Model = new ZMModel();
-	//m_Model->Init(m_D3DInterface.GetDevice());
-
-	////m_Shader = new ColorClassShader();
-	//m_TextureShader = new TextureShaderClass();
-
-	////const bool test2 = m_Shader->Init(	m_D3DInterface.GetDevice(),
-	////									m_WinVals.m_WindowHandle);
-
-	//const bool test2 = m_TextureShader->Init(m_D3DInterface.GetDevice(), m_WinVals.m_WindowHandle);
-
-	//assert(test2);
 
 	return true;
 }

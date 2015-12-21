@@ -29,10 +29,6 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 	{
 		m_ModelInstances[i].GetModel()->SetRenderVars(d3dinterface.GetContext());
 
-		//const bool test = m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
-		//				 worldMatrix,
-		//				 viewMatrix,
-		//				 projectionMatrix);
 		
 		ZMasher::Vector3f vPosition = m_ModelInstances[i].GetPosition();
 		__m128 posArray;
@@ -42,11 +38,6 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 		posArray.m128_f32[3] = 1.f;
 
 		DirectX::XMVECTOR position(posArray);
-
-		//worldMatrix.r[0].m128_f32[0] = position.m128_f32[0];
-		//worldMatrix.r[0].m128_f32[1] = position.m128_f32[1];
-		//worldMatrix.r[0].m128_f32[2] = position.m128_f32[2];
-		//worldMatrix.r[0].m128_f32[3] = position.m128_f32[3];
 
 		worldMatrix = DirectX::XMMatrixTranslationFromVector(position);
 

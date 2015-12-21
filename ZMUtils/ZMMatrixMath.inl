@@ -386,16 +386,16 @@ namespace ZMasher
 	//}
 
 
-	Matrix44f Matrix44f::operator*(const float scalar)const
-	{
-		return Matrix44SMulScal(*this, scalar);
-	}
+	//Matrix44f Matrix44f::operator*(const float scalar)const
+	//{
+	//	return Matrix44SMulScal(*this, scalar);
+	//}
 
-	Matrix44f& Matrix44f::operator*=(const float scalar)
-	{
-		Matrix44MulScalDir(*this, scalar);
-		return *this;
-	}
+	//Matrix44f& Matrix44f::operator*=(const float scalar)
+	//{
+	//	Matrix44MulScalDir(*this, scalar);
+	//	return *this;
+	//}
 
 
 	inline void Matrix44f::SetTranslation(const Vector4f& operand)

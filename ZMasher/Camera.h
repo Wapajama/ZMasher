@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <ZMVector.h>
+#include <ZMMatrix44.h>
 
 class Camera
 {
@@ -22,9 +23,12 @@ public:
 
 private:
 	
-	ZMasher::Vector3f m_Position;
+	//ZMasher::Vector3f m_Position;
 	ZMasher::Vector3f m_Rotation;
 	DirectX::XMMATRIX m_ViewMatrix;
 
+	ZMasher::Matrix44f m_WorldOrientation;
+	ZMasher::Matrix44f m_ProjectionMatrix;
+	
 };
 

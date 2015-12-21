@@ -13,7 +13,7 @@ Camera::~Camera()
 
 void Camera::SetPosition(const Vector3f& pos)
 {
-	m_Position = pos;
+	m_WorldOrientation.SetTranslation(Vector4f(pos, 1.f));
 }
 void Camera::SetRotation(const Vector3f& rot)
 {
@@ -28,9 +28,9 @@ void Camera::UpdateViewMatrix()
 	up.z = 0.f;
 
 	DirectX::XMFLOAT3 position;
-	position.x = m_Position.x;
-	position.y = m_Position.y;
-	position.z = m_Position.z;
+	position.x = m_WorldOrientation.GetTranslation().x;
+	position.y = m_WorldOrientation.GetTranslation().y;
+	position.z = m_WorldOrientation.GetTranslation().z;
 
 	DirectX::XMFLOAT3 lookAt;
 	lookAt.x = 0.f;
@@ -61,20 +61,20 @@ void Camera::GetViewMatrix(DirectX::XMMATRIX& matrix)
 
 DirectX::XMFLOAT3 Camera::GetPositionDX()
 {
-	return DirectX::XMFLOAT3(m_Position.x,
-							 m_Position.y,
-							 m_Position.z);
+	return DirectX::XMFLOAT3(m_WorldOrientation.GetTranslation().x,
+							 m_WorldOrientation.GetTranslation().y,
+							 m_WorldOrientation.GetTranslation().z);
 }
 DirectX::XMFLOAT3 Camera::GetRotationDX()
 {
-	return DirectX::XMFLOAT3(m_Rotation.x,
-							 m_Rotation.y,
-							 m_Rotation.z);
+	return DirectX::XMFLOAT3(m_WorldOrientation.GetTranslation().x,
+							 m_WorldOrientation.GetTranslation().y,
+							 m_WorldOrientation.GetTranslation().z);
 }
 
 Vector3f Camera::GetPosition()
 {
-	return m_Position;
+	return Vector3f(m_WorldOrientation.GetTranslation());
 }
 
 Vector3f Camera::GetRotation()
