@@ -400,15 +400,18 @@ namespace ZMasher
 
 	inline void Matrix44f::SetTranslation(const Vector4f& operand)
 	{
-		m14 = operand.x;
-		m24 = operand.y;
-		m34 = operand.z;
+		m41 = operand.x;
+		m42 = operand.y;
+		m43 = operand.z;
 		m44 = operand.w;//think twice before changing m44!
 	}
 
 	inline Vector4f Matrix44f::GetTranslation()const
 	{
-		return Vector4f(m14, m24, m34, m44);
+		return Vector4f(m41,
+						m42,
+						m43,
+						m44);
 	}
 
 

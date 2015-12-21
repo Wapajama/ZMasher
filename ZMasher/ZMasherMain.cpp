@@ -61,7 +61,7 @@ bool ZMasherMain::Init()
 	assert(test);
 
 	m_Camera = new Camera();
-	m_Camera->SetPosition(Vector3f(0, 0, -10.f));
+	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
 
 	m_Renderer.Init();
 	m_Renderer.SetCamera(m_Camera);
@@ -180,32 +180,32 @@ const float global_speed = 30.f;
 
 void ZMasherMain::MoveForward()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, global_speed * 0.016f));
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, -global_speed * 0.016f));
 }
 
 void ZMasherMain::MoveBackwards()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, -global_speed * 0.016f));
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, global_speed * 0.016f));
 }
 
 void ZMasherMain::MoveRight()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(global_speed * 0.016f, 0,0));
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(-global_speed * 0.016f, 0,0));
 }
 
 void ZMasherMain::MoveLeft()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(-global_speed * 0.016f, 0,0));
+	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(global_speed * 0.016f, 0,0));
 }
 
 void ZMasherMain::RotateRight()
 {
-	m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, global_speed * 0.016f * 3.f, 0));
+	//m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, global_speed * 0.016f * 3.f, 0));
 }
 
 void ZMasherMain::RotateLeft()
 {
-	m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, -global_speed * 0.016f * 3.f, 0));
+	//m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, -global_speed * 0.016f * 3.f, 0));
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

@@ -10,16 +10,16 @@ public:
 	~Camera();
 
 	void SetPosition(const ZMasher::Vector3f& pos);
-	void SetRotation(const ZMasher::Vector3f& rot);
+	//void SetRotation(const ZMasher::Vector3f& rot);
 
 	void UpdateViewMatrix();
 	void GetViewMatrix(DirectX::XMMATRIX& matrix);
 
 	DirectX::XMFLOAT3 GetPositionDX();
-	DirectX::XMFLOAT3 GetRotationDX();
+	//DirectX::XMFLOAT3 GetRotationDX();
 
 	ZMasher::Vector3f GetPosition();
-	ZMasher::Vector3f GetRotation();
+	//ZMasher::Vector3f GetRotation();
 
 private:
 	
