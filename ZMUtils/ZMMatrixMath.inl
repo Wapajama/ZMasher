@@ -280,7 +280,81 @@ namespace ZMasher
 	ZM_ALWAYS_INLINE void Matrix44MulDir(Matrix44f& operand1, const Matrix44f& operand2)
 	{
 #ifdef ZM_MATH_USE_SIMD
-		assert(false && "not implemented!");
+		//0
+		__m128 w = operand1.m_Data[0];
+
+		__m128 x = _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 0, 0, 0));
+		__m128 y = _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 1, 1, 1));
+		__m128 z = _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 2, 2, 2));
+		w = _mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 3, 3, 3));
+
+		x = _mm_mul_ps(x, operand2.m_Data[0]);
+		y = _mm_mul_ps(y, operand2.m_Data[1]);
+		z = _mm_mul_ps(z, operand2.m_Data[2]);
+		w = _mm_mul_ps(w, operand2.m_Data[3]);
+
+		x = _mm_add_ps(x, z);
+		y = _mm_add_ps(y, w);
+		x = _mm_add_ps(x, y);
+
+		operand1.m_Data[0] = x;
+
+		//1
+		w = operand1.m_Data[1];
+
+		x = _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 0, 0, 0));
+		y = _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 1, 1, 1));
+		z = _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 2, 2, 2));
+		w = _mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 3, 3, 3));
+
+		x = _mm_mul_ps(x, operand2.m_Data[0]);
+		y = _mm_mul_ps(y, operand2.m_Data[1]);
+		z = _mm_mul_ps(z, operand2.m_Data[2]);
+		w = _mm_mul_ps(w, operand2.m_Data[3]);
+
+		x = _mm_add_ps(x, z);
+		y = _mm_add_ps(y, w);
+		x = _mm_add_ps(x, y);
+
+		operand1.m_Data[1] = x;
+
+		//2
+		w = operand1.m_Data[2];
+
+		x = _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 0, 0, 0));
+		y = _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 1, 1, 1));
+		z = _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 2, 2, 2));
+		w = _mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 3, 3, 3));
+
+		x = _mm_mul_ps(x, operand2.m_Data[0]);
+		y = _mm_mul_ps(y, operand2.m_Data[1]);
+		z = _mm_mul_ps(z, operand2.m_Data[2]);
+		w = _mm_mul_ps(w, operand2.m_Data[3]);
+
+		x = _mm_add_ps(x, z);
+		y = _mm_add_ps(y, w);
+		x = _mm_add_ps(x, y);
+
+		operand1.m_Data[2] = x;
+
+		//3
+		w = operand1.m_Data[3];
+
+		x = _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 0, 0, 0));
+		y = _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 1, 1, 1));
+		z = _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 2, 2, 2));
+		w = _mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 3, 3, 3));
+
+		x = _mm_mul_ps(x, operand2.m_Data[0]);
+		y = _mm_mul_ps(y, operand2.m_Data[1]);
+		z = _mm_mul_ps(z, operand2.m_Data[2]);
+		w = _mm_mul_ps(w, operand2.m_Data[3]);
+
+		x = _mm_add_ps(x, z);
+		y = _mm_add_ps(y, w);
+		x = _mm_add_ps(x, y);
+
+		operand1.m_Data[3] = x;
 #else
 		//0
 		float x = operand1.m_Elements[0][0];
@@ -358,16 +432,19 @@ namespace ZMasher
 	inline Matrix44f& Matrix44f::operator+=(const Matrix44f& operand)
 	{
 		Matrix44AddDir(*this, operand);
+		return *this;
 	}
 
 	inline Matrix44f& Matrix44f::operator-=(const Matrix44f& operand)
 	{
 		Matrix44SubDir(*this, operand);
+		return *this;
 	}
 
 	inline Matrix44f& Matrix44f::operator*=(const Matrix44f& operand)
 	{
 		Matrix44MulDir(*this, operand);
+		return *this;
 	}
 
 

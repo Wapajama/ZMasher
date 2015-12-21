@@ -24,7 +24,6 @@ void Camera::UpdateViewMatrix()
 
 void Camera::GetViewMatrix(DirectX::XMMATRIX& matrix)
 {
-
 	matrix.r[0] = m_WorldOrientation.m_Data[0];
 	matrix.r[1] = m_WorldOrientation.m_Data[1];
 	matrix.r[2] = m_WorldOrientation.m_Data[2];
@@ -41,4 +40,19 @@ DirectX::XMFLOAT3 Camera::GetPositionDX()
 Vector3f Camera::GetPosition()
 {
 	return Vector3f(m_WorldOrientation.GetTranslation());
+}
+
+void Camera::RotateX(const float radians)
+{
+	m_WorldOrientation.RotateX(radians);
+}
+
+void Camera::RotateY(const float radians)
+{
+	m_WorldOrientation.RotateY(radians);
+}
+
+void Camera::RotateZ(const float radians)
+{
+	m_WorldOrientation.RotateZ(radians);
 }

@@ -200,12 +200,12 @@ void ZMasherMain::MoveLeft()
 
 void ZMasherMain::RotateRight()
 {
-	//m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, global_speed * 0.016f * 3.f, 0));
+	m_Camera->RotateY(0.016f);
 }
 
 void ZMasherMain::RotateLeft()
 {
-	//m_Camera->SetRotation(m_Camera->GetRotation() + Vector3f(0, -global_speed * 0.016f * 3.f, 0));
+	m_Camera->RotateY(-0.016f);
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
