@@ -4,7 +4,7 @@
 
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
-#include "CameraClass.h"
+#include "Camera.h"
 #include "ZMModel.h"
 #include "ColorClassShader.h"
 #include "TextureShaderClass.h"
@@ -47,7 +47,7 @@ private:
 	ZMWinApiCointainer m_WinVals;
 	ZMD3DInterface m_D3DInterface;
 
-	CameraClass* m_Camera;
+	Camera* m_Camera;
 	//ZMModel* m_Model;
 	ZMRenderer m_Renderer;
 	//ColorClassShader* m_Shader;

@@ -31,9 +31,6 @@
     <ClInclude Include="ZMD3DInterface.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="CameraClass.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
     <ClInclude Include="ColorClassShader.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
@@ -56,7 +53,7 @@
     <ClInclude Include="ZMModel.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
+    <ClInclude Include="Camera.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,9 +63,6 @@
     </ClCompile>
     <ClCompile Include="ZMD3DInterface.cpp">
       <Filter>Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraClass.cpp">
-      <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
     <ClCompile Include="ColorClassShader.cpp">
       <Filter>Source\ContentSpecific</Filter>
@@ -87,6 +81,9 @@
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
     <ClCompile Include="ZMModelInstance.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
   </ItemGroup>

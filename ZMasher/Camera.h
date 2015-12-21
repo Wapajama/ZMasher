@@ -2,11 +2,11 @@
 #include <DirectXMath.h>
 #include <ZMVector.h>
 
-class CameraClass
+class Camera
 {
 public:
-	CameraClass();
-	~CameraClass();
+	Camera();
+	~Camera();
 
 	void SetPosition(const ZMasher::Vector3f& pos);
 	void SetRotation(const ZMasher::Vector3f& rot);

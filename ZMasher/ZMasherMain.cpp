@@ -60,7 +60,7 @@ bool ZMasherMain::Init()
 	const bool test = CreateD3D();
 	assert(test);
 
-	m_Camera = new CameraClass();
+	m_Camera = new Camera();
 	m_Camera->SetPosition(Vector3f(0, 0, -10.f));
 
 	m_Renderer.Init();

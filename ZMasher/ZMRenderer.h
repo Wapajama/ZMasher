@@ -3,7 +3,7 @@
 #include "ZMModel.h"
 #include "ZMModelInstance.h"
 
-class CameraClass;
+class Camera;
 class ZMD3DInterface;
 class TextureShaderClass;
 
@@ -18,17 +18,17 @@ public:
 
 	void Init();
 
-	__forceinline void SetCamera(CameraClass* camera);
+	__forceinline void SetCamera(Camera* camera);
 
 private:
 	
 	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders
-	CameraClass* m_Camera;
+	Camera* m_Camera;
 	std::vector<ZMModel> m_Models;
 	std::vector<ZMModelInstance> m_ModelInstances;
 };
 
-__forceinline void ZMRenderer::SetCamera(CameraClass* camera)
+__forceinline void ZMRenderer::SetCamera(Camera* camera)
 {
 	m_Camera = camera;
 }

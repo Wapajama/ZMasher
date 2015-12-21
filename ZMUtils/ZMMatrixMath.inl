@@ -371,19 +371,19 @@ namespace ZMasher
 	}
 
 
-	inline Vector4f Matrix44f::operator*(const Vector4f& operand)const
-	{
-		Vector4f result;
+	//inline Vector4f Matrix44f::operator*(const Vector4f& operand)const
+	//{
+	//	Vector4f result;
 
-		
+	//	
 
-		return result;
-	}
+	//	return result;
+	//}
 
-	inline Vector4f& Matrix44f::operator*=(const Vector4f& operand)
-	{
+	//inline Vector4f& Matrix44f::operator*=(const Vector4f& operand)
+	//{
 
-	}
+	//}
 
 
 	Matrix44f Matrix44f::operator*(const float scalar)const

@@ -1,26 +1,26 @@
-#include "CameraClass.h"
+#include "Camera.h"
 #include "ZMasherUtilities.h"
 
 using namespace ZMasher;
 
-CameraClass::CameraClass()
+Camera::Camera()
 {
 }
 
-CameraClass::~CameraClass()
+Camera::~Camera()
 {
 }
 
-void CameraClass::SetPosition(const Vector3f& pos)
+void Camera::SetPosition(const Vector3f& pos)
 {
 	m_Position = pos;
 }
-void CameraClass::SetRotation(const Vector3f& rot)
+void Camera::SetRotation(const Vector3f& rot)
 {
 	m_Rotation = rot;
 }
 
-void CameraClass::UpdateViewMatrix()
+void Camera::UpdateViewMatrix()
 {
 	DirectX::XMFLOAT3 up;
 	up.x = 0.f;
@@ -54,30 +54,30 @@ void CameraClass::UpdateViewMatrix()
 	m_ViewMatrix =	DirectX::XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
 }
 
-void CameraClass::GetViewMatrix(DirectX::XMMATRIX& matrix)
+void Camera::GetViewMatrix(DirectX::XMMATRIX& matrix)
 {
 	matrix = m_ViewMatrix;
 }
 
-DirectX::XMFLOAT3 CameraClass::GetPositionDX()
+DirectX::XMFLOAT3 Camera::GetPositionDX()
 {
 	return DirectX::XMFLOAT3(m_Position.x,
 							 m_Position.y,
 							 m_Position.z);
 }
-DirectX::XMFLOAT3 CameraClass::GetRotationDX()
+DirectX::XMFLOAT3 Camera::GetRotationDX()
 {
 	return DirectX::XMFLOAT3(m_Rotation.x,
 							 m_Rotation.y,
 							 m_Rotation.z);
 }
 
-Vector3f CameraClass::GetPosition()
+Vector3f Camera::GetPosition()
 {
 	return m_Position;
 }
 
-Vector3f CameraClass::GetRotation()
+Vector3f Camera::GetRotation()
 {
 	return m_Rotation;
 }

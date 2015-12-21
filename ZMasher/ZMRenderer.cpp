@@ -1,5 +1,5 @@
 #include "ZMRenderer.h"
-#include "CameraClass.h"
+#include "Camera.h"
 #include "ZMD3DInterface.h"
 #include "TextureShaderClass.h"
 #include "ZMasherMain.h"
