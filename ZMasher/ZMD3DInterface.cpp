@@ -43,7 +43,6 @@ bool ZMD3DInterface::Init(ZMInitArgs args)
 	INIT(CreateDeviceAndSwapChain(args));
 	INIT(CreateRasterizerState(args));
 	INIT(CreateViewPort(args));
-	INIT(InitMatrices(args));
 
 	return true;
 }
@@ -321,21 +320,6 @@ bool ZMD3DInterface::CreateViewPort(ZMInitArgs args)
 	return true;
 }
 
-bool ZMD3DInterface::InitMatrices(ZMInitArgs args)
-{
-	float fov = M_PI * 0.25f;
-	float aspect =	(float)args.m_Resolution.x /
-					(float)args.m_Resolution.y;
-
-	m_ProjectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspect, args.m_ScreenNear, args.m_ScreenDepth);
-	m_WorldMatrix = DirectX::XMMatrixIdentity();
-	m_OrthoganalMatrix = DirectX::XMMatrixOrthographicLH((float)args.m_Resolution.x,
-														 (float)args.m_Resolution.y,
-														        args.m_ScreenNear,
-														        args.m_ScreenDepth);
-	return true;
-}
-
 void ZMD3DInterface::BeginScene()
 {
 	Clear();
@@ -387,19 +371,4 @@ ID3D11DeviceContext* ZMD3DInterface::GetContext()
 ID3D11Device* ZMD3DInterface::GetDevice()
 {
 	return m_Device;
-}
-
-void ZMD3DInterface::GetProjectionMatrix(DirectX::XMMATRIX& projmatrix)
-{
-	projmatrix = m_ProjectionMatrix;
-}
-
-void ZMD3DInterface::GetWorldMatrix(DirectX::XMMATRIX& worldmatrix)
-{
-	worldmatrix = m_WorldMatrix;
-}
-
-void ZMD3DInterface::GetOrthoMatrix(DirectX::XMMATRIX& orthomatrix)
-{
-	orthomatrix = m_OrthoganalMatrix;
 }

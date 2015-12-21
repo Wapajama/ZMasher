@@ -1,5 +1,6 @@
 #include "ZMasherMain.h"
 #include <ZMVector.h>
+#include <Vector2decl.h>
 
 using namespace ZMasher;
 
@@ -60,7 +61,8 @@ bool ZMasherMain::Init()
 	const bool test = CreateD3D();
 	assert(test);
 
-	m_Camera = new Camera();
+	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
+									   m_WinVals.m_Resolution.y));
 	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
 
 	m_Renderer.Init();

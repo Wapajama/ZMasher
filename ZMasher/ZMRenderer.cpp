@@ -18,12 +18,12 @@ ZMRenderer::~ZMRenderer(void)
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 {
 	DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	m_Camera->UpdateViewMatrix();
+	m_Camera->UpdateProjMatrix();
 	
 	worldMatrix = DirectX::XMMatrixIdentity();
 	
-	m_Camera->GetViewMatrix(viewMatrix);
-	d3dinterface.GetProjectionMatrix(projectionMatrix);
+	m_Camera->GetWorldOrientation(viewMatrix);
+	m_Camera->GetProjectionMatrix(projectionMatrix);
 
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
 	{

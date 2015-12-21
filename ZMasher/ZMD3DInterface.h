@@ -26,10 +26,6 @@ public:
 
 	ID3D11DeviceContext* GetContext();
 	ID3D11Device* GetDevice();
-	
-	void GetProjectionMatrix(DirectX::XMMATRIX& projmatrix);
-	void GetWorldMatrix(DirectX::XMMATRIX& worldmatrix);
-	void GetOrthoMatrix(DirectX::XMMATRIX& orthomatrix);
 
 private:
 
@@ -49,17 +45,11 @@ private:
 	unsigned int m_Numerator  ;
 	unsigned int m_Denominator;
 
-	DirectX::XMMATRIX m_ProjectionMatrix;
-	DirectX::XMMATRIX m_WorldMatrix;
-	DirectX::XMMATRIX m_OrthoganalMatrix;
-
 	bool GetDisplayModeInfo(ZMInitArgs args);
 	bool CreateDeviceAndSwapChain(ZMInitArgs args);
 	bool InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_chain_desc);
 	bool CreateViewPort(ZMInitArgs args);
 	bool CreateDepthStencil(ZMInitArgs args);
 	bool CreateRasterizerState(ZMInitArgs args);
-	bool InitMatrices(ZMInitArgs args);
-
 };
 
