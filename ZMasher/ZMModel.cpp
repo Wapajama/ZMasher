@@ -161,24 +161,6 @@ void ZMModel::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& ind
 
 	indices = new unsigned long[m_IndexCount];
 
-	//vertices[0].position = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	////vertices[0].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//vertices[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-
-	//vertices[1].position = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top middle.
-	////vertices[1].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//vertices[1].tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-
-	//vertices[2].position = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	////vertices[2].color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//vertices[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-
-	//vertices[0] = CurrentVertexType( 0,0,0,0,0 );
-
-	//indices[0] = 0;  // Bottom left.
-	//indices[1] = 1;  // Top middle.
-	//indices[2] = 2;  // Bottom right.
-
 	//cube
 
 	int iterate = 0;

@@ -151,30 +151,6 @@ void ZMasherMain::Render()
 
 	m_Renderer.Render(m_D3DInterface);
 	
-	//DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	//m_Camera->UpdateViewMatrix();
-
-	//m_D3DInterface.GetWorldMatrix(worldMatrix);
-	//m_Camera->GetViewMatrix(viewMatrix);
-	//m_D3DInterface.GetProjectionMatrix(projectionMatrix);
-
-	//m_Model->SetRenderVars(m_D3DInterface.GetContext());
-
-	////const bool test = m_Shader->SetShaderVars(m_D3DInterface.GetContext(),
-	////				 worldMatrix,
-	////				 viewMatrix,
-	////				 projectionMatrix);
-
-	//const bool test = m_TextureShader->SetShaderVars(	m_D3DInterface.GetContext(),
-	//								worldMatrix,
-	//								viewMatrix,
-	//								projectionMatrix,
-	//								m_Model->GetTexture());
-	//
-	//assert(test);
-
-	//m_D3DInterface.GetContext()->DrawIndexed(m_Model->GetIndexCount(), 0, 0);
-
 	m_D3DInterface.EndScene();
 }
 

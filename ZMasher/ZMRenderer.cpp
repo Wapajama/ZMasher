@@ -17,19 +17,25 @@ ZMRenderer::~ZMRenderer(void)
 
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 {
-	DirectX::XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
-	
-	worldMatrix = DirectX::XMMatrixIdentity();
-	
-	m_Camera->GetWorldOrientation(viewMatrix);
+
+	m_Camera->GetWorldOrientation(cameraWorldMatrix);
 	m_Camera->GetProjectionMatrix(projectionMatrix);
+
+	/*
+		TODO:
+			- Fix shaders into proper files instead of fucking retarded classes -.-
+			- Should probably wait with the implementation of the data orientation
+			until... something?
+			- Fix model loading for different cool formats, another big project!
+			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
+	*/
 
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
 	{
 		m_ModelInstances[i].GetModel()->SetRenderVars(d3dinterface.GetContext());
 
-		
 		ZMasher::Vector3f vPosition = m_ModelInstances[i].GetPosition();
 		__m128 posArray;
 		posArray.m128_f32[0] = vPosition.x;
@@ -39,21 +45,21 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 
 		DirectX::XMVECTOR position(posArray);
 
-		worldMatrix = DirectX::XMMatrixTranslationFromVector(position);
+		modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
 
 		const bool test = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
-			worldMatrix,
-			viewMatrix,
-			projectionMatrix,
-			m_ModelInstances[i].GetModel()->GetTexture());
-			
+														 modelWorldMatrix,
+														 cameraWorldMatrix,
+														 projectionMatrix,
+														 m_ModelInstances[i].GetModel()->GetTexture());
+
 		assert(test);
 
-		d3dinterface.GetContext()->DrawIndexed(m_ModelInstances[i].GetModel()->GetIndexCount(), 0, 0); 
-		
+		d3dinterface.GetContext()->DrawIndexed(m_ModelInstances[i].GetModel()->GetIndexCount(), 0, 0);
+
 	}
-	
-	
+
+
 }
 
 void ZMRenderer::Init()
@@ -62,7 +68,7 @@ void ZMRenderer::Init()
 	model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	m_Models.push_back(model);
 
-	ZMasher::Vector3f position(5.f * 3.f,0,0.f);
+	ZMasher::Vector3f position(5.f * 3.f, 0, 0.f);
 
 	for (int i = 0; i < 10; ++i)
 	{
