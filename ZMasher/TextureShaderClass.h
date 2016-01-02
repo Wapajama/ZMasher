@@ -8,6 +8,7 @@
 */
 
 #include <d3d11.h>
+#include <d3dx11effect.h>
 #include <DirectXMath.h>
 
 #include <fstream>
@@ -56,5 +57,6 @@ private:
 	ID3D11InputLayout*	m_Layout;
 	ID3D11Buffer*		m_MatrixBuffer;
 
-	ID3D11SamplerState* m_SampleState;
+	ID3DX11Effect*		m_Effect;
+	ID3DX11EffectTechnique* m_Technique;
 };

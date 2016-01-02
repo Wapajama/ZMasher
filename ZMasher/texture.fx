@@ -6,11 +6,11 @@ struct PixelInputType
 	float2 tex: TEXCOORD0;
 };
 
-float4 TexturePixelShader(PixelInputType input):SV_TARGET
+float4 TexturePixelShader(PixelInputType input) :SV_TARGET
 {
 	float4 textureColor;
 
-	textureColor = shaderTexture.Sample(samAnisotropic, input.tex);
+textureColor = shaderTexture.Sample(samAnisotropic, input.tex);
 
-	return textureColor;
+return textureColor;
 }

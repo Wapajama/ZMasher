@@ -20,6 +20,13 @@ public:
 
 	__forceinline void SetCamera(Camera* camera);
 
+	/*
+		This should later on be the lowest step in loading a model,
+		since all the data orientation needs to take place here
+		(or someplace similar)
+	*/
+	ZMModel* LoadModel(const char* filePath);
+
 private:
 	
 	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders

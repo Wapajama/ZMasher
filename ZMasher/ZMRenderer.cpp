@@ -30,6 +30,8 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 			until... something?
 			- Fix model loading for different cool formats, another big project!
 			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
+			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
+
 	*/
 
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
@@ -87,3 +89,33 @@ void ZMRenderer::Init()
 
 	assert(test2);
 }
+
+//bool ReadFileCounts(char* filename, int& vertexCount, int& textureCount, int& normalCount, int& faceCount)
+//{
+//	
+//}
+//
+//bool LoadDataStructures(char* filename, int& vertexCount, int& textureCount, int& normalCount, int& faceCount)
+//{
+//
+//}
+
+//ZMModel* ZMRenderer::LoadModel(const char* filePath)
+//{
+//	return nullptr;
+//
+//	bool result = false;
+//	char fileName[256] = "../BasicCriypticman.obj";
+//	int vertexCount = 0;
+//	int textureCount = 0;
+//	int normalCount = 0;
+//	int faceCount = 0;
+//
+//	result = ReadFileCounts(fileName, vertexCount, textureCount, normalCount, faceCount);
+//	assert(result);
+//	result = LoadDataStructures(fileName, vertexCount, textureCount, normalCount, faceCount);
+//	assert(result);
+//
+//
+//
+//}
