@@ -78,7 +78,8 @@ bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle,
 #if defined(DEBUG) | defined(_DEBUG)
 	dwShaderFlags |= D3D10_SHADER_DEBUG;
 #endif
-
+#define NEW_SHADER
+#ifndef NEW_SHADER
 	infoResult = D3DX11CompileFromFile(vsFileName, 0, 0, "TextureVertexShader",
 									   "vs_5_0",
 									   dwShaderFlags,
@@ -88,7 +89,7 @@ bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle,
 									   0);
 	if (FAILED(infoResult))
 	{
-		
+
 		if (errorMessage)
 		{
 			OutputShaderErrorMessage(errorMessage, windowHandle, vsFileName);
@@ -133,18 +134,13 @@ bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle,
 											NULL,
 											&m_VertexShader);
 	RETURNF_IF_FAILED(infoResult);
-	infoResult = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), 
-										   pixelShaderBuffer->GetBufferSize(), 
-										   NULL, 
+	infoResult = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(),
+										   pixelShaderBuffer->GetBufferSize(),
+										   NULL,
 										   &m_PixelShader);
 	RETURNF_IF_FAILED(infoResult);
 
 
-	auto numElements = sizeof(g_PosUv) / sizeof(g_PosUv[0]);
-
-
-	infoResult = device->CreateInputLayout(g_PosUv, numElements, vertexShaderBuffer->GetBufferPointer(),
-										   vertexShaderBuffer->GetBufferSize(), &m_Layout);
 
 	if (FAILED(infoResult))
 	{
@@ -156,7 +152,45 @@ bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle,
 	pixelShaderBuffer->Release();
 	vertexShaderBuffer = nullptr;
 	pixelShaderBuffer = nullptr;
+#else
 	D3D11_BUFFER_DESC matrixBufferDesc;
+	ID3DBlob* shaderBuffer = nullptr;
+
+	const std::wstring effect = L"../ZMasher/texture.fx";
+
+	infoResult = (D3DX11CompileFromFile(effect.c_str(), 0, 0, 0,
+										"fx_5_0",
+										dwShaderFlags,
+										0, 0,
+										&shaderBuffer,
+										&errorMessage,
+										0));
+	if (errorMessage)
+	{
+		OutputShaderErrorMessage(errorMessage, windowHandle, L"LOL");
+	}
+	RETURNF_IF_FAILED(infoResult);
+
+	infoResult = D3DX11CreateEffectFromMemory(shaderBuffer->GetBufferPointer(),
+											  shaderBuffer->GetBufferSize(),
+											  NULL,
+											  device,
+											  &m_Effect);
+
+	RETURNF_IF_FAILED(infoResult);
+
+	shaderBuffer->Release();
+	m_Technique = m_Effect->GetTechniqueByIndex(0);
+
+	auto numElements = sizeof(g_PosUv) / sizeof(g_PosUv[0]);
+
+	D3DX11_PASS_DESC passDesc;
+	infoResult = m_Technique->GetPassByIndex(0)->GetDesc(&passDesc);
+	infoResult = device->CreateInputLayout(g_PosUv, numElements,
+										   passDesc.pIAInputSignature,
+										   passDesc.IAInputSignatureSize, &m_Layout);
+	RETURNF_IF_FAILED(infoResult);
+#endif // !NEW_SHADER
 
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
@@ -268,9 +302,10 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* context,
 
 	unsigned int bufferNumber = 0;
 
-	context->VSSetConstantBuffers(bufferNumber, 1, &m_MatrixBuffer);
-
-	context->PSSetShaderResources(0,1, &texture);
+	//context->VSSetConstantBuffers(bufferNumber, 1, &m_MatrixBuffer);
+	m_Effect->GetConstantBufferByName("MatrixBuffer")->SetConstantBuffer(m_MatrixBuffer);
+	//context->PSSetShaderResources(0,1, &texture);
+	m_Effect->GetVariableByName("shaderTexture")->AsShaderResource()->SetResource(texture);
 
 	return true;
 }
@@ -278,6 +313,11 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* context,
 void TextureShaderClass::SetVariables(ID3D11DeviceContext* context)
 {
 	context->IASetInputLayout(m_Layout);
+#ifndef NEW_SHADER
 	context->VSSetShader(m_VertexShader, NULL, 0);
 	context->PSSetShader(m_PixelShader, NULL, 0);
+#else
+	m_Technique->GetPassByIndex(0)->Apply(0, context);
+#endif // !NEW_SHADER
+
 }

@@ -98,5 +98,9 @@
     <None Include="SharedVertexShaderData.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
+    <None Include="planninglog.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="texture.fx" />
   </ItemGroup>
 </Project>

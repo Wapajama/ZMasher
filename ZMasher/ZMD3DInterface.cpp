@@ -85,7 +85,7 @@ bool ZMD3DInterface::GetDisplayModeInfo(ZMInitArgs args)
 		modeList);
 	RETURN_IF_FAILED(result);
 
-	for (int i =0; i < numberOfModes; ++i)
+	for (int i = 0; i < numberOfModes; ++i)
 	{
 		if (modeList[i].Width == (unsigned int)args.m_Resolution.x &&
 			modeList[i].Height== (unsigned int)args.m_Resolution.y)
@@ -341,7 +341,7 @@ bool ZMD3DInterface::Clear()
 {
 	float clear_color[] = { 0.0f, 0.f, 0.f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTarget, clear_color);
-	m_Context->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+	//m_Context->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 	return true;
 }
 
