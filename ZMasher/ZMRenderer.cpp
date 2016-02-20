@@ -4,6 +4,7 @@
 #include "TextureShaderClass.h"
 #include "ZMasherMain.h"
 #include "ZMasherUtilities.h"
+#include "ZMModelFactory.h"
 
 ZMRenderer::ZMRenderer(void)
 {
@@ -64,12 +65,12 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 
 }
 
-void ZMRenderer::Init()
+void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
-	ZMModel model;
-	model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
-	m_Models.push_back(model);
-
+	//ZMModel model;
+	//model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/box.obj"));
+	
 	ZMasher::Vector3f position(5.f * 3.f, 0, 0.f);
 
 	for (int i = 0; i < 10; ++i)

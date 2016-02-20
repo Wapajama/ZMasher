@@ -16,7 +16,7 @@ public:
 	
 	void Render(ZMD3DInterface& d3dinterface);
 
-	void Init();
+	void Init(ZMD3DInterface& d3dinterface);
 
 	__forceinline void SetCamera(Camera* camera);
 

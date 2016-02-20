@@ -65,7 +65,7 @@ bool ZMasherMain::Init()
 									   m_WinVals.m_Resolution.y));
 	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
 
-	m_Renderer.Init();
+	m_Renderer.Init(m_D3DInterface);
 	m_Renderer.SetCamera(m_Camera);
 
 
@@ -82,7 +82,7 @@ void ZMasherMain::InitWindowClass()
 	//m_WinVals.m_ExtWindowClass.lpszClassName = m_WinVals.m_TitleBarName;
 	//m_WinVals.m_ExtWindowClass.hCursor = (HCURSOR)(LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED));
 
-	//this works on Windows 7
+	//this works on Windows 7 and windows 8
 	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
 	m_WinVals.m_ExtWindowClass.cbClsExtra = 0;

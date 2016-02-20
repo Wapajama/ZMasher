@@ -5,12 +5,19 @@ struct VertexInputType
 {
 	float4 position : POSITION;
 	float2 tex : TEXCOORD0;
+	float4 norm : NORMAL0;
 };
 
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
+	float4 norm : NORMAL0;
+};
+
+RasterizerState BackFaceCulling
+{
+	cullmode = back;
 };
 
 float4 TexturePixelShader(PixelInputType input) :SV_TARGET
@@ -31,7 +38,7 @@ PixelInputType TextureVertexShader(VertexInputType input)
 	output.position = mul(output.position, projectionMatrix);
 
 	output.tex = input.tex;
-
+	output.norm = 1;
 	return output;
 }
 
@@ -43,5 +50,6 @@ technique11 Test
 		SetVertexShader(CompileShader(vs_5_0, TextureVertexShader()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, TexturePixelShader()));
+		SetRasterizerState(BackFaceCulling);
 	}
 }

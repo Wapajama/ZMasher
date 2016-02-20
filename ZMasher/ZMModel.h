@@ -12,7 +12,7 @@ public:
 	ZMModel();
 	~ZMModel();
 
-	bool Init(ID3D11Device* device);
+
 	void ShutDown();
 	void SetRenderVars(ID3D11DeviceContext* context);
 
@@ -20,10 +20,12 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 
+	bool CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices);
+
 private:
 
-	bool InitBuffers(ID3D11Device* device);
-
+	bool InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
+	bool Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
 	void SinfulHardcoding(CurrentVertexType*& vertexes, unsigned long*& indexes);
 	void ShutDownBuffers();
 	void SetBufferVars(ID3D11DeviceContext* context);

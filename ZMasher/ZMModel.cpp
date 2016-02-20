@@ -16,11 +16,11 @@ ZMModel::~ZMModel()
 {
 }
 
-bool ZMModel::Init(ID3D11Device* device)
+bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices)
 {
 	bool success = false;
 
-	success = InitBuffers(device);
+	success = InitBuffers(device, vertices, indices);
 	if (success == false)
 	{
 		assert(false);
@@ -57,15 +57,15 @@ int ZMModel::GetIndexCount()
 	return m_IndexCount;
 }
 
-bool ZMModel::InitBuffers(ID3D11Device* device)
+bool ZMModel::InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices)
 {
-	CurrentVertexType* vertices = nullptr;
-	unsigned long* indices = nullptr;
+	//CurrentVertexType* vertices = nullptr;
+	//unsigned long* indices = nullptr;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 		
-	SinfulHardcoding(vertices, indices);
+	//SinfulHardcoding(vertices, indices);
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(CurrentVertexType) * m_VertexCount;
@@ -203,4 +203,11 @@ void ZMModel::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& ind
 
 
 
+}
+
+bool ZMModel::CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices)
+{
+	m_VertexCount = n_verts;
+	m_IndexCount = n_indices;
+	return Init(device, vertices, indices);
 }

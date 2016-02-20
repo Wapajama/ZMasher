@@ -182,11 +182,11 @@ bool TextureShaderClass::InitShader(ID3D11Device* device, HWND windowHandle,
 	shaderBuffer->Release();
 	m_Technique = m_Effect->GetTechniqueByIndex(0);
 
-	auto numElements = sizeof(g_PosUv) / sizeof(g_PosUv[0]);
-
+	//auto numElements = sizeof(g_PosUv) / sizeof(g_PosUv[0]);
+	auto numElements = sizeof(g_PosNormUv) / sizeof(g_PosNormUv[0]);
 	D3DX11_PASS_DESC passDesc;
 	infoResult = m_Technique->GetPassByIndex(0)->GetDesc(&passDesc);
-	infoResult = device->CreateInputLayout(g_PosUv, numElements,
+	infoResult = device->CreateInputLayout(g_PosNormUv, numElements,
 										   passDesc.pIAInputSignature,
 										   passDesc.IAInputSignatureSize, &m_Layout);
 	RETURNF_IF_FAILED(infoResult);
