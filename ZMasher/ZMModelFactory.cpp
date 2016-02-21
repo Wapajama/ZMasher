@@ -9,27 +9,27 @@ ZMModel* ZMModelFactory::LoadModel(ID3D11Device* device, const char * model_path
 	m_VertexIDs.clear();
 
 	int vertex_pos_count = 0;
-	int vertex_count = 0;
+	m_Vertex_count = 0;
 	int texture_count = 0;
 	int normal_count = 0;
 	int face_count = 0;
 	int index_count = 0;
 
-	CountModelData(model_path, vertex_pos_count, texture_count, normal_count, vertex_count);
+	CountModelData(model_path, vertex_pos_count, texture_count, normal_count, m_Vertex_count);
 
 	//not using normals atm
 	float* vertex_pos_array = new float[vertex_pos_count * 3];
 	float* vertex_tex_array = new float[texture_count * 2];
 
 	index_count = m_Indexes.size();
-	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];
+	CurrentVertexType* vertexes = new CurrentVertexType[m_Vertex_count];
 	unsigned long* indexes = new unsigned long[index_count];
 
 	ReadModelData(model_path, vertex_pos_array, vertex_tex_array, indexes, vertexes);
 
 	ZMModel* model = new ZMModel();
 
-	model->CreateModel(device, vertexes, indexes, vertex_count, index_count);
+	model->CreateModel(device, vertexes, indexes, m_Vertex_count, index_count);
 	return model;
 }
 
@@ -42,12 +42,14 @@ void ZMModelFactory::CountModelData(const char* model_path, int& vertex_pos_coun
 	assert(fin.fail() == false);
 	char input;
 	fin.get(input);
-
+	m_NumberOfSquares = 0;
+	entire_file += input;
 	while (fin.eof() == false)
 	{
 		if (input == 'v')
 		{
 			fin.get(input);
+			entire_file += input;
 			switch (input)
 			{
 				case ' ':
@@ -69,42 +71,42 @@ void ZMModelFactory::CountModelData(const char* model_path, int& vertex_pos_coun
 			continue;
 		}
 
-		if (input == 'f')
+		while (input == 'f')
 		{
 			fin.get(input);
+			entire_file += input;
 			if (input == ' ')
 			{
-				while (input != '\n' &&
-					   fin.eof() == false)
+				ReadFace(fin, vertex_count);
+				ReadFace(fin, vertex_count);
+				const bool test1 = ReadFace(fin, vertex_count);
+				BruteForceAssertInixesTheSame();
+				if (test1 == false)//false: 4 faces
 				{
-					if (input == 's')
-					{
-						fin.get(input);
-						fin.get(input);
-						fin.get(input);
-						continue;
-					}
-					if (ReadFace(fin) == true)++vertex_count;
-					fin.get(input);//space
-					if (ReadFace(fin) == true)++vertex_count;;
-					fin.get(input);//space
-					if(ReadFace(fin) == true)++vertex_count;
-					
-					fin.get(input);//newLine
+					ReadFace(fin, vertex_count, true);
+					BruteForceAssertInixesTheSame();
+					++m_NumberOfSquares;
 				}
-				
+				fin.get(input);
+				entire_file += input;
+			}
+			else
+			{
+				assert(false);
 			}
 		}
 		while (input != '\n' &&
 			   fin.eof() == false)
 		{
 			fin.get(input);
+			entire_file += input;
 		}
 		fin.get(input);
+		entire_file += input;
 	}
 }
 
-bool ZMModelFactory::ReadFace(std::ifstream& fin)
+bool ZMModelFactory::ReadFace(std::ifstream& fin, int& vertex_count, const bool fourth_face)
 {
 	char input = 0;
 
@@ -113,10 +115,19 @@ bool ZMModelFactory::ReadFace(std::ifstream& fin)
 	short normal = 0;
 
 	fin >> vertex_pos;
+	entire_file += std::to_string(vertex_pos);
 	fin.get(input);
+	entire_file += input;
 	fin >> texture;
+	entire_file += std::to_string(texture);
 	fin.get(input);
+	entire_file += input;
 	fin >> normal;
+	entire_file += std::to_string(normal);
+	fin.get(input);
+	entire_file += input;
+
+	assert(vertex_pos > 0 && texture > 0 && normal > 0);
 
 	VertexID id;
 	id.vertex_pos = vertex_pos - 1;
@@ -128,12 +139,24 @@ bool ZMModelFactory::ReadFace(std::ifstream& fin)
 
 	if (copy_exists == false)
 	{
+		++vertex_count;
 		index = m_VertexIDs.size();
 		m_VertexIDs.push_back(id);
 	}
 	m_Indexes.push_back(index);
+	if (fourth_face == true)
+	{
+		//the fourth vertex in a row. The three first creates a face,
+		//fourth one requires work to be created
+		m_Indexes.push_back(m_Indexes[m_Indexes.size() - 4]);
+		m_Indexes.push_back(m_Indexes[m_Indexes.size() - 3]);
+	}
 
-	return copy_exists == false;//returns true if created a new one
+	if (fin.eof() == false)
+	{
+		return input == '\n';
+	}
+	return true;
 }
 
 bool ZMModelFactory::DoesIDExist(const VertexID& id, int& index)
@@ -173,16 +196,9 @@ void ZMModelFactory::ReadModelData(const char* model_path, float* vertex_pos_arr
 			{
 				case ' ':
 				{
-					float test = -1;
-					//fin >> vertex_pos_array[vertex_pos_index];
-					//fin >> vertex_pos_array[vertex_pos_index + 1];
-					//fin >> vertex_pos_array[vertex_pos_index + 2];
-					fin >> test;
-					vertex_pos_array[vertex_pos_index] = test;
-					fin >> test;
-					vertex_pos_array[vertex_pos_index + 1] = test;
-					fin >> test;
-					vertex_pos_array[vertex_pos_index + 2] = test;
+					fin >> vertex_pos_array[vertex_pos_index];
+					fin >> vertex_pos_array[vertex_pos_index + 1];
+					fin >> vertex_pos_array[vertex_pos_index + 2];
 					vertex_pos_index += 3;
 					break;
 				}
@@ -209,20 +225,42 @@ void ZMModelFactory::ReadModelData(const char* model_path, float* vertex_pos_arr
 		}
 		fin.get(input);
 	}
-	for (short i = 0; i < m_Indexes.size(); i++)
+	for (int i = 0; i < m_Indexes.size(); ++i)
 	{
 		indexes[i] = m_Indexes[i];
 	}
-	for (short i = 0; i < m_Indexes.size(); ++i)
+	for (int i = 0; i < m_Vertex_count; ++i)
 	{
-		const unsigned long current_index = m_Indexes[i];
-		const int current_vertex_pos_index = m_VertexIDs[current_index].vertex_pos * 3;
-		const int curret_tex_index = m_VertexIDs[current_index].texture * 2;
-		vertexes[current_index].position.x = vertex_pos_array[current_vertex_pos_index];
-		vertexes[current_index].position.y = vertex_pos_array[current_vertex_pos_index + 1];
-		vertexes[current_index].position.z = vertex_pos_array[current_vertex_pos_index + 2];
+		int pos_index = m_VertexIDs[i].vertex_pos * 3;
+		int tex_index = m_VertexIDs[i].texture * 2;
+		vertexes[i].position.x = vertex_pos_array[pos_index];
+		vertexes[i].position.y = vertex_pos_array[pos_index + 1];
+		vertexes[i].position.z = vertex_pos_array[pos_index + 2];
 
-		vertexes[current_index].tex.x = vertex_tex_array[curret_tex_index];
-		vertexes[current_index].tex.y = vertex_tex_array[curret_tex_index + 1];
+		vertexes[i].tex.x = vertex_tex_array[tex_index];
+		vertexes[i].tex.y = vertex_tex_array[tex_index + 1];
 	}
+}
+
+
+bool ZMModelFactory::BruteForceAssertInixesTheSame()
+{
+	unsigned long indixes[3];
+	indixes[0] = m_Indexes[m_Indexes.size() - 1];
+	indixes[1] = m_Indexes[m_Indexes.size() - 2];
+	indixes[2] = m_Indexes[m_Indexes.size() - 3];
+
+	assert(m_Indexes.size() % 3 == 0);
+
+	for (unsigned long i = 0; i < m_Indexes.size(); i += 3)
+	{
+		if (m_Indexes[i] == indixes[0] &&
+			m_Indexes[i+1] == indixes[1] &&
+			m_Indexes[i+2] == indixes[2])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

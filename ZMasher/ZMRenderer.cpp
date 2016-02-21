@@ -69,11 +69,11 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
 	//ZMModel model;
 	//model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
-	m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/box.obj"));
+	m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/cup.obj"));
 	
-	ZMasher::Vector3f position(5.f * 3.f, 0, 0.f);
+	ZMasher::Vector3f position(0, -5, 0.f);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		ZMModelInstance instance;
 		instance.SetModel(&m_Models[0]);//REAL DANGEROUS, CHANGE ASAP

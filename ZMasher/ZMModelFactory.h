@@ -2,6 +2,8 @@
 #include "ZMSingleton.h"
 #include <vector>
 #include "ZMModel.h"
+#include <string>
+
 class ZMModelInstance;
 class ZMModel;
 class ID3D11Device;
@@ -19,8 +21,9 @@ private:
 
 	void CountModelData(const char* model_path, int& vertex_pos_count, int& texture_count, int& normal_count, int& vertex_count);
 	void ReadModelData(const char* model_path, float* vertex_pos_array, float* vertex_tex_array, unsigned long* indexes, CurrentVertexType* vertexes);
-	bool ReadFace(std::ifstream& fin);
+	bool ReadFace(std::ifstream& fin, int& vertex_count, const bool fourth_face = false);
 
+	bool BruteForceAssertInixesTheSame();
 
 	struct VertexID
 	{
@@ -38,9 +41,16 @@ private:
 
 	bool DoesIDExist(const VertexID& id, int& index);
 
+	CurrentVertexType GetVertexData(int index);
 
 	std::vector<unsigned long> m_Indexes;
 	std::vector<VertexID> m_VertexIDs;
 	std::vector<ZMModel*> m_Models;
+
+	std::string entire_file = "";
+
+	int m_NumberOfSquares;
+
+	int m_Vertex_count;
 };
 
