@@ -1,6 +1,6 @@
 #include "ZMasherMain.h"
-#include <ZMVector.h>
-#include <Vector2decl.h>
+#include <Math/ZMVector.h>
+#include <Math/Vector2decl.h>
 
 using namespace ZMasher;
 

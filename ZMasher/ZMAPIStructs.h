@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "dllHeader.h"
-#include <ZMVector.h>
+#include <Math/ZMVector.h>
 
 struct ZMASHER_DLL ZMWinApiCointainer
 {

@@ -37,7 +37,6 @@
     <ClInclude Include="dllHeader.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="ZMRenderer.h" />
     <ClInclude Include="ZMModelInstance.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
@@ -56,7 +55,12 @@
     <ClInclude Include="Camera.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="ZMModelFactory.h" />
+    <ClInclude Include="ZMModelFactory.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMRenderer.h">
+      <Filter>Source\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -68,7 +72,6 @@
     <ClCompile Include="ColorClassShader.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="ZMRenderer.cpp" />
     <ClCompile Include="TextureClass.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
@@ -87,7 +90,12 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="ZMModelFactory.cpp" />
+    <ClCompile Include="ZMModelFactory.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMRenderer.cpp">
+      <Filter>Source\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
@@ -96,13 +104,23 @@
     <None Include="color.vs">
       <Filter>Source\Shaders</Filter>
     </None>
-    <None Include="SharedPixelShaderData.ps" />
-    <None Include="SharedVertexShaderData.vs" />
-    <None Include="texture.ps" />
-    <None Include="texture.vs" />
     <None Include="planninglog.txt" />
+    <None Include="SharedPixelShaderData.ps">
+      <Filter>Source\Shaders</Filter>
+    </None>
+    <None Include="SharedVertexShaderData.vs">
+      <Filter>Source\Shaders</Filter>
+    </None>
+    <None Include="texture.ps">
+      <Filter>Source\Shaders</Filter>
+    </None>
+    <None Include="texture.vs">
+      <Filter>Source\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="texture.fx" />
+    <FxCompile Include="texture.fx">
+      <Filter>Source\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

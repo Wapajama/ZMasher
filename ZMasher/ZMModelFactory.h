@@ -1,5 +1,5 @@
 #pragma once
-#include "ZMSingleton.h"
+#include <Utility/ZMSingleton.h>
 #include <vector>
 #include "ZMModel.h"
 #include <string>

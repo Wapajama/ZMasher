@@ -12,41 +12,63 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{7e25d55e-5c0b-4670-a610-dddca734864f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{a33eced8-8c87-4181-8397-5a6af6c589d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{a695b96a-7ab9-4e9f-b360-8184ff3e5b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Debug">
+      <UniqueIdentifier>{f59f9e9b-b6d2-4bb6-98b9-f457007a8269}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mathdefines.h">
+    <ClInclude Include="DataStructures\GrowArray.h">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\mathdefines.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Quaternion.h">
+    <ClInclude Include="Math\Quaternion.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ZMMatrix44.h">
+    <ClInclude Include="Math\Vector2.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ZMVector.h">
+    <ClInclude Include="Math\Vector2decl.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ZMVector3.h">
+    <ClInclude Include="Math\ZMMatrix44.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ZMVector4.h">
+    <ClInclude Include="Math\ZMVector.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2.h" />
-    <ClInclude Include="Vector2decl.h" />
-    <ClInclude Include="ZMSingleton.h" />
+    <ClInclude Include="Math\ZMVector3.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\ZMVector4.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging\ZMDebugger.h" />
+    <ClInclude Include="Utility\ZMSingleton.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ZMMatrixMath.inl">
+    <None Include="Math\ZMMatrixMath.inl">
       <Filter>Source Files\Math</Filter>
     </None>
-    <None Include="ZMVectorMath.inl">
+    <None Include="Math\ZMVectorMath.inl">
       <Filter>Source Files\Math</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZMSingleton.cpp">
+    <ClCompile Include="Debugging\ZMDebugger.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\ZMSingleton.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
-#include <ZMVector.h>
-#include <ZMMatrix44.h>
-#include <Vector2decl.h>
+#include <Math/ZMVector.h>
+#include <Math/ZMMatrix44.h>
+#include <Math/Vector2decl.h>
 
 class Camera
 {

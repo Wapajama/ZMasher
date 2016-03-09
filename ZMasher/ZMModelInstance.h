@@ -1,7 +1,6 @@
 #pragma once
-//#include "ZMModel.h"
 #include <DirectXMath.h>
-#include <ZMVector.h>
+#include <Math/ZMVector.h>
 
 class ZMModel;
 

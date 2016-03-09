@@ -1,7 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <d3d11.h>
-#include <ZMVector.h>
+#include <Math/ZMVector.h>
 
 static D3D11_INPUT_ELEMENT_DESC g_PosUv[2]
 {
