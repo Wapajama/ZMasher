@@ -1,11 +1,11 @@
 #include "ZMasherMain.h"
 #include <Math/ZMVector.h>
 #include <Math/Vector2decl.h>
+#include <Windows.h>
 
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-
 
 ZMasherMain::ZMasherMain()
 {

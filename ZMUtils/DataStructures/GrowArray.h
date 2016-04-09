@@ -1,0 +1,240 @@
+#pragma once
+
+#include "../Debugging/ZMDebugger.h"
+
+
+#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32>
+#define GROW_ARRAY_DECL GrowArray<Type, SizeType, size>
+
+GROW_ARRAY_TEMPLATE
+class GrowArray
+{
+public:
+	GrowArray(SizeType init_size = size);
+	~GrowArray();
+
+	__forceinline Type& operator[](SizeType index);
+	__forceinline Type& operator[](SizeType index)const;
+
+	__forceinline const SizeType Size()const;
+	__forceinline const SizeType MaxSize()const;//current allocated size on heap
+
+	__forceinline Type& GetLast();
+	__forceinline Type& GetLast()const;
+
+	inline void Add(const Type& value);
+	inline void Add(const GrowArray<Type, SizeType, size>& value);
+	inline void Add(const Type* array, SizeType size, const bool reverse_order = false);
+
+	void RemoveAll();
+	void DeleteAll();
+
+	inline void RemoveCyclic(const SizeType index);
+	inline void DeleteCyclic(const SizeType index);
+
+	inline void RemoveOrdered(const SizeType index);
+	inline void DeleteOrdered(const SizeType index);
+
+
+	inline void Resize(const SizeType size, const bool copy_previous);
+	
+	SizeType Find(const Type& element)const;
+	SizeType found_none = -1;
+
+	inline bool InsideBounds(SizeType index)const;
+
+	__forceinline bool Empty();
+
+	//more investigaton required
+	//
+	//inline void RemoveOrderedNoreSize(const SizeType index);//use ClampElements() when ready for lagspike
+	//inline void DeleteOrderedNoreSize(const SizeType index);	
+
+	//inline void ClampElements();//will remove dead elements from "Remove/DeleteNoResize()"
+
+private:
+	Type* m_Data;
+	SizeType m_CurrentSize;
+	SizeType m_CurrentMaxSize;
+};
+
+GROW_ARRAY_TEMPLATE
+GROW_ARRAY_DECL::GrowArray(SizeType init_size):m_Data(nullptr)
+{
+	this->Resize(init_size, false);
+}
+
+GROW_ARRAY_TEMPLATE
+GROW_ARRAY_DECL::~GrowArray()
+{
+	delete[] m_Data;
+}
+
+GROW_ARRAY_TEMPLATE
+__forceinline Type& GROW_ARRAY_DECL::operator[](SizeType index)
+{
+	ASSERT(InsideBounds(index), "GrowArray: Out of bounds!");
+	return m_Data[index];
+}
+GROW_ARRAY_TEMPLATE
+__forceinline Type& GROW_ARRAY_DECL::operator[](SizeType index)const
+{
+	ASSERT(InsideBounds(index), "GrowArray: Out of bounds!");
+	return m_Data[index];
+}
+GROW_ARRAY_TEMPLATE
+__forceinline const SizeType GROW_ARRAY_DECL::Size()const
+{
+	return m_CurrentSize;
+}
+GROW_ARRAY_TEMPLATE
+__forceinline const SizeType GROW_ARRAY_DECL::MaxSize()const
+{
+	return m_CurrentMaxSize;
+}
+GROW_ARRAY_TEMPLATE
+__forceinline Type& GROW_ARRAY_DECL::GetLast()
+{
+	return (*this)[m_CurrentSize - 1];
+}
+GROW_ARRAY_TEMPLATE
+__forceinline Type& GROW_ARRAY_DECL::GetLast()const
+{
+	return (*this)[m_CurrentSize - 1];
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::Add(const Type& value)
+{
+	++m_CurrentSize;
+	if (m_CurrentSize > m_CurrentMaxSize)
+	{
+		this->Resize(m_CurrentMaxSize * 2, true);
+	}
+	GetLast() = value;
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::Add(const GROW_ARRAY_DECL& list)
+{
+	for (SizeType i = 0; i < list.Size(); ++i)
+	{
+		Add(list[i]);
+	}
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::Add(const Type* array, SizeType size, const bool reverse_order)
+{
+	for (SizeType i = 0; i < size; ++i)
+	{
+		Add(array[i]);
+	}
+}
+GROW_ARRAY_TEMPLATE
+void GROW_ARRAY_DECL::RemoveAll()
+{
+	m_CurrentSize = 0;
+}
+GROW_ARRAY_TEMPLATE
+void GROW_ARRAY_DECL::DeleteAll()
+{
+	for (SizeType i = 0; i < m_CurrentSize; ++i)
+	{
+		delete m_Data[i];
+	}
+	m_CurrentSize = 0;
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::RemoveCyclic(const SizeType index)
+{
+	m_Data[index] = GetLast();
+	--m_CurrentSize;
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::DeleteCyclic(const SizeType index)
+{
+	delete m_Data[index];
+	RemoveCyclic(index);
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::RemoveOrdered(const SizeType index)
+{
+	--m_CurrentSize;
+	for (SizeType i = index; i < m_CurrentSize; ++i)
+	{
+		m_Data[i] = m_Data[i + 1];
+	}
+}
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::DeleteOrdered(const SizeType index)
+{
+	delete m_Data[index];
+	RemoveOrdered(index);
+}
+
+GROW_ARRAY_TEMPLATE
+inline void GROW_ARRAY_DECL::Resize(const SizeType size, const bool copy_previous)
+{
+#ifdef _DEBUG
+	if (size == m_CurrentMaxSize)
+	{
+		if (copy_previous == false)
+		{
+			DEBUG_MSG("Resizing to exactly same size, consider using \"RemoveAll()\""); 
+		}
+		else
+		{
+			DEBUG_MSG("Resizing to exactly same size, using copy_previous == true has no effect");
+		}
+	}
+	if (size < m_CurrentSize)
+	{
+		DEBUG_MSG("Resizing to lower size that data size, loss of data");
+	}
+#endif
+
+	if (size == 0)
+	{
+		return;
+	}
+	m_CurrentMaxSize = size;
+	SizeType prev_size =  m_CurrentSize;
+	m_CurrentSize = 0;
+	if (copy_previous == true)
+	{
+		Type* prev_array = m_Data;
+
+		m_Data = new Type[m_CurrentMaxSize];
+
+		Add(prev_array, prev_size);
+		delete[] prev_array;
+	}
+	else
+	{
+		delete[] m_Data;
+		m_Data = new Type[m_CurrentMaxSize];
+	}
+}
+GROW_ARRAY_TEMPLATE
+SizeType GROW_ARRAY_DECL::Find(const Type& element)const
+{
+	for (SizeType i = 0; i < m_CurrentSize; ++i)
+	{
+		if (m_Data[i] == element)
+		{
+			return i;
+		}
+	}
+	return found_none;
+}
+GROW_ARRAY_TEMPLATE
+inline bool GROW_ARRAY_DECL::InsideBounds(SizeType index)const
+{
+	return 
+		m_CurrentMaxSize != 0 &&
+		index < m_CurrentSize &&
+		index >= 0;
+}
+GROW_ARRAY_TEMPLATE
+__forceinline bool GROW_ARRAY_DECL::Empty()
+{
+	return m_CurrentSize == 0;
+}

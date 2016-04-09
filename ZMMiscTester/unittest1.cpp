@@ -90,15 +90,44 @@ namespace ZMMiscTester
 			Assert::IsTrue(test2.Size() == 31);
 			test2.DeleteAll();
 			Assert::IsTrue(test2.Size() == 0);
+		}
 
-			//auto crash = [test2]()
-			//{
-			//	test2[0] = new int(10);
-			//	return 0;
-			//};
-			//Assert::ExpectException<int>(crash);
+		TEST_METHOD(GrowArray_OrderedRemove)
+		{
+			GrowArray<int> ordered;
 
-			//GrowArray<int> ordered;
+			AddElements(ordered, 100);
+			ordered.RemoveOrdered(99);
+			ordered.RemoveOrdered(14);
+			ordered.RemoveOrdered(76);
+			ordered.RemoveOrdered(53);
+			ordered.RemoveOrdered(0);
+
+			Assert::IsTrue(ordered.Size() == 95);
+
+			for (short i = 0; i < ordered.Size() - 1; i++)
+			{
+				Assert::IsTrue(ordered[i] < ordered[i + 1]);
+			}
+
+			GrowArray<int*> ordered2;
+			for (int i = 0; i < 100; ++i)
+			{
+				ordered2.Add(new int(i));
+			}
+
+			ordered2.DeleteOrdered(99);
+			ordered2.DeleteOrdered(14);
+			ordered2.DeleteOrdered(76);
+			ordered2.DeleteOrdered(53);
+			ordered2.DeleteOrdered(0);
+
+			Assert::IsTrue(ordered2.Size() == 95);
+
+			for (short i = 0; i < ordered2.Size() - 1; i++)
+			{
+				Assert::IsTrue(*ordered2[i] < *ordered2[i + 1]);
+			}
 		}
 
 		TEST_METHOD(GrowArray_RemoveAll_ShouldFail)

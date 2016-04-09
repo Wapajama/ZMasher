@@ -1,5 +1,5 @@
 #include "ZMModel.h"
-
+#include <Debugging\ZMDebugger.h>
 
 
 ZMModel::ZMModel()
@@ -23,7 +23,7 @@ bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned l
 	success = InitBuffers(device, vertices, indices);
 	if (success == false)
 	{
-		assert(false);
+		ASSERT(false, "Failed to init model!");
 		return false;
 	}
 

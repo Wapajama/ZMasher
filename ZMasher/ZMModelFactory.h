@@ -1,8 +1,8 @@
 #pragma once
 #include <Utility/ZMSingleton.h>
-#include <vector>
 #include "ZMModel.h"
 #include <string>
+#include <DataStructures\GrowArray.h>
 
 class ZMModelInstance;
 class ZMModel;
@@ -14,9 +14,10 @@ namespace std
 class ZMModelFactory: public ZMSingleton<ZMModelFactory>
 {
 public:
-
 	ZMModel* LoadModel(ID3D11Device* device, const char* model_path);
-
+protected:
+	ZMModelFactory();
+	friend class ZMSingleton<ZMModelFactory>;
 private:
 
 	void CountModelData(const char* model_path, int& vertex_pos_count, int& texture_count, int& normal_count, int& vertex_count);
@@ -41,16 +42,11 @@ private:
 
 	bool DoesIDExist(const VertexID& id, int& index);
 
-	CurrentVertexType GetVertexData(int index);
-
-	std::vector<unsigned long> m_Indexes;
-	std::vector<VertexID> m_VertexIDs;
-	std::vector<ZMModel*> m_Models;
-
-	std::string entire_file = "";
+	GrowArray<unsigned long> m_Indexes;
+	GrowArray<VertexID> m_VertexIDs;
+	GrowArray<ZMModel*> m_Models;
 
 	int m_NumberOfSquares;
-
 	int m_Vertex_count;
 };
 

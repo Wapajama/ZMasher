@@ -7,16 +7,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine,
 				   int nCmdShow)
 {
-	GrowArray<int> test2;
-
-	test2[100] = 0;
-
-
 	const bool test = ZMasherMain::Instance()->Init();
 
 	assert(test);
-	
-
 
 	while (ZMasherMain::Instance()->Update())
 	{

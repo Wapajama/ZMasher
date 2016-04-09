@@ -67,11 +67,10 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 
 void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
-	//ZMModel model;
-	//model.Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	ZMModelFactory::Instance()->Create();
 	m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/cup.obj"));
 	
-	ZMasher::Vector3f position(0, -5, 0.f);
+	ZMasher::Vector3f position(0,1, 0.f);
 
 	for (int i = 0; i < 1; ++i)
 	{
@@ -90,33 +89,3 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	assert(test2);
 }
-
-//bool ReadFileCounts(char* filename, int& vertexCount, int& textureCount, int& normalCount, int& faceCount)
-//{
-//	
-//}
-//
-//bool LoadDataStructures(char* filename, int& vertexCount, int& textureCount, int& normalCount, int& faceCount)
-//{
-//
-//}
-
-//ZMModel* ZMRenderer::LoadModel(const char* filePath)
-//{
-//	return nullptr;
-//
-//	bool result = false;
-//	char fileName[256] = "../BasicCriypticman.obj";
-//	int vertexCount = 0;
-//	int textureCount = 0;
-//	int normalCount = 0;
-//	int faceCount = 0;
-//
-//	result = ReadFileCounts(fileName, vertexCount, textureCount, normalCount, faceCount);
-//	assert(result);
-//	result = LoadDataStructures(fileName, vertexCount, textureCount, normalCount, faceCount);
-//	assert(result);
-//
-//
-//
-//}

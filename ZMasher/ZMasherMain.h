@@ -1,6 +1,5 @@
 #pragma once
 #include "dllHeader.h"
-#include <Windows.h>
 
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
