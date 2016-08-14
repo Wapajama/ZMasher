@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Debugging/ZMDebugger.h"
-
+#include <Debugging\ZMDebugger.h>
 
 #define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32>
 #define GROW_ARRAY_DECL GrowArray<Type, SizeType, size>

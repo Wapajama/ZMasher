@@ -46,7 +46,7 @@ Debug/*
 *Release*
 
 ipch/*
-*.vcxproj
+*AutoRecover.*
 *.txt
 *.filters
 *.vcxproj.*

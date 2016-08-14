@@ -1,0 +1,5 @@
+<gameobject name = "TestGameObject">
+	<model path = "cup.obj">
+		<texture path = "cup.jpg"/>
+	</model>
+</gameobject>

@@ -12,7 +12,6 @@ public:
 	ZMModel();
 	~ZMModel();
 
-
 	void ShutDown();
 	void SetRenderVars(ID3D11DeviceContext* context);
 

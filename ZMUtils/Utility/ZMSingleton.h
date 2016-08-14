@@ -1,5 +1,7 @@
 #pragma once
 
+extern void CrashProgram(const char* msg = nullptr);
+
 template<typename SingleTonClass>
 class ZMSingleton
 {
@@ -13,7 +15,7 @@ protected:
 	ZMSingleton();
 	~ZMSingleton();
 
-	virtual void Init() {};
+	virtual bool Init() { return true; };
 
 	static SingleTonClass* m_Instance;
 };
@@ -37,6 +39,10 @@ template<typename SingleTonClass>
 void ZMSingleton<SingleTonClass>::Create()
 {
 	m_Instance = new SingleTonClass();
+	if (m_Instance->Init() == false)
+	{
+		CrashProgram("Singleton failed to create!");
+	}
 }
 
 template<typename SingleTonClass>

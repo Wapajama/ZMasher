@@ -3,10 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <assert.h>
+#include <fbxsdk.h>
 
 ZMModelFactory::ZMModelFactory() :m_Indexes(0), m_VertexIDs(0), m_Models(0)
 {
-
+	
 }
 
 ZMModel* ZMModelFactory::LoadModel(ID3D11Device* device, const char * model_path)
@@ -235,7 +236,6 @@ void ZMModelFactory::ReadModelData(const char* model_path, float* vertex_pos_arr
 	}
 }
 
-
 bool ZMModelFactory::BruteForceAssertInixesTheSame()
 {
 	unsigned long indixes[3];
@@ -256,4 +256,12 @@ bool ZMModelFactory::BruteForceAssertInixesTheSame()
 	}
 
 	return true;
+}
+
+
+ZMModel* ZMModelFactory::LoadFBXModel(ID3D11Device* device, const char* model_path)
+{
+	FbxNode* test = nullptr;
+
+	return nullptr;
 }
