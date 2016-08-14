@@ -3,13 +3,12 @@
 #include "ZMModel.h"
 #include <string>
 #include <DataStructures\GrowArray.h>
+#include <fbxsdk.h>
 
 class ZMModelInstance;
 class ZMModel;
 class ID3D11Device;
-class FbxManager;
-class FbxScene;
-
+class kuksugarklas;
 namespace std
 {
 	typedef ifstream;
