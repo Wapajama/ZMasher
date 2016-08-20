@@ -4,6 +4,15 @@
 #include <fstream>
 #include <assert.h>
 #include <fbxsdk.h>
+#include <DirectXMath.h>
+#include <vector>
+#include <ZMUtils\Math\ZMVector4.h>
+#include <ZMUtils\DataStructures\GrowArray.h>
+
+#ifdef IOS_REF
+	#undef  IOS_REF
+	#define IOS_REF (*(pManager->GetIOSettings()))
+#endif
 
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
 {
@@ -21,8 +30,8 @@ void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
 	pManager->SetIOSettings(ios);
 
 	//Load plugins from the executable directory (optional)
-	FbxString lPath = FbxGetApplicationDirectory();
-	pManager->LoadPluginsDirectory(lPath.Buffer());
+	//FbxString lPath = FbxGetApplicationDirectory();
+	//pManager->LoadPluginsDirectory(lPath.Buffer());
 
 	//Create an FBX scene. This object holds most objects imported/exported from/to files.
 	pScene = FbxScene::Create(pManager, "My Scene");
@@ -32,9 +41,204 @@ void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
 		exit(1);
 	}
 }
+
+bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
+{
+	int lFileMajor, lFileMinor, lFileRevision;
+	int lSDKMajor, lSDKMinor, lSDKRevision;
+	//int lFileFormat = -1;
+	int i, lAnimStackCount;
+	bool lStatus;
+	char lPassword[1024];
+
+	// Get the file version number generate by the FBX SDK.
+	FbxManager::GetFileFormatVersion(lSDKMajor, lSDKMinor, lSDKRevision);
+
+	// Create an importer.
+	FbxImporter* lImporter = FbxImporter::Create(pManager, "");
+
+	// Initialize the importer by providing a filename.
+	const bool lImportStatus = lImporter->Initialize(pFilename, -1, pManager->GetIOSettings());
+	lImporter->GetFileVersion(lFileMajor, lFileMinor, lFileRevision);
+
+	if (!lImportStatus)
+	{
+		//note to self: "Unexpected file type" means "general error", it could be exactely anything
+		//even that it is the incorrect path (why they simply don't say that is a mystery to me)
+		FbxString error = lImporter->GetStatus().GetErrorString();
+		FBXSDK_printf("Call to FbxImporter::Initialize() failed.\n");
+		FBXSDK_printf("Error returned: %s\n\n", error.Buffer());
+
+		if (lImporter->GetStatus().GetCode() == FbxStatus::eInvalidFileVersion)
+		{
+			FBXSDK_printf("FBX file format version for this FBX SDK is %d.%d.%d\n", lSDKMajor, lSDKMinor, lSDKRevision);
+			FBXSDK_printf("FBX file format version for file '%s' is %d.%d.%d\n\n", pFilename, lFileMajor, lFileMinor, lFileRevision);
+		}
+
+		return false;
+	}
+
+	FBXSDK_printf("FBX file format version for this FBX SDK is %d.%d.%d\n", lSDKMajor, lSDKMinor, lSDKRevision);
+
+	if (lImporter->IsFBX())
+	{
+		FBXSDK_printf("FBX file format version for file '%s' is %d.%d.%d\n\n", pFilename, lFileMajor, lFileMinor, lFileRevision);
+
+		// From this point, it is possible to access animation stack information without
+		// the expense of loading the entire file.
+
+		FBXSDK_printf("Animation Stack Information\n");
+
+		lAnimStackCount = lImporter->GetAnimStackCount();
+
+		FBXSDK_printf("    Number of Animation Stacks: %d\n", lAnimStackCount);
+		FBXSDK_printf("    Current Animation Stack: \"%s\"\n", lImporter->GetActiveAnimStackName().Buffer());
+		FBXSDK_printf("\n");
+
+		for (i = 0; i < lAnimStackCount; i++)
+		{
+			FbxTakeInfo* lTakeInfo = lImporter->GetTakeInfo(i);
+
+			FBXSDK_printf("    Animation Stack %d\n", i);
+			FBXSDK_printf("         Name: \"%s\"\n", lTakeInfo->mName.Buffer());
+			FBXSDK_printf("         Description: \"%s\"\n", lTakeInfo->mDescription.Buffer());
+
+			// Change the value of the import name if the animation stack should be imported 
+			// under a different name.
+			FBXSDK_printf("         Import Name: \"%s\"\n", lTakeInfo->mImportName.Buffer());
+
+			// Set the value of the import state to false if the animation stack should be not
+			// be imported. 
+			FBXSDK_printf("         Import State: %s\n", lTakeInfo->mSelect ? "true" : "false");
+			FBXSDK_printf("\n");
+		}
+
+		// Set the import states. By default, the import states are always set to 
+		// true. The code below shows how to change these states.
+		IOS_REF.SetBoolProp(IMP_FBX_MATERIAL, true);
+		IOS_REF.SetBoolProp(IMP_FBX_TEXTURE, true);
+		IOS_REF.SetBoolProp(IMP_FBX_LINK, true);
+		IOS_REF.SetBoolProp(IMP_FBX_SHAPE, true);
+		IOS_REF.SetBoolProp(IMP_FBX_GOBO, true);
+		IOS_REF.SetBoolProp(IMP_FBX_ANIMATION, true);
+		IOS_REF.SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
+	}
+
+	// Import the scene.
+	lStatus = lImporter->Import(pScene);
+
+	if (lStatus == false && lImporter->GetStatus().GetCode() == FbxStatus::ePasswordError)
+	{
+		FBXSDK_printf("Please enter password: ");
+
+		lPassword[0] = '\0';
+
+		FBXSDK_CRT_SECURE_NO_WARNING_BEGIN
+			scanf("%s", lPassword);
+		FBXSDK_CRT_SECURE_NO_WARNING_END
+
+			FbxString lString(lPassword);
+
+		IOS_REF.SetStringProp(IMP_FBX_PASSWORD, lString);
+		IOS_REF.SetBoolProp(IMP_FBX_PASSWORD_ENABLE, true);
+
+		lStatus = lImporter->Import(pScene);
+
+		if (lStatus == false && lImporter->GetStatus().GetCode() == FbxStatus::ePasswordError)
+		{
+			FBXSDK_printf("\nPassword is wrong, import aborted.\n");
+		}
+	}
+
+	// Destroy the importer.
+	lImporter->Destroy();
+
+	return lStatus;
+}
+
 ZMModelFactory::ZMModelFactory() :m_Indexes(0), m_VertexIDs(0), m_Models(0)
 {
+	InitializeSdkObjects(m_FbxManager, m_Scene);
+}
+
+ZMModel* ZMModelFactory::LoadFBXModel(ID3D11Device* device, const char* model_path)
+{
+	LoadScene(m_FbxManager, m_Scene, model_path);
+	return ProcessMesh(device, m_Scene->GetRootNode());
+}
+
+ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
+{
+	FbxMesh* mesh = nullptr;
+	for (short i = 0; i < inNode->GetChildCount(); ++i)
+	{
+		if (inNode->GetChild(i)->GetMesh() != nullptr)
+		{
+			mesh = inNode->GetChild(i)->GetMesh();
+			break;
+		}
+	}
+	//this fbx doesn't contain a mesh for some reason :s
+	if (mesh == nullptr)
+	{
+		return nullptr;
+	}
+
+	int tri_count = mesh->GetPolygonCount();
 	
+	std::vector<ZMasher::Vector4f> control_points;
+
+	for (short i = 0; i < mesh->GetControlPointsCount(); i++)
+	{
+		ZMasher::Vector4f cp;
+		cp.x = static_cast<float>(mesh->GetControlPointAt(i).mData[0]);
+		cp.y = static_cast<float>(mesh->GetControlPointAt(i).mData[1]);
+		cp.z = static_cast<float>(mesh->GetControlPointAt(i).mData[2]);
+		cp.w = 0.f;
+		control_points.push_back(cp);
+	}
+
+	//std::vector<CurrentVertexType> vertices;
+	//vertices.reserve(vertex_count);
+	//std::vector<unsigned long> indexes;
+	//indexes.reserve(vertex_count * 3);
+
+	int index_count = mesh->GetPolygonCount() * 3;
+	int vertex_count = mesh->GetPolygonCount() * 3;
+
+	unsigned long* indexes = new unsigned long[index_count];
+	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];
+
+	int vertex_counter = 0;
+	for (short i = 0; i < tri_count; ++i)
+	{
+		for (short j = 0; j < 3; ++j)
+		{
+			int cp_index = mesh->GetPolygonVertex(i, j);
+			ZMasher::Vector4f cp = control_points[cp_index];
+
+			CurrentVertexType temp;
+			temp.position.x = cp.x;
+			temp.position.y = cp.y;
+			temp.position.z = cp.z;
+
+			vertexes[vertex_counter] = temp;
+			indexes[vertex_counter] = vertex_counter;
+			//vertices.push_back(temp);
+			//indexes.push_back(vertex_counter);
+			++vertex_counter;
+		}
+	}
+
+	ZMModel* model = new ZMModel();
+	//model->CreateModel(device, &vertices[0], &indexes[0], vertex_count, index_count);
+	
+	//something's fucky -.-
+	if (model->CreateModel(device, vertexes, indexes, vertex_count, index_count) == false)
+	{
+		return nullptr;
+	}
+	return model;
 }
 
 ZMModel* ZMModelFactory::LoadModel(ID3D11Device* device, const char * model_path)
@@ -45,7 +249,6 @@ ZMModel* ZMModelFactory::LoadModel(ID3D11Device* device, const char * model_path
 	m_Vertex_count = 0;
 	int texture_count = 0;
 	int normal_count = 0;
-	int face_count = 0;
 	int index_count = 0;
 
 	CountModelData(model_path, vertex_pos_count, texture_count, normal_count, m_Vertex_count);
@@ -286,9 +489,3 @@ bool ZMModelFactory::BruteForceAssertInixesTheSame()
 }
 
 
-ZMModel* ZMModelFactory::LoadFBXModel(ID3D11Device* device, const char* model_path)
-{
-	FbxNode* test = nullptr;
-
-	return nullptr;
-}

@@ -22,10 +22,10 @@ protected:
 	ZMModelFactory();
 	friend class ZMSingleton<ZMModelFactory>;
 private:
-	
 
 	FbxManager* m_FbxManager;
-
+	FbxScene* m_Scene;
+	ZMModel* ProcessMesh(ID3D11Device* device, FbxNode* inNode);
 
 #pragma region OBJ
 	void CountModelData(const char* model_path, int& vertex_pos_count, int& texture_count, int& normal_count, int& vertex_count);

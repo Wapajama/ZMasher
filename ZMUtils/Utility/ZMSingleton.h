@@ -13,7 +13,7 @@ public:
 
 protected:
 	ZMSingleton();
-	~ZMSingleton();
+	virtual ~ZMSingleton();
 
 	virtual bool Init() { return true; };
 
