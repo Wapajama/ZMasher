@@ -17,7 +17,7 @@ struct PixelInputType
 
 RasterizerState BackFaceCulling
 {
-	cullmode = back;
+	cullmode = none;
 };
 
 float4 TexturePixelShader(PixelInputType input) :SV_TARGET

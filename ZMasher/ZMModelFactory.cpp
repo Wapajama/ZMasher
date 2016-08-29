@@ -163,8 +163,33 @@ ZMModelFactory::ZMModelFactory() :m_Indexes(0), m_VertexIDs(0), m_Models(0)
 
 ZMModel* ZMModelFactory::LoadFBXModel(ID3D11Device* device, const char* model_path)
 {
-	LoadScene(m_FbxManager, m_Scene, model_path);
+	const bool result = LoadScene(m_FbxManager, m_Scene, model_path);
+	ASSERT(result, "Failed to init!");
 	return ProcessMesh(device, m_Scene->GetRootNode());
+}
+
+FbxMesh* getMesh(FbxNode* inNode)
+{
+	for (short i = 0; i < inNode->GetChildCount(); i++)
+	{
+		FbxMesh* mesh = getMesh(inNode->GetChild(i));
+		if (mesh != nullptr)
+		{
+			return mesh;
+		}
+	}
+	for (short i = 0; i < inNode->GetChildCount(); i++)
+	{
+		if (inNode->GetChild(i)->GetMesh() != nullptr)
+		{
+			FbxMesh* mesh = inNode->GetChild(i)->GetMesh();
+			if (mesh != nullptr)
+			{
+				return mesh;
+			}
+		}
+	}
+	return nullptr;
 }
 
 ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
@@ -179,13 +204,14 @@ ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
 		}
 	}
 	//this fbx doesn't contain a mesh for some reason :s
+
+	mesh = getMesh(inNode);
+
 	if (mesh == nullptr)
 	{
 		return nullptr;
 	}
 
-	int tri_count = mesh->GetPolygonCount();
-	
 	std::vector<ZMasher::Vector4f> control_points;
 
 	for (short i = 0; i < mesh->GetControlPointsCount(); i++)
@@ -203,25 +229,31 @@ ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
 	//std::vector<unsigned long> indexes;
 	//indexes.reserve(vertex_count * 3);
 
+	int tri_count = mesh->GetPolygonCount();
 	int index_count = mesh->GetPolygonCount() * 3;
 	int vertex_count = mesh->GetPolygonCount() * 3;
+	//int vertex_count = control_points.size();
 
 	unsigned long* indexes = new unsigned long[index_count];
 	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];
+	//CurrentVertexType* vertexes = new CurrentVertexType[control_points.size()];
 
 	int vertex_counter = 0;
 	for (short i = 0; i < tri_count; ++i)
 	{
 		for (short j = 0; j < 3; ++j)
 		{
-			int cp_index = mesh->GetPolygonVertex(i, j);
+			int cp_index = 0;
+			cp_index = mesh->GetPolygonVertex(i, j);
+
 			ZMasher::Vector4f cp = control_points[cp_index];
 
 			CurrentVertexType temp;
 			temp.position.x = cp.x;
 			temp.position.y = cp.y;
 			temp.position.z = cp.z;
-
+			temp.tex.x = 0;
+			temp.tex.y = 0;
 			vertexes[vertex_counter] = temp;
 			indexes[vertex_counter] = vertex_counter;
 			//vertices.push_back(temp);
@@ -229,7 +261,17 @@ ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
 			++vertex_counter;
 		}
 	}
-
+	//for (short i = 0; i < control_points.size(); ++i)
+	//{
+	//	ZMasher::Vector4f cp = control_points[i];
+	//	CurrentVertexType temp;
+	//	temp.position.x = cp.x;
+	//	temp.position.y = cp.y;
+	//	temp.position.z = cp.z;
+	//	temp.tex.x = 0;
+	//	temp.tex.y = 0;
+	//	vertexes[i] = temp;
+	//}
 	ZMModel* model = new ZMModel();
 	//model->CreateModel(device, &vertices[0], &indexes[0], vertex_count, index_count);
 	

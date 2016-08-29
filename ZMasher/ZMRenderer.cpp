@@ -69,7 +69,15 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
 	ZMModelFactory::Instance()->Create();
 	//m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/cup.obj"));
-	m_Models.push_back(*ZMModelFactory::Instance()->LoadFBXModel(d3dinterface.GetDevice(), "../data/birch_bare01.fbx"));
+	ZMModel* model = ZMModelFactory::Instance()->LoadFBXModel(d3dinterface.GetDevice(), "../data/Motorola V3.FBX");
+	if (model != nullptr)
+	{
+		m_Models.push_back(*model);
+	}
+	else
+	{
+		ASSERT(false, "Model is nullptr!");
+	}
 
 	ZMasher::Vector3f position(0,1, 0.f);
 
