@@ -40,7 +40,7 @@ public:
 	__forceinline void RemoveLast();
 
 	inline void Resize(const SizeType size, const bool copy_previous);
-
+	
 	SizeType Find(const Type& element)const;
 	SizeType found_none = -1;
 
@@ -55,7 +55,7 @@ private:
 };
 
 GROW_ARRAY_TEMPLATE
-GROW_ARRAY_DECL::GrowArray(SizeType init_size) :m_Data(nullptr)
+GROW_ARRAY_DECL::GrowArray(SizeType init_size):m_Data(nullptr)
 {
 	this->Resize(init_size, false);
 }
@@ -182,7 +182,7 @@ inline void GROW_ARRAY_DECL::Resize(const SizeType size, const bool copy_previou
 	{
 		if (copy_previous == false)
 		{
-			DEBUG_MSG("Resizing to exactly same size, consider using \"RemoveAll()\"");
+			DEBUG_MSG("Resizing to exactly same size, consider using \"RemoveAll()\""); 
 		}
 		else
 		{
@@ -200,7 +200,7 @@ inline void GROW_ARRAY_DECL::Resize(const SizeType size, const bool copy_previou
 		return;
 	}
 	m_CurrentMaxSize = size;
-	SizeType prev_size = m_CurrentSize;
+	SizeType prev_size =  m_CurrentSize;
 	m_CurrentSize = 0;
 	if (copy_previous == true)
 	{
@@ -232,7 +232,7 @@ SizeType GROW_ARRAY_DECL::Find(const Type& element)const
 GROW_ARRAY_TEMPLATE
 inline bool GROW_ARRAY_DECL::InsideBounds(SizeType index)const
 {
-	return
+	return 
 		m_CurrentMaxSize != 0 &&
 		index < m_CurrentSize &&
 		index >= 0;

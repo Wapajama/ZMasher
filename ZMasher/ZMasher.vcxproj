@@ -31,6 +31,7 @@
     <ClInclude Include="ZMModel.h" />
     <ClInclude Include="ZMModelFactory.h" />
     <ClInclude Include="ZMModelInstance.h" />
+    <ClInclude Include="ZMModelNode.h" />
     <ClInclude Include="ZMRenderer.h" />
     <ClInclude Include="ZMVertexTypes.h" />
   </ItemGroup>
@@ -45,6 +46,7 @@
     <ClCompile Include="ZMModel.cpp" />
     <ClCompile Include="ZMModelFactory.cpp" />
     <ClCompile Include="ZMModelInstance.cpp" />
+    <ClCompile Include="ZMModelNode.cpp" />
     <ClCompile Include="ZMRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>

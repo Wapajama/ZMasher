@@ -2,22 +2,29 @@
 //#include "../ZMasherUtilWhiteroom/ZMMatrix44.h"
 
 #include <ZMMatrix44.h>
+#include <StackArray.h>
+#include <MemoryContainer.h>
+
 
 using namespace ZMasher;
 
 int main()
 {
-	Matrix44f tester1 = Matrix44f(	1 , 2 , 3 , 4,
-									5 , 6 , 7 , 8,
-									9 , 10, 11, 12,
-									13, 14, 15, 16);
+	StackArray<int*, 1024, int> s_array;
+	MemoryContainer<int, 1024, int> test;
 
-	Matrix44f tester2 = Matrix44f(12, 23, 34, 45,
-								  56, 67, 78, 89,
-								  13, 24, 35, 46,
-								  57, 68, 79, 14);
 
-	tester1 = tester1 * tester2;
+	for (int i = 0; i < 1024; ++i)
+	{
+		int* test2 = test.GetData();
+		(*test2) = i;
+		s_array.Add(test2);
+	}
+
+	for (int i = 0; i < 1024; i++)
+	{
+		test.Delete(s_array[i]);
+	}
 
 	return 0;
 }

@@ -39,5 +39,14 @@
     <ClInclude Include="mathdefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StackArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GrowArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

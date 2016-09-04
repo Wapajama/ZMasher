@@ -54,6 +54,8 @@
     <ClInclude Include="Utility\ZMSingleton.h">
       <Filter>Source Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="DataStructures\StackArray.h" />
+    <ClInclude Include="DataStructures\MemoryContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">

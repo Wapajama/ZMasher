@@ -62,8 +62,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GrowArray.h" />
     <ClInclude Include="mathdefines.h" />
+    <ClInclude Include="MemoryContainer.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="StackArray.h" />
     <ClInclude Include="ZMMatrix44.h" />
     <ClInclude Include="ZMVector.h" />
     <ClInclude Include="ZMVector3.h" />

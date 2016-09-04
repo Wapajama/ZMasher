@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\GrowArray.h" />
+    <ClInclude Include="DataStructures\MemoryContainer.h" />
+    <ClInclude Include="DataStructures\StackArray.h" />
     <ClInclude Include="Math\mathdefines.h" />
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Vector2.h" />

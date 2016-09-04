@@ -61,6 +61,7 @@
     <ClInclude Include="ZMRenderer.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
+    <ClInclude Include="ZMModelNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -96,6 +97,7 @@
     <ClCompile Include="ZMRenderer.cpp">
       <Filter>Source\Core</Filter>
     </ClCompile>
+    <ClCompile Include="ZMModelNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
