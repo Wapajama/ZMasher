@@ -64,6 +64,7 @@
   <ItemGroup>
     <ClInclude Include="GrowArray.h" />
     <ClInclude Include="mathdefines.h" />
+    <ClInclude Include="MemoryBucket.h" />
     <ClInclude Include="MemoryContainer.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="StackArray.h" />
@@ -85,6 +86,9 @@
     <ClInclude Include="ZMVectorMath.inl">
       <FileType>Document</FileType>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MemoryBucket.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

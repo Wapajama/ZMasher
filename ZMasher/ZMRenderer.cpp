@@ -6,6 +6,8 @@
 #include "ZMasherUtilities.h"
 #include "ZMModelFactory.h"
 
+#include "ZMModelNode.h"
+
 ZMRenderer::ZMRenderer(void)
 {
 	m_Camera = nullptr;
@@ -20,7 +22,6 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 {
 	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
-
 	m_Camera->GetWorldOrientation(cameraWorldMatrix);
 	m_Camera->GetProjectionMatrix(projectionMatrix);
 
@@ -35,11 +36,52 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 
 	*/
 
+	//Old version
+	//for (int i = 0; i < m_ModelInstances.size(); ++i)
+	//{
+	//	m_ModelInstances[i]->GetModel()->SetRenderVars(d3dinterface.GetContext());
+
+	//	ZMasher::Vector3f vPosition = m_ModelInstances[i]->GetPosition();
+	//	__m128 posArray;
+	//	posArray.m128_f32[0] = vPosition.x;
+	//	posArray.m128_f32[1] = vPosition.y;
+	//	posArray.m128_f32[2] = vPosition.z;
+	//	posArray.m128_f32[3] = 1.f;
+
+	//	DirectX::XMVECTOR position(posArray);
+
+	//	modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
+
+	//	const bool test = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
+	//													 modelWorldMatrix,
+	//													 cameraWorldMatrix,
+	//													 projectionMatrix,
+	//													 m_ModelInstances[i]->GetModel()->GetTexture());
+
+	//	assert(test);
+
+	//	d3dinterface.GetContext()->DrawIndexed(m_ModelInstances[i]->GetModel()->GetIndexCount(), 0, 0);
+
+	//}
+
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
 	{
-		m_ModelInstances[i].GetModel()->SetRenderVars(d3dinterface.GetContext());
+		RenderModelHierarchy(d3dinterface, m_ModelInstances[i]);
+	}
+}
 
-		ZMasher::Vector3f vPosition = m_ModelInstances[i].GetPosition();
+void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model)
+{
+	if (model->GetModel() != nullptr)
+	{
+		DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
+		m_Camera->UpdateProjMatrix();
+		m_Camera->GetWorldOrientation(cameraWorldMatrix);
+		m_Camera->GetProjectionMatrix(projectionMatrix);
+
+		model->GetModel()->SetRenderVars(d3dinterface.GetContext());
+
+		ZMasher::Vector3f vPosition = model->GetPosition();
 		__m128 posArray;
 		posArray.m128_f32[0] = vPosition.x;
 		posArray.m128_f32[1] = vPosition.y;
@@ -54,41 +96,28 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 														 modelWorldMatrix,
 														 cameraWorldMatrix,
 														 projectionMatrix,
-														 m_ModelInstances[i].GetModel()->GetTexture());
+														 model->GetModel()->GetTexture());
 
 		assert(test);
 
-		d3dinterface.GetContext()->DrawIndexed(m_ModelInstances[i].GetModel()->GetIndexCount(), 0, 0);
-
+		d3dinterface.GetContext()->DrawIndexed(model->GetModel()->GetIndexCount(), 0, 0);
 	}
 
-
+	for (short i = 0; i < model->ChildCount(); ++i)
+	{
+		RenderModelHierarchy(d3dinterface, model->GetChild(i));
+	}
 }
 
 void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
 	ZMModelFactory::Instance()->Create();
-	//m_Models.push_back(*ZMModelFactory::Instance()->LoadModel(d3dinterface.GetDevice(), "../Data/cup.obj"));
-	ZMModel* model = ZMModelFactory::Instance()->LoadFBXModel(d3dinterface.GetDevice(), "../data/Motorola V3.FBX");
-	if (model != nullptr)
-	{
-		m_Models.push_back(*model);
-	}
-	else
-	{
-		ASSERT(false, "Model is nullptr!");
-	}
 
-	ZMasher::Vector3f position(0,1, 0.f);
+	ZMasher::Vector3f position(0, 1, 0.f);
 
 	for (int i = 0; i < 1; ++i)
 	{
-		ZMModelInstance instance;
-		instance.SetModel(&m_Models[0]);//REAL DANGEROUS, CHANGE ASAP
-		instance.SetPosition(position);
-		position.x -= 3.f;
-
-		m_ModelInstances.push_back(instance);
+		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Motorola V3.FBX"));
 	}
 
 	m_TextureShader = new TextureShaderClass();

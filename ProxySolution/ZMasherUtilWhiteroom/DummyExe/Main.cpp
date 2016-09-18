@@ -4,27 +4,19 @@
 #include <ZMMatrix44.h>
 #include <StackArray.h>
 #include <MemoryContainer.h>
-
+#include <MemoryBucket.h>
+#include <string>
+#include <stdio.h>
+#include <cstdio>
 
 using namespace ZMasher;
-
 int main()
 {
-	StackArray<int*, 1024, int> s_array;
-	MemoryContainer<int, 1024, int> test;
+	MemoryBucket test;
 
+	char* long_ass_sentence = reinterpret_cast<char*>( test.GetData<char[1024]>());
 
-	for (int i = 0; i < 1024; ++i)
-	{
-		int* test2 = test.GetData();
-		(*test2) = i;
-		s_array.Add(test2);
-	}
-
-	for (int i = 0; i < 1024; i++)
-	{
-		test.Delete(s_array[i]);
-	}
+	sprintf_s(long_ass_sentence, 1024, "One study indicates that anywhere from 5–7% of the world population is affected by severe claustrophobia, but only a small percentage of these people receive some kind of treatment for the disorder.");
 
 	return 0;
 }

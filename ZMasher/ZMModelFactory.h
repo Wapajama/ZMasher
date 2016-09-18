@@ -4,11 +4,13 @@
 #include <string>
 #include <DataStructures\GrowArray.h>
 #include <fbxsdk.h>
+#include <DataStructures\MemoryContainer.h>
 
 class ZMModelInstance;
 class ZMModel;
 class ID3D11Device;
-class kuksugarklas;
+class ZMModelInstanceNode;
+class ZMModelNode;
 namespace std
 {
 	typedef ifstream;
@@ -18,14 +20,23 @@ class ZMModelFactory: public ZMSingleton<ZMModelFactory>
 public:
 	ZMModel* LoadModel(ID3D11Device* device, const char* model_path);
 	ZMModel* LoadFBXModel(ID3D11Device* device, const char* model_path);
+	ZMModelInstanceNode* LoadModelInstance(ID3D11Device* device, const char * model_path);
 protected:
 	ZMModelFactory();
 	friend class ZMSingleton<ZMModelFactory>;
 private:
 
+	ZMModelInstanceNode* InitModelInstanceNode(ZMModelNode* root_node, ZMModelInstanceNode* instance_node = nullptr);
+
 	FbxManager* m_FbxManager;
 	FbxScene* m_Scene;
 	ZMModel* ProcessMesh(ID3D11Device* device, FbxNode* inNode);
+	ZMModelNode* ProcessMeshHierarchy(ID3D11Device* device, FbxNode* inNode, ZMModelNode* parent = nullptr);
+
+	//data orient this?
+	GrowArray<ZMModelInstanceNode*> m_ModelInstances;
+	GrowArray<ZMModel*> m_Models;
+	GrowArray<ZMModelNode*> m_ModelNodes;
 
 #pragma region OBJ
 	void CountModelData(const char* model_path, int& vertex_pos_count, int& texture_count, int& normal_count, int& vertex_count);
@@ -52,7 +63,6 @@ private:
 
 	GrowArray<unsigned long> m_Indexes;
 	GrowArray<VertexID> m_VertexIDs;
-	GrowArray<ZMModel*> m_Models;
 
 	int m_NumberOfSquares;
 	int m_Vertex_count;

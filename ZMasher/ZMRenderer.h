@@ -1,7 +1,7 @@
 #pragma once
 #include <vector> // TODO: create an in-house data structure for managing models
 #include "ZMModel.h"
-#include "ZMModelInstance.h"
+#include "ZMModelInstanceNode.h"
 
 class Camera;
 class ZMD3DInterface;
@@ -13,7 +13,6 @@ public:
 	ZMRenderer(void);
 	~ZMRenderer(void);
 
-	
 	void Render(ZMD3DInterface& d3dinterface);
 
 	void Init(ZMD3DInterface& d3dinterface);
@@ -25,14 +24,14 @@ public:
 		since all the data orientation needs to take place here
 		(or someplace similar)
 	*/
-	ZMModel* LoadModel(const char* filePath);
 
 private:
-	
+	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model);
 	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders
 	Camera* m_Camera;
 	std::vector<ZMModel> m_Models;
-	std::vector<ZMModelInstance> m_ModelInstances;
+	std::vector<ZMModelInstanceNode*> m_ModelInstances;
+	
 };
 
 __forceinline void ZMRenderer::SetCamera(Camera* camera)

@@ -30,7 +30,7 @@
     <ClInclude Include="ZMD3DInterface.h" />
     <ClInclude Include="ZMModel.h" />
     <ClInclude Include="ZMModelFactory.h" />
-    <ClInclude Include="ZMModelInstance.h" />
+    <ClInclude Include="ZMModelInstanceNode.h" />
     <ClInclude Include="ZMModelNode.h" />
     <ClInclude Include="ZMRenderer.h" />
     <ClInclude Include="ZMVertexTypes.h" />
@@ -45,7 +45,7 @@
     <ClCompile Include="ZMD3DInterface.cpp" />
     <ClCompile Include="ZMModel.cpp" />
     <ClCompile Include="ZMModelFactory.cpp" />
-    <ClCompile Include="ZMModelInstance.cpp" />
+    <ClCompile Include="ZMModelInstanceNode.cpp" />
     <ClCompile Include="ZMModelNode.cpp" />
     <ClCompile Include="ZMRenderer.cpp" />
   </ItemGroup>

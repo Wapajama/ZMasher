@@ -37,9 +37,6 @@
     <ClInclude Include="dllHeader.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
-    <ClInclude Include="ZMModelInstance.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
     <ClInclude Include="TextureClass.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
@@ -62,6 +59,9 @@
       <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="ZMModelNode.h" />
+    <ClInclude Include="ZMModelInstanceNode.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -85,9 +85,6 @@
     <ClCompile Include="ZMModel.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
-    <ClCompile Include="ZMModelInstance.cpp">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
@@ -98,6 +95,9 @@
       <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="ZMModelNode.cpp" />
+    <ClCompile Include="ZMModelInstanceNode.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">

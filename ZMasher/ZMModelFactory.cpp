@@ -8,6 +8,8 @@
 #include <vector>
 #include <ZMUtils\Math\ZMVector4.h>
 #include <ZMUtils\DataStructures\GrowArray.h>
+#include <ZMasher\ZMModelInstanceNode.h>
+#include <ZMasher\ZMModelNode.h>
 
 #ifdef IOS_REF
 	#undef  IOS_REF
@@ -158,14 +160,46 @@ bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 
 ZMModelFactory::ZMModelFactory() :m_Indexes(0), m_VertexIDs(0), m_Models(0)
 {
+	m_ModelInstances.Resize(1024);
+
 	InitializeSdkObjects(m_FbxManager, m_Scene);
 }
 
 ZMModel* ZMModelFactory::LoadFBXModel(ID3D11Device* device, const char* model_path)
 {
 	const bool result = LoadScene(m_FbxManager, m_Scene, model_path);
-	ASSERT(result, "Failed to init!");
+	ASSERT(result, "ZMModelFactory::LoadFBXModel Failed to init!");
 	return ProcessMesh(device, m_Scene->GetRootNode());
+}
+
+ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* root_node, ZMModelInstanceNode* instance_node)
+{
+	ZMModelInstanceNode* new_node = new ZMModelInstanceNode();
+	if (instance_node != nullptr)
+	{
+		instance_node->AddModelInstanceNode(new_node);
+	}
+	new_node->SetModelNode(root_node);
+	new_node->SetModel(root_node->GetModel());
+	for (short i = 0; i < root_node->ChildCount(); ++i)
+	{
+		InitModelInstanceNode(root_node->GetChild(i), new_node);
+	}
+	return new_node;
+}
+
+ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(ID3D11Device* device, const char * model_path)
+{
+	const bool result = LoadScene(m_FbxManager, m_Scene, model_path);
+	ASSERT(result, "ZMModelFactory::LoadModelInstance Failed to init");
+	
+	ZMModelNode* model_node = new ZMModelNode(nullptr);
+	model_node = ProcessMeshHierarchy(device, m_Scene->GetRootNode(), model_node);
+	if (model_node == nullptr)
+	{
+		ASSERT(false, "DERP");
+	}
+	return InitModelInstanceNode(model_node);
 }
 
 FbxMesh* getMesh(FbxNode* inNode)
@@ -281,6 +315,83 @@ ZMModel* ZMModelFactory::ProcessMesh(ID3D11Device* device, FbxNode* inNode)
 		return nullptr;
 	}
 	return model;
+}
+
+ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode* inNode, ZMModelNode* parent)
+{
+	FbxMesh* mesh = inNode->GetMesh();
+	//no mesh to be found in this node, keep going with children instead
+	if (mesh == nullptr)
+	{
+		for (short i = 0; i < inNode->GetChildCount(); ++i)
+		{
+			ProcessMeshHierarchy(device, inNode->GetChild(i), parent);
+		}
+		return parent;
+	}
+
+	std::vector<ZMasher::Vector4f> control_points;
+
+	for (short i = 0; i < mesh->GetControlPointsCount(); i++)
+	{
+		ZMasher::Vector4f cp;
+		cp.x = static_cast<float>(mesh->GetControlPointAt(i).mData[0]);
+		cp.y = static_cast<float>(mesh->GetControlPointAt(i).mData[1]);
+		cp.z = static_cast<float>(mesh->GetControlPointAt(i).mData[2]);
+		cp.w = 0.f;
+		control_points.push_back(cp);
+	}
+
+	int tri_count = mesh->GetPolygonCount();
+	int index_count = mesh->GetPolygonCount() * 3;
+	int vertex_count = mesh->GetPolygonCount() * 3;
+
+	unsigned long* indexes = new unsigned long[index_count];
+	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];
+
+	int vertex_counter = 0;
+	for (short i = 0; i < tri_count; ++i)
+	{
+		for (short j = 0; j < 3; ++j)
+		{
+			int cp_index = 0;
+			cp_index = mesh->GetPolygonVertex(i, j);
+
+			ZMasher::Vector4f cp = control_points[cp_index];
+
+			CurrentVertexType temp;
+			temp.position.x = cp.x;
+			temp.position.y = cp.y;
+			temp.position.z = cp.z;
+			temp.tex.x = 0;
+			temp.tex.y = 0;
+			vertexes[vertex_counter] = temp;
+			indexes[vertex_counter] = vertex_counter;
+			++vertex_counter;
+		}
+	}
+	
+	ZMModel* model = new ZMModel();
+
+	if (model->CreateModel(device, vertexes, indexes, vertex_count, index_count) == false)
+	{
+		//something's fucky -.-
+		ASSERT(false, "CreateModel failed!");
+		return nullptr;
+	}
+
+	ZMModelNode* model_node = new ZMModelNode(model);
+	if (parent != nullptr)
+	{
+		parent->AddChild(model_node);
+	}
+
+	for (short i = 0; i < inNode->GetChildCount(); ++i)
+	{
+		ProcessMeshHierarchy(device, inNode->GetChild(i), model_node);
+	}
+		
+	return model_node;
 }
 
 ZMModel* ZMModelFactory::LoadModel(ID3D11Device* device, const char * model_path)
