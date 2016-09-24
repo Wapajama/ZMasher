@@ -5,14 +5,12 @@
 #include "ZMasherMain.h"
 #include "ZMasherUtilities.h"
 #include "ZMModelFactory.h"
-
 #include "ZMModelNode.h"
 
 ZMRenderer::ZMRenderer(void)
 {
 	m_Camera = nullptr;
 }
-
 
 ZMRenderer::~ZMRenderer(void)
 {
@@ -33,37 +31,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 			- Fix model loading for different cool formats, another big project!
 			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
 			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
-
 	*/
-
-	//Old version
-	//for (int i = 0; i < m_ModelInstances.size(); ++i)
-	//{
-	//	m_ModelInstances[i]->GetModel()->SetRenderVars(d3dinterface.GetContext());
-
-	//	ZMasher::Vector3f vPosition = m_ModelInstances[i]->GetPosition();
-	//	__m128 posArray;
-	//	posArray.m128_f32[0] = vPosition.x;
-	//	posArray.m128_f32[1] = vPosition.y;
-	//	posArray.m128_f32[2] = vPosition.z;
-	//	posArray.m128_f32[3] = 1.f;
-
-	//	DirectX::XMVECTOR position(posArray);
-
-	//	modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
-
-	//	const bool test = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
-	//													 modelWorldMatrix,
-	//													 cameraWorldMatrix,
-	//													 projectionMatrix,
-	//													 m_ModelInstances[i]->GetModel()->GetTexture());
-
-	//	assert(test);
-
-	//	d3dinterface.GetContext()->DrawIndexed(m_ModelInstances[i]->GetModel()->GetIndexCount(), 0, 0);
-
-	//}
-
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, m_ModelInstances[i]);
@@ -92,17 +60,16 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
 
-		const bool test = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
+		const bool succeded = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
 														 modelWorldMatrix,
 														 cameraWorldMatrix,
 														 projectionMatrix,
 														 model->GetModel()->GetTexture());
 
-		assert(test);
+		ASSERT(succeded, "shader failed to init!");
 
 		d3dinterface.GetContext()->DrawIndexed(model->GetModel()->GetIndexCount(), 0, 0);
 	}
-
 	for (short i = 0; i < model->ChildCount(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, model->GetChild(i));
@@ -122,8 +89,8 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	m_TextureShader = new TextureShaderClass();
 
-	const bool test2 = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
+	const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
 											 0);//0 = fuck messages
 
-	assert(test2);
+	ASSERT(succeded, "shader failed to init!");
 }

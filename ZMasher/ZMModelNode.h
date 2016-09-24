@@ -10,35 +10,47 @@ public:
 	ZMModelNode(ZMModel* model);
 	~ZMModelNode();
 
-	__forceinline ZMModel* GetModel();
-	__forceinline ZMModelNode* GetChild(const int index);
+	inline ZMModel* GetModel();
+	inline ZMModelNode* GetChild(const int index);
 
-	__forceinline void SetModel(ZMModel* model);
-	__forceinline void AddChild(ZMModelNode* child);
-	__forceinline const int ChildCount()const;
+	inline void SetModel(ZMModel* model);
+	inline void AddChild(ZMModelNode* child);
+	inline const int ChildCount()const;
+
+	inline ZMasher::Matrix44f GetTransform()const;
+	inline void SetTransform(const ZMasher::Matrix44f& transform);
 
 private:
 	ZMModel* m_Model;
 	GrowArray<ZMModelNode*> m_Children;
+	ZMasher::Matrix44f m_Transform;//relative to parent, if it has any
 };
 
-__forceinline ZMModel*		ZMModelNode::GetModel()
+inline ZMModel*				ZMModelNode::GetModel()
 {
 	return m_Model;
 }
-__forceinline ZMModelNode*	ZMModelNode::GetChild(const int index)
+inline ZMModelNode*			ZMModelNode::GetChild(const int index)
 {
 	return m_Children[index];
 }
-__forceinline void			ZMModelNode::SetModel(ZMModel* model)
+inline void					ZMModelNode::SetModel(ZMModel* model)
 {
 	m_Model = model;
 }
-__forceinline void			ZMModelNode::AddChild(ZMModelNode* child)
+inline void					ZMModelNode::AddChild(ZMModelNode* child)
 {
 	m_Children.Add(child);
 }
-__forceinline const int		ZMModelNode::ChildCount()const
+inline const int			ZMModelNode::ChildCount()const
 {
 	return m_Children.Size();
+}
+inline ZMasher::Matrix44f	ZMModelNode::GetTransform()const
+{
+	return m_Transform;
+}
+inline void					ZMModelNode::SetTransform(const ZMasher::Matrix44f& transform)
+{
+	m_Transform = transform;
 }

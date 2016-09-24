@@ -4,7 +4,7 @@
 #include "TextureClass.h"
 #include "ZMVertexTypes.h"
 
-typedef VertexPosUV CurrentVertexType;
+typedef VertexPosNormUV CurrentVertexType;
 
 class ZMModel
 {

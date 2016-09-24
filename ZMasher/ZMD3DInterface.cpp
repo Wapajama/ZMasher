@@ -43,6 +43,7 @@ bool ZMD3DInterface::Init(ZMInitArgs args)
 	INIT(CreateDeviceAndSwapChain(args));
 	INIT(CreateRasterizerState(args));
 	INIT(CreateViewPort(args));
+	INIT(CreateDepthStencil(args));
 
 	return true;
 }
@@ -341,7 +342,7 @@ bool ZMD3DInterface::Clear()
 {
 	float clear_color[] = { 0.0f, 0.f, 0.f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTarget, clear_color);
-	//m_Context->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+	m_Context->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH, 1.f, 0);
 	return true;
 }
 

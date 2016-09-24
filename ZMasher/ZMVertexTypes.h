@@ -26,21 +26,23 @@ struct VertexPosUV
 				const float u,
 				const float v)
 				{
-					position.x = x;
-					position.y = y;
-					position.z = z;
+					m_Position.x = x;
+					m_Position.y = y;
+					m_Position.z = z;
 
-					tex.x = u;
-					tex.y = v;
+					m_Tex.x = u;
+					m_Tex.y = v;
 				}
 				
 
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT2 tex;		
+	DirectX::XMFLOAT3 m_Position;
+	DirectX::XMFLOAT2 m_Tex;
 };
 
 struct VertexPosNormUV
 {
+	VertexPosNormUV() {}
+
 	VertexPosNormUV(const float x,
 					const float y,
 					const float z,

@@ -154,7 +154,7 @@ void ZMasherMain::Render()
 	m_D3DInterface.EndScene();
 }
 
-const float global_speed = 30.f;
+const float global_speed = 900.f;
 
 void ZMasherMain::MoveForward()
 {
@@ -176,14 +176,16 @@ void ZMasherMain::MoveLeft()
 	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(global_speed * 0.016f, 0,0));
 }
 
+const float global_rotation_speed = 0.1f;
+
 void ZMasherMain::RotateRight()
 {
-	m_Camera->RotateY(0.016f);
+	m_Camera->RotateY(global_rotation_speed);
 }
 
 void ZMasherMain::RotateLeft()
 {
-	m_Camera->RotateY(-0.016f);
+	m_Camera->RotateY(-global_rotation_speed);
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

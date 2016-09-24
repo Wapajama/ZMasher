@@ -17,31 +17,48 @@ struct PixelInputType
 
 RasterizerState BackFaceCulling
 {
-	cullmode = none;
+	cullmode = back;
 };
-
+static float ticking_dir = 3.f;
 float4 TexturePixelShader(PixelInputType input) :SV_TARGET
 {
 	float4 textureColor;
 	textureColor = shaderTexture.Sample(samAnisotropic, input.tex);
-	return textureColor;
+	
+	float3 light_dir = float3(1, 0, -1);
+	//ticking_dir += 1.f;
+	float dir_light = dot(normalize(float3(input.norm.xyz)), normalize(light_dir));
+	dir_light = clamp(dir_light, 0.1, 1);
+	return textureColor*dir_light;
 }
 
 PixelInputType TextureVertexShader(VertexInputType input)
 {
 	PixelInputType output;
 
-	input.position.w = 1.f;//"WE NEED THIS" :s
+	input.position.w = 1.f;
 
 	output.position = mul(input.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
 
+
 	output.tex = input.tex;
-	output.norm = 1;
+	output.norm = input.norm;
 	return output;
 }
 
+BlendState NoBlending
+{
+	AlphaToCoverageEnable = FALSE;
+	BlendEnable[0] = FALSE;
+};
+
+DepthStencilState EnableDepth
+{
+	DepthEnable = TRUE;
+	DepthWriteMask = ALL;
+};
 
 technique11 Test
 {
@@ -51,5 +68,8 @@ technique11 Test
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, TexturePixelShader()));
 		SetRasterizerState(BackFaceCulling);
+
+		SetBlendState(NoBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
+		SetDepthStencilState(EnableDepth, 0);
 	}
 }
