@@ -2,6 +2,7 @@
 #include <vector> // TODO: create an in-house data structure for managing models
 #include "ZMModel.h"
 #include "ZMModelInstanceNode.h"
+#include <Math\ZMMatrix44.h>
 
 class Camera;
 class ZMD3DInterface;
@@ -26,7 +27,7 @@ public:
 	*/
 
 private:
-	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model);
+	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders
 	Camera* m_Camera;
 	std::vector<ZMModel> m_Models;

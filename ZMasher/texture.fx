@@ -26,9 +26,9 @@ float4 TexturePixelShader(PixelInputType input) :SV_TARGET
 	textureColor = shaderTexture.Sample(samAnisotropic, input.tex);
 	
 	float3 light_dir = float3(1, 0, -1);
-	//ticking_dir += 1.f;
+
 	float dir_light = dot(normalize(float3(input.norm.xyz)), normalize(light_dir));
-	dir_light = clamp(dir_light, 0.1, 1);
+	dir_light = clamp(dir_light, 0.5, 1);
 	return textureColor*dir_light;
 }
 
@@ -42,9 +42,8 @@ PixelInputType TextureVertexShader(VertexInputType input)
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
 
-
 	output.tex = input.tex;
-	output.norm = input.norm;
+	output.norm = mul(input.norm, worldMatrix);
 	return output;
 }
 

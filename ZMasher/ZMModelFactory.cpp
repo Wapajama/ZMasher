@@ -197,6 +197,19 @@ ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(ID3D11Device* device, con
 	return InitModelInstanceNode(model_node);
 }
 
+bool findTexture(FbxNode* inNode)
+{
+	for (short i = 0; i < inNode->GetChildCount(); i++)
+	{
+		//if (inNode->GetMater)
+		{
+
+		}
+	}
+
+	return false;
+}
+
 ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode* inNode, ZMModelNode* parent)
 {
 	FbxMesh* mesh = inNode->GetMesh();
@@ -231,6 +244,10 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 	const FbxGeometryElementNormal * lNormalElement = mesh->GetElementNormal(0);
 	ASSERT(lNormalElement, "Normalelement nullptr!");
 	int vertex_counter = 0;
+	FbxStringList list;
+	mesh->GetUVSetNames(list);
+	FbxArray<FbxVector2> uv_array;
+	mesh->GetPolygonVertexUVs(list[0], uv_array);
 	for (short i = 0; i < tri_count; ++i)
 	{
 		for (short j = 0; j < 3; ++j)
@@ -244,16 +261,21 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 			temp.m_Position.x = cp.x;
 			temp.m_Position.y = cp.y;
 			temp.m_Position.z = cp.z;
-			int norm_index = i * 3 + j;
+
 			FbxVector4 normal;
 			const bool normal_result = mesh->GetPolygonVertexNormal(i, j, normal);
 			ASSERT(normal_result, "Failed to get normal!");
 			temp.m_Normal.x = normal[0];
 			temp.m_Normal.y = normal[1];
 			temp.m_Normal.z = normal[2];
-			temp.m_Tex.x = 0;
-			temp.m_Tex.y = 0;
+			FbxVector2 uv;
 
+			bool unmapped = true;
+
+			const bool uv_result = mesh->GetPolygonVertexUV(i, j, list[0], uv, unmapped);
+			ASSERT(uv_result, "Failed to get UV!");
+			temp.m_Tex.x = uv[0];
+			temp.m_Tex.y = uv[1]*-1.f;
 			
 			vertexes[vertex_counter] = temp;
 			indexes[vertex_counter] = vertex_counter;

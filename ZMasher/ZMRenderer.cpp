@@ -34,11 +34,13 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 	*/
 	for (int i = 0; i < m_ModelInstances.size(); ++i)
 	{
-		RenderModelHierarchy(d3dinterface, m_ModelInstances[i]);
+		ZMasher::Matrix44f transform = m_ModelInstances[i]->GetTransform();
+		m_ModelInstances[i]->SetTransform(ZMasher::Matrix44f::CreateRotationMatrixY(0.016f) * transform);
+		RenderModelHierarchy(d3dinterface, m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
 }
 
-void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model)
+void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation)
 {
 	if (model->GetModel() != nullptr)
 	{
@@ -49,16 +51,13 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		model->GetModel()->SetRenderVars(d3dinterface.GetContext());
 
-		ZMasher::Vector3f vPosition = model->GetPosition();
-		__m128 posArray;
-		posArray.m128_f32[0] = vPosition.x;
-		posArray.m128_f32[1] = vPosition.y;
-		posArray.m128_f32[2] = vPosition.z;
-		posArray.m128_f32[3] = 1.f;
+		//modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
+		const ZMasher::Matrix44f current_transform =  parent_orientation * model->GetTransform();
 
-		DirectX::XMVECTOR position(posArray);
-
-		modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
+		modelWorldMatrix.r[0] = current_transform.m_Data[0];
+		modelWorldMatrix.r[1] = current_transform.m_Data[1];
+		modelWorldMatrix.r[2] = current_transform.m_Data[2];
+		modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
 		const bool succeded = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
 														 modelWorldMatrix,
@@ -72,7 +71,7 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 	}
 	for (short i = 0; i < model->ChildCount(); ++i)
 	{
-		RenderModelHierarchy(d3dinterface, model->GetChild(i));
+		RenderModelHierarchy(d3dinterface, model->GetChild(i), model->GetTransform());
 	}
 }
 
@@ -84,7 +83,7 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	for (int i = 0; i < 1; ++i)
 	{
-		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Motorola V3.FBX"));
+		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
 	}
 
 	m_TextureShader = new TextureShaderClass();

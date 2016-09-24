@@ -21,7 +21,6 @@ public:
 
 	//old stuff
 	inline void SetPosition(const ZMasher::Vector3f& position);
-	inline void Rotate(const float degrees);
 
 	inline ZMasher::Vector3f GetPosition();
 	inline ZMasher::Vector3f GetRotation();
@@ -42,8 +41,6 @@ private:
 
 	//old stuff
 	ZMModel* m_Model;
-	ZMasher::Vector3f m_Position;
-	ZMasher::Vector3f m_Rotation;
 
 };
 
@@ -65,19 +62,17 @@ inline void					ZMModelInstanceNode::SetModelNode(ZMModelNode* model_node)
 }
 inline void					ZMModelInstanceNode::SetPosition(const ZMasher::Vector3f& position)
 {
-	m_Position = position;
-}
-inline void					ZMModelInstanceNode::Rotate(const float degrees)
-{
-	assert(false);//NOT IMPLEMENTED!!
+	m_Transform.SetTranslation(ZMasher::Vector4f(position.x,
+												 position.y,
+												 position.z,
+												 m_Transform.GetTranslation().w));//dont want to mess up the matrix multiplications
 }
 inline ZMasher::Vector3f	ZMModelInstanceNode::GetPosition()
 {
-	return m_Position;
-}
-inline ZMasher::Vector3f	ZMModelInstanceNode::GetRotation()
-{
-	return m_Rotation;
+	const ZMasher::Vector4f translation = m_Transform.GetTranslation();
+	return ZMasher::Vector3f(translation.x,
+							 translation.y,
+							 translation.z);
 }
 __forceinline ZMModel*		ZMModelInstanceNode::GetModel()
 {

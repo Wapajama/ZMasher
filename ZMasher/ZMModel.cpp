@@ -27,7 +27,7 @@ bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned l
 		return false;
 	}
 
-	success = LoadTexture( device, L"../../ZMasher/Data/seafloor.dds");
+	success = LoadTexture( device, L"../../ZMasher/Data/mactex.jpg");
 
 	if (success == false)
 	{
