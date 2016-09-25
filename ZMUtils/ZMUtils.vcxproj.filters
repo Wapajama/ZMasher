@@ -56,6 +56,7 @@
     </ClInclude>
     <ClInclude Include="DataStructures\StackArray.h" />
     <ClInclude Include="DataStructures\MemoryContainer.h" />
+    <ClInclude Include="Math\Line3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">
@@ -71,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="Utility\ZMSingleton.cpp">
       <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Line3D.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

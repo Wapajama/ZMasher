@@ -18,6 +18,8 @@ public:
 
 	void Init(ZMD3DInterface& d3dinterface);
 
+	void RenderGrid(ZMD3DInterface& d3dinterface);
+
 	__forceinline void SetCamera(Camera* camera);
 
 	/*

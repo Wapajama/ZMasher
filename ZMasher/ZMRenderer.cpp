@@ -40,6 +40,30 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 	}
 }
 
+void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
+{
+	ZMModelFactory::Instance()->Create();
+
+	ZMasher::Vector3f position(0, 1, 0.f);
+
+	for (int i = 0; i < 1; ++i)
+	{
+		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
+	}
+
+	m_TextureShader = new TextureShaderClass();
+
+	const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
+											 0);//0 = fuck messages
+
+	ASSERT(succeded, "shader failed to init!");
+}
+
+void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
+{
+	
+}
+
 void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation)
 {
 	if (model->GetModel() != nullptr)
@@ -51,7 +75,7 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		model->GetModel()->SetRenderVars(d3dinterface.GetContext());
 
-		//modelWorldMatrix = DirectX::XMMatrixTranslationFromVector(position);
+
 		const ZMasher::Matrix44f current_transform =  parent_orientation * model->GetTransform();
 
 		modelWorldMatrix.r[0] = current_transform.m_Data[0];
@@ -73,23 +97,4 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 	{
 		RenderModelHierarchy(d3dinterface, model->GetChild(i), model->GetTransform());
 	}
-}
-
-void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
-{
-	ZMModelFactory::Instance()->Create();
-
-	ZMasher::Vector3f position(0, 1, 0.f);
-
-	for (int i = 0; i < 1; ++i)
-	{
-		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
-	}
-
-	m_TextureShader = new TextureShaderClass();
-
-	const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
-											 0);//0 = fuck messages
-
-	ASSERT(succeded, "shader failed to init!");
 }
