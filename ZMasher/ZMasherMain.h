@@ -5,8 +5,6 @@
 #include "ZMAPIStructs.h"
 #include "Camera.h"
 #include "ZMModel.h"
-#include "ColorClassShader.h"
-#include "TextureShaderClass.h"
 #include "ZMRenderer.h"
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
@@ -47,11 +45,7 @@ private:
 	ZMD3DInterface m_D3DInterface;
 
 	Camera* m_Camera;
-	//ZMModel* m_Model;
 	ZMRenderer m_Renderer;
-	//ColorClassShader* m_Shader;
-
-	//TextureShaderClass* m_TextureShader;
 
 	void InitWindowClass();
 	void CreateWinApiWindow();

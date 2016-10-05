@@ -17,6 +17,12 @@
     <Filter Include="Source\Shaders">
       <UniqueIdentifier>{75103fa4-0d09-4ebd-9b83-c5a7074b76ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Shaders\CPU">
+      <UniqueIdentifier>{4d7fdd57-d28c-489f-a8c3-9e98f492133c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shaders\GPU">
+      <UniqueIdentifier>{d4dac217-aca4-4c52-9ccc-2455d66b3e65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMAPIStructs.h">
@@ -31,16 +37,7 @@
     <ClInclude Include="ZMD3DInterface.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="ColorClassShader.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
     <ClInclude Include="dllHeader.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureClass.h">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureShaderClass.h">
       <Filter>Source\ContentSpecific</Filter>
     </ClInclude>
     <ClInclude Include="ZMasherUtilities.h">
@@ -58,9 +55,20 @@
     <ClInclude Include="ZMRenderer.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="ZMModelNode.h" />
     <ClInclude Include="ZMModelInstanceNode.h">
       <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureClass.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseShader.h">
+      <Filter>Source\Shaders\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="ZMModelNode.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelShader.h">
+      <Filter>Source\Shaders\CPU</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -69,15 +77,6 @@
     </ClCompile>
     <ClCompile Include="ZMD3DInterface.cpp">
       <Filter>Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="ColorClassShader.cpp">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureClass.cpp">
-      <Filter>Source\ContentSpecific</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureShaderClass.cpp">
-      <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
     <ClCompile Include="ZMasherUtilities.cpp">
       <Filter>Source\ContentSpecific</Filter>
@@ -94,35 +93,46 @@
     <ClCompile Include="ZMRenderer.cpp">
       <Filter>Source\Core</Filter>
     </ClCompile>
-    <ClCompile Include="ZMModelNode.cpp" />
     <ClCompile Include="ZMModelInstanceNode.cpp">
       <Filter>Source\ContentSpecific</Filter>
     </ClCompile>
+    <ClCompile Include="TextureClass.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseShader.cpp">
+      <Filter>Source\Shaders\CPU</Filter>
+    </ClCompile>
+    <ClCompile Include="ZMModelNode.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelShader.cpp">
+      <Filter>Source\Shaders\CPU</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="planninglog.txt" />
     <None Include="color.ps">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
     <None Include="color.vs">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
-    <None Include="planninglog.txt" />
     <None Include="SharedPixelShaderData.ps">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
     <None Include="SharedVertexShaderData.vs">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
     <None Include="texture.ps">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
     <None Include="texture.vs">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="texture.fx">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Source\Shaders\GPU</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 class Camera;
 class ZMD3DInterface;
 class TextureShaderClass;
+class BaseShader;
 
 class ZMRenderer
 {
@@ -30,7 +31,7 @@ public:
 
 private:
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
-	TextureShaderClass* m_TextureShader;//TODO: create a neat system for shaders
+	BaseShader* m_Shader;
 	Camera* m_Camera;
 	std::vector<ZMModel> m_Models;
 	std::vector<ZMModelInstanceNode*> m_ModelInstances;

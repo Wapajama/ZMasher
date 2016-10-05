@@ -222,6 +222,8 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 		}
 		return parent;
 	}
+	
+	
 
 	std::vector<ZMasher::Vector4f> control_points;
 

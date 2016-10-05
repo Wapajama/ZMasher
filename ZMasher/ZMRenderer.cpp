@@ -1,7 +1,8 @@
 #include "ZMRenderer.h"
 #include "Camera.h"
 #include "ZMD3DInterface.h"
-#include "TextureShaderClass.h"
+
+#include "ModelShader.h"
 #include "ZMasherMain.h"
 #include "ZMasherUtilities.h"
 #include "ZMModelFactory.h"
@@ -51,11 +52,15 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
 	}
 
-	m_TextureShader = new TextureShaderClass();
+	//m_TextureShader = new TextureShaderClass();
 
-	const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
-											 0);//0 = fuck messages
+	//const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
+	//										 0);//0 = fuck messages
 
+
+	m_Shader = new ModelShader();
+
+	const bool succeded = m_Shader->Create(L"texture.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	ASSERT(succeded, "shader failed to init!");
 }
 
@@ -83,13 +88,14 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 		modelWorldMatrix.r[2] = current_transform.m_Data[2];
 		modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
-		const bool succeded = m_TextureShader->SetShaderVars(d3dinterface.GetContext(),
+		const bool succeded = m_Shader->SetShaderVars(d3dinterface.GetContext(),
 														 modelWorldMatrix,
 														 cameraWorldMatrix,
-														 projectionMatrix,
-														 model->GetModel()->GetTexture());
-
+														 projectionMatrix);
 		ASSERT(succeded, "shader failed to init!");
+		reinterpret_cast<ModelShader*>(m_Shader)->SetShaderResource(model->GetModel()->GetTexture());
+		
+		m_Shader->Apply(d3dinterface.GetContext());
 
 		d3dinterface.GetContext()->DrawIndexed(model->GetModel()->GetIndexCount(), 0, 0);
 	}

@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseShader.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="ColorClassShader.h" />
     <ClInclude Include="dllHeader.h" />
+    <ClInclude Include="ModelShader.h" />
     <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="TextureShaderClass.h" />
     <ClInclude Include="ZMAPIStructs.h" />
     <ClInclude Include="ZMasherMain.h" />
     <ClInclude Include="ZMasherUtilities.h" />
@@ -36,10 +36,10 @@
     <ClInclude Include="ZMVertexTypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseShader.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ColorClassShader.cpp" />
+    <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="TextureClass.cpp" />
-    <ClCompile Include="TextureShaderClass.cpp" />
     <ClCompile Include="ZMasherMain.cpp" />
     <ClCompile Include="ZMasherUtilities.cpp" />
     <ClCompile Include="ZMD3DInterface.cpp" />
