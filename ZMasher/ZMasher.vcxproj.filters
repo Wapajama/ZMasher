@@ -23,6 +23,9 @@
     <Filter Include="Source\Shaders\GPU">
       <UniqueIdentifier>{d4dac217-aca4-4c52-9ccc-2455d66b3e65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Gameplay">
+      <UniqueIdentifier>{f03c44c7-a426-4607-acec-6a51c6c5038c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMAPIStructs.h">
@@ -70,6 +73,13 @@
     <ClInclude Include="ModelShader.h">
       <Filter>Source\Shaders\CPU</Filter>
     </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponentManager.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="DebugNameComponentManager.h" />
+    <ClInclude Include="MeshComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -108,6 +118,13 @@
     <ClCompile Include="ModelShader.cpp">
       <Filter>Source\Shaders\CPU</Filter>
     </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponentManager.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
+    <ClCompile Include="DebugNameComponentManager.cpp" />
+    <ClCompile Include="MeshComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />
