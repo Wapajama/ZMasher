@@ -57,6 +57,10 @@
     <ClInclude Include="DataStructures\StackArray.h" />
     <ClInclude Include="DataStructures\MemoryContainer.h" />
     <ClInclude Include="Math\Line3D.h" />
+    <ClInclude Include="Time\Ticker.h" />
+    <ClInclude Include="Time\Time.h" />
+    <ClInclude Include="Time\Timer.h" />
+    <ClInclude Include="Time\TimerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">
@@ -74,6 +78,18 @@
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Math\Line3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Ticker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\TimerManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

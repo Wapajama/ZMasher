@@ -2,6 +2,7 @@
 #include <Math/ZMVector.h>
 #include <Math/Vector2decl.h>
 #include <Windows.h>
+#include <Time\TimerManager.h>
 
 using namespace ZMasher;
 
@@ -27,6 +28,34 @@ ZMasherMain* ZMasherMain::Instance()
 	return m_Instance;
 }
 
+bool ZMasherMain::Init()
+{
+	InitWindowClass();
+	CreateWinApiWindow();
+	const bool test = CreateD3D();
+	assert(test);
+
+	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
+									   m_WinVals.m_Resolution.y));
+	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
+
+	m_Renderer.Init(m_D3DInterface);
+	m_Renderer.SetCamera(m_Camera);
+	bool lerpDErp = false;
+	GameObject test_derp;
+	for (short i = 0; i < 100; i++)
+	{
+		test_derp = m_GameObjectManager.CreateGameObject();
+		lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	}
+	TimerManager::GetInstance()->Update();
+	GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
+	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
+	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	return true;
+}
+
 bool ZMasherMain::Update()
 {
 	if (HandleWinMsg() == false)
@@ -46,42 +75,16 @@ bool ZMasherMain::HandleWinMsg()
 		if (m_WinVals.m_Message.message == WM_QUIT)
 			return false;
 	}
-	else
 	{
+		const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
+		m_GameObjectManager.Update(dt);
 		Render();
-		Sleep(1);
 	}
-	return true;
-}
-
-bool ZMasherMain::Init()
-{
-	InitWindowClass();
-	CreateWinApiWindow();
-	const bool test = CreateD3D();
-	assert(test);
-
-	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
-									   m_WinVals.m_Resolution.y));
-	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
-
-	m_Renderer.Init(m_D3DInterface);
-	m_Renderer.SetCamera(m_Camera);
-
-
 	return true;
 }
 
 void ZMasherMain::InitWindowClass()
 {
-	//this works on Windows 8, laptop. 
-	//m_WinVals.m_ExtWindowClass.cbSize = sizeof(WNDCLASSEX);
-	//m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW;
-	//m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
-	//m_WinVals.m_ExtWindowClass.hInstance = GetModuleHandle(NULL);
-	//m_WinVals.m_ExtWindowClass.lpszClassName = m_WinVals.m_TitleBarName;
-	//m_WinVals.m_ExtWindowClass.hCursor = (HCURSOR)(LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED));
-
 	//this works on Windows 7 and windows 8
 	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;

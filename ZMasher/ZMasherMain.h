@@ -6,6 +6,9 @@
 #include "Camera.h"
 #include "ZMModel.h"
 #include "ZMRenderer.h"
+#include "GameObjectManager.h"
+
+
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
@@ -43,6 +46,7 @@ private:
 
 	ZMWinApiCointainer m_WinVals;
 	ZMD3DInterface m_D3DInterface;
+	GameObjectManager m_GameObjectManager;
 
 	Camera* m_Camera;
 	ZMRenderer m_Renderer;

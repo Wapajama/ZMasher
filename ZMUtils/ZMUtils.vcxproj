@@ -29,6 +29,10 @@
     <ClInclude Include="Math\Vector2decl.h" />
     <ClInclude Include="Debugging\ZMDebugger.h" />
     <ClInclude Include="Math\ZMMatrix44.h" />
+    <ClInclude Include="Time\Ticker.h" />
+    <ClInclude Include="Time\Time.h" />
+    <ClInclude Include="Time\Timer.h" />
+    <ClInclude Include="Time\TimerManager.h" />
     <ClInclude Include="Utility\ZMSingleton.h" />
     <ClInclude Include="Math\ZMVector.h" />
     <ClInclude Include="Math\ZMVector3.h" />
@@ -41,6 +45,10 @@
   <ItemGroup>
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="Math\Line3D.cpp" />
+    <ClCompile Include="Time\Ticker.cpp" />
+    <ClCompile Include="Time\Time.cpp" />
+    <ClCompile Include="Time\Timer.cpp" />
+    <ClCompile Include="Time\TimerManager.cpp" />
     <ClCompile Include="Utility\ZMSingleton.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
