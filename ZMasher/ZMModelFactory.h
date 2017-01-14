@@ -19,7 +19,8 @@ namespace std
 class ZMModelFactory: public ZMSingleton<ZMModelFactory>
 {
 public:
-	ZMModelInstanceNode* LoadModelInstance(ID3D11Device* device, const char * model_path);
+	ZMModelInstanceNode* LoadModelInstance(const char * model_path);
+	inline void SetDevice(ID3D11Device* device) { m_Device = device; }
 protected:
 	ZMModelFactory();
 	friend class ZMSingleton<ZMModelFactory>;
@@ -29,13 +30,13 @@ private:
 
 	FbxManager* m_FbxManager;
 	FbxScene* m_Scene;
-	ZMModelNode* ProcessMeshHierarchy(ID3D11Device* device, FbxNode* inNode, ZMModelNode* parent = nullptr);
+	ZMModelNode* ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* parent = nullptr);
 
 	//data orient this?
 	GrowArray<ZMModelInstanceNode*> m_ModelInstances;
 	GrowArray<ZMModel*> m_Models;
 	GrowArray<ZMModelNode*> m_ModelNodes;
-	
+	ID3D11Device* m_Device;
 
 };
 

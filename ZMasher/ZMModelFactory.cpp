@@ -180,7 +180,7 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 	return new_node;
 }
 
-ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(ID3D11Device* device, const char * model_path)
+ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 {
 	const bool result = LoadScene(m_FbxManager, m_Scene, model_path);
 	ASSERT(result, "ZMModelFactory::LoadModelInstance Failed to init");
@@ -189,7 +189,7 @@ ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(ID3D11Device* device, con
 	FbxArray<FbxPose*> pose_array;
 	m_Scene->FillPoseArray(pose_array);
 
-	model_node = ProcessMeshHierarchy(device, m_Scene->GetRootNode(), model_node);
+	model_node = ProcessMeshHierarchy(m_Scene->GetRootNode(), model_node);
 	if (model_node == nullptr)
 	{
 		ASSERT(false, "DERP");
@@ -210,7 +210,7 @@ bool findTexture(FbxNode* inNode)
 	return false;
 }
 
-ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode* inNode, ZMModelNode* parent)
+ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* parent)
 {
 	FbxMesh* mesh = inNode->GetMesh();
 	//no mesh to be found in this node, keep going with children instead
@@ -218,7 +218,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 	{
 		for (short i = 0; i < inNode->GetChildCount(); ++i)
 		{
-			ProcessMeshHierarchy(device, inNode->GetChild(i), parent);
+			ProcessMeshHierarchy(inNode->GetChild(i), parent);
 		}
 		return parent;
 	}
@@ -287,7 +287,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 
 	ZMModel* model = new ZMModel();
 
-	if (model->CreateModel(device, vertexes, indexes, vertex_count, index_count) == false)
+	if (model->CreateModel(m_Device, vertexes, indexes, vertex_count, index_count) == false)
 	{
 		//something's fucky -.-
 		ASSERT(false, "CreateModel failed!");
@@ -302,7 +302,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(ID3D11Device* device, FbxNode*
 
 	for (short i = 0; i < inNode->GetChildCount(); ++i)
 	{
-		ProcessMeshHierarchy(device, inNode->GetChild(i), model_node);
+		ProcessMeshHierarchy(inNode->GetChild(i), model_node);
 	}
 	//It's seems like the relative position of the models are saved in nodes called "pose". 
 	//Task is, get the poses and apply them to children accordingly

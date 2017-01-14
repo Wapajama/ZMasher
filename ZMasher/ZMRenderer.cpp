@@ -44,12 +44,14 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
 	ZMModelFactory::Instance()->Create();
+	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
 
 	ZMasher::Vector3f position(0, 1, 0.f);
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
-		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
+		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance("../data/Truax_Studio_Mac11.FBX"));
+		m_ModelInstances[m_ModelInstances.size() - 1]->SetPosition(position + ZMasher::Vector3f(-500 + i*100, 0, 0));
 	}
 
 	m_Shader = new ModelShader();
