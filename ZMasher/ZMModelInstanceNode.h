@@ -16,17 +16,11 @@ public:
 	inline void SetTransform(const ZMasher::Matrix44f& transform);
 	inline ZMasher::Matrix44f GetTransform()const;
 
+	inline void SetPosition(const ZMasher::Vector3f& position);
+	inline ZMasher::Vector3f GetPosition();
+
 	inline ZMModelNode* GetModelNode();
 	inline void SetModelNode(ZMModelNode* model_node);
-
-	//old stuff
-	inline void SetPosition(const ZMasher::Vector3f& position);
-
-	inline ZMasher::Vector3f GetPosition();
-	inline ZMasher::Vector3f GetRotation();
-
-	__forceinline ZMModel* GetModel();
-	__forceinline void SetModel(ZMModel* model);
 
 	inline void AddModelInstanceNode(ZMModelInstanceNode* node);
 	inline ZMModelInstanceNode* GetChild(const int index);
@@ -38,9 +32,6 @@ private:
 	ZMasher::Matrix44f m_Transform;
 
 	GrowArray<ZMModelInstanceNode*> m_Children;
-
-	//old stuff
-	ZMModel* m_Model;
 
 };
 
@@ -73,14 +64,6 @@ inline ZMasher::Vector3f	ZMModelInstanceNode::GetPosition()
 	return ZMasher::Vector3f(translation.x,
 							 translation.y,
 							 translation.z);
-}
-__forceinline ZMModel*		ZMModelInstanceNode::GetModel()
-{
-	return m_Model;
-}
-__forceinline void			ZMModelInstanceNode::SetModel(ZMModel* model)
-{
-	m_Model = model;
 }
 inline void					ZMModelInstanceNode::AddModelInstanceNode(ZMModelInstanceNode* node)
 {

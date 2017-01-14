@@ -45,7 +45,7 @@ bool ZMasherMain::Init()
 	GameObject test_derp;
 	for (short i = 0; i < 100; i++)
 	{
-		test_derp = m_GameObjectManager.CreateGameObject();
+		test_derp = m_GameObjectManager.CreateGameObject(1);
 		lerpDErp = m_GameObjectManager.IsAlive(test_derp);
 	}
 	TimerManager::GetInstance()->Update();

@@ -169,7 +169,7 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 		instance_node->AddModelInstanceNode(new_node);
 	}
 	new_node->SetModelNode(model_node);
-	new_node->SetModel(model_node->GetModel());
+	//new_node->SetModel(model_node->GetModel());
 	ZMasher::Vector3f position;
 
 	new_node->SetPosition(position);

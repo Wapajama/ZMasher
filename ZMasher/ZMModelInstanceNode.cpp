@@ -3,7 +3,6 @@
 
 ZMModelInstanceNode::ZMModelInstanceNode(void)
 {
-	m_Model = nullptr;
 	m_Children.Resize(4, false);
 	m_Transform = ZMasher::Matrix44f::Identity();
 }

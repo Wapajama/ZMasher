@@ -52,12 +52,6 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance(d3dinterface.GetDevice(), "../data/Truax_Studio_Mac11.FBX"));
 	}
 
-	//m_TextureShader = new TextureShaderClass();
-
-	//const bool succeded = m_TextureShader->Init(ZMasherMain::Instance()->GetD3DInterface()->GetDevice(),
-	//										 0);//0 = fuck messages
-
-
 	m_Shader = new ModelShader();
 
 	const bool succeded = m_Shader->Create(L"texture.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
@@ -71,14 +65,14 @@ void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
 
 void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation)
 {
-	if (model->GetModel() != nullptr)
+	if (model->GetModelNode()->GetModel() != nullptr)//TODO: wtf is the model nullptr? -.-
 	{
 		DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 		m_Camera->UpdateProjMatrix();
 		m_Camera->GetWorldOrientation(cameraWorldMatrix);
 		m_Camera->GetProjectionMatrix(projectionMatrix);
 
-		model->GetModel()->SetRenderVars(d3dinterface.GetContext());
+		model->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
 
 
 		const ZMasher::Matrix44f current_transform =  parent_orientation * model->GetTransform();
@@ -93,11 +87,11 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 														 cameraWorldMatrix,
 														 projectionMatrix);
 		ASSERT(succeded, "shader failed to init!");
-		reinterpret_cast<ModelShader*>(m_Shader)->SetShaderResource(model->GetModel()->GetTexture());
+		reinterpret_cast<ModelShader*>(m_Shader)->SetShaderResource(model->GetModelNode()->GetModel()->GetTexture());
 		
 		m_Shader->Apply(d3dinterface.GetContext());
 
-		d3dinterface.GetContext()->DrawIndexed(model->GetModel()->GetIndexCount(), 0, 0);
+		d3dinterface.GetContext()->DrawIndexed(model->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
 	}
 	for (short i = 0; i < model->ChildCount(); ++i)
 	{
