@@ -33,11 +33,11 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
 			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
 	*/
-	for (int i = 0; i < m_ModelInstances.size(); ++i)
+	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
-		ZMasher::Matrix44f transform = m_ModelInstances[i]->GetTransform();
-		m_ModelInstances[i]->SetTransform(ZMasher::Matrix44f::CreateRotationMatrixY(0.016f) * transform);
-		RenderModelHierarchy(d3dinterface, m_ModelInstances[i], ZMasher::Matrix44f::Identity());
+		ZMasher::Matrix44f transform = ZMModelFactory::Instance()->m_ModelInstances[i]->GetTransform();
+		ZMModelFactory::Instance()->m_ModelInstances[i]->SetTransform(ZMasher::Matrix44f::CreateRotationMatrixY(0.016f) * transform);
+		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
 }
 
@@ -45,14 +45,6 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
-
-	ZMasher::Vector3f position(0, 1, 0.f);
-
-	for (int i = 0; i < 10; ++i)
-	{
-		m_ModelInstances.push_back(ZMModelFactory::Instance()->LoadModelInstance("../data/Truax_Studio_Mac11.FBX"));
-		m_ModelInstances[m_ModelInstances.size() - 1]->SetPosition(position + ZMasher::Vector3f(-500 + i*100, 0, 0));
-	}
 
 	m_Shader = new ModelShader();
 

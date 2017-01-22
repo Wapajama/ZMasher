@@ -24,7 +24,10 @@
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="DebugNameComponentManager.h" />
     <ClInclude Include="dllHeader.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="GameplayState.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="MeshComponentManager.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="TextureClass.h" />
@@ -46,6 +49,8 @@
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugNameComponentManager.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="GameplayState.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="MeshComponentManager.cpp" />
     <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="TextureClass.cpp" />

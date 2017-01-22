@@ -2,21 +2,7 @@
 #include "TransformComponentManager.h"
 #include "MeshComponentManager.h"
 //Dataoriented entitysystem
-
-const int GAME_OBJECT_ALIVE_BIT = (1 << 31);
-#define GM_TOGGLE_ALIVE_GO(go) go = go ^ GAME_OBJECT_ALIVE_BIT
-typedef unsigned int ID_TYPE;
-#define NUMBER_OF_GAME_OBJECTS 1024
-struct GameObject
-{
-	ID_TYPE m_ID;
-};
-
-enum eComponentType : int
-{
-	eTransformComponent = 1 << 1,
-	eMeshComponent = 1 << 2
-};
+#include <ZMasher\GameObject.h>
 
 class GameObjectManager
 {
@@ -29,11 +15,13 @@ public:
 	bool Init();
 	void Destroy();
 
-	GameObject CreateGameObject(const int components);
+	GameObject CreateGameObject();
 
 	bool IsAlive(GameObject game_object);
 	void Destroy(GameObject& game_Object);
 
+	inline MeshComponentManager* MeshCompManager() { return &m_MeshManager; }
+	inline TransformComponentManager* TransformManager() { return &m_TransformManager; }
 private:
 	ID_TYPE m_CurrentID;
 
@@ -42,9 +30,3 @@ private:
 	GameObject m_GameObjects[NUMBER_OF_GAME_OBJECTS];
 
 };
-
-/*
-	command.Add(eCommands::SetPosition, data);
-	command.Add(eCommands::
-
-*/

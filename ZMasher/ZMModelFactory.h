@@ -6,18 +6,20 @@
 #include <fbxsdk.h>
 #include <DataStructures\MemoryContainer.h>
 
-
 class ZMModelInstance;
 class ZMModel;
 class ID3D11Device;
 class ZMModelInstanceNode;
 class ZMModelNode;
+
 namespace std
 {
 	typedef ifstream;
 }
+
 class ZMModelFactory: public ZMSingleton<ZMModelFactory>
 {
+	friend class ZMRenderer;//TODO: REMOVE
 public:
 	ZMModelInstanceNode* LoadModelInstance(const char * model_path);
 	inline void SetDevice(ID3D11Device* device) { m_Device = device; }
@@ -34,9 +36,7 @@ private:
 
 	//data orient this?
 	GrowArray<ZMModelInstanceNode*> m_ModelInstances;
-	GrowArray<ZMModel*> m_Models;
 	GrowArray<ZMModelNode*> m_ModelNodes;
 	ID3D11Device* m_Device;
 
 };
-

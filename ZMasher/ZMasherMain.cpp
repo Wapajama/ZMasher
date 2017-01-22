@@ -3,7 +3,7 @@
 #include <Math/Vector2decl.h>
 #include <Windows.h>
 #include <Time\TimerManager.h>
-
+#include "GameplayState.h"
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -41,24 +41,32 @@ bool ZMasherMain::Init()
 
 	m_Renderer.Init(m_D3DInterface);
 	m_Renderer.SetCamera(m_Camera);
-	bool lerpDErp = false;
-	GameObject test_derp;
-	for (short i = 0; i < 100; i++)
-	{
-		test_derp = m_GameObjectManager.CreateGameObject(1);
-		lerpDErp = m_GameObjectManager.IsAlive(test_derp);
-	}
-	TimerManager::GetInstance()->Update();
-	GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
-	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
-	GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
-	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	m_GameState = new GameplayState();
+	m_GameState->Init(nullptr);
+	//bool lerpDErp = false;
+	//GameObject test_derp;
+	//for (short i = 0; i < 100; i++)
+	//{
+	//	test_derp = m_GameObjectManager.CreateGameObject(1);
+	//	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	//}
+	//TimerManager::GetInstance()->Update();
+	//GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
+	//lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	//GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
+	//lerpDErp = m_GameObjectManager.IsAlive(test_derp);
 	return true;
 }
 
 bool ZMasherMain::Update()
 {
 	if (HandleWinMsg() == false)
+	{
+		return false;
+	}
+	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
+	Render();
+	if (!m_GameState->Update(dt))
 	{
 		return false;
 	}
@@ -74,11 +82,6 @@ bool ZMasherMain::HandleWinMsg()
 
 		if (m_WinVals.m_Message.message == WM_QUIT)
 			return false;
-	}
-	{
-		const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
-		m_GameObjectManager.Update(dt);
-		Render();
 	}
 	return true;
 }

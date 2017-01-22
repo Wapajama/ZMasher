@@ -33,8 +33,7 @@ private:
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	BaseShader* m_Shader;
 	Camera* m_Camera;
-	std::vector<ZMModel> m_Models;
-	std::vector<ZMModelInstanceNode*> m_ModelInstances;
+	//std::vector<ZMModelInstanceNode*> m_ModelInstances;
 	
 };
 

@@ -6,6 +6,12 @@
 
 typedef VertexPosNormUV CurrentVertexType;
 
+struct ResGUID
+{
+	char m_Tag[128];
+};
+
+
 class ZMModel
 {
 public:
@@ -25,7 +31,7 @@ private:
 
 	bool InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
 	bool Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
-	void SinfulHardcoding(CurrentVertexType*& vertexes, unsigned long*& indexes);
+	//void SinfulHardcoding(CurrentVertexType*& vertexes, unsigned long*& indexes);
 	void ShutDownBuffers();
 	void SetBufferVars(ID3D11DeviceContext* context);
 

@@ -152,58 +152,55 @@ bool ZMModel::LoadTexture(ID3D11Device* device, WCHAR* path )
 	return success;
 }
 
-void ZMModel::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& indices)
-{
-	m_VertexCount = 36;
-	m_IndexCount = 36;
-
-	vertices = new CurrentVertexType[m_VertexCount];
-
-	indices = new unsigned long[m_IndexCount];
-
-	//cube
-
-	int iterate = 0;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
-	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
-
-
-
-}
+//void ZMModel::SinfulHardcoding(CurrentVertexType*& vertices, unsigned long*& indices)s
+//{
+//	m_VertexCount = 36;
+//	m_IndexCount = 36;
+//
+//	vertices = new CurrentVertexType[m_VertexCount];
+//
+//	indices = new unsigned long[m_IndexCount];
+//
+//	//cube
+//
+//	int iterate = 0;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0, 1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 , 1.0,-1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0, 1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 , 1.0,-1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0,-1.0, 0.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType(-1.0 ,-1.0, 1.0, 0.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0,-1.0, 1.0, 0.0 );indices[iterate] = iterate; ++iterate;
+//	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
+//}
 
 bool ZMModel::CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices)
 {

@@ -10,9 +10,9 @@ GameObjectManager::~GameObjectManager()
 {
 }
 
-void GameObjectManager::Update(const float dt)
+void GameObjectManager::Update(const float)
 {
-
+	m_MeshManager.Update(&m_TransformManager);
 }
 
 bool GameObjectManager::Init()
@@ -24,7 +24,7 @@ void GameObjectManager::Destroy()
 {
 }
 
-GameObject GameObjectManager::CreateGameObject(const int components)
+GameObject GameObjectManager::CreateGameObject()
 {
 	GameObject new_game_object;
 	new_game_object.m_ID = m_CurrentID;

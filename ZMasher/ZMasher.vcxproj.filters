@@ -76,10 +76,27 @@
     <ClInclude Include="GameObjectManager.h">
       <Filter>Source\Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponentManager.h" />
-    <ClInclude Include="ComponentManager.h" />
-    <ClInclude Include="DebugNameComponentManager.h" />
-    <ClInclude Include="MeshComponentManager.h" />
+    <ClInclude Include="GameState.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayState.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentManager.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugNameComponentManager.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponentManager.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponentManager.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source\Gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -121,10 +138,24 @@
     <ClCompile Include="GameObjectManager.cpp">
       <Filter>Source\Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="TransformComponentManager.cpp" />
-    <ClCompile Include="ComponentManager.cpp" />
-    <ClCompile Include="DebugNameComponentManager.cpp" />
-    <ClCompile Include="MeshComponentManager.cpp" />
+    <ClCompile Include="GameplayState.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManager.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugNameComponentManager.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponentManager.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponentManager.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />

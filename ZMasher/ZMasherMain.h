@@ -1,16 +1,14 @@
 #pragma once
 #include "dllHeader.h"
-
 #include "ZMD3DInterface.h"
 #include "ZMAPIStructs.h"
 #include "Camera.h"
 #include "ZMModel.h"
 #include "ZMRenderer.h"
-#include "GameObjectManager.h"
-
-
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
+
+class GameState;
 
 class ZMASHER_DLL ZMasherMain
 {
@@ -46,10 +44,10 @@ private:
 
 	ZMWinApiCointainer m_WinVals;
 	ZMD3DInterface m_D3DInterface;
-	GameObjectManager m_GameObjectManager;
 
 	Camera* m_Camera;
 	ZMRenderer m_Renderer;
+	GameState* m_GameState;
 
 	void InitWindowClass();
 	void CreateWinApiWindow();

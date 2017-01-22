@@ -154,7 +154,7 @@ bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 	return lStatus;
 }
 
-ZMModelFactory::ZMModelFactory() : m_Models(0)
+ZMModelFactory::ZMModelFactory()
 {
 	m_ModelInstances.Resize(1024);
 
@@ -169,7 +169,6 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 		instance_node->AddModelInstanceNode(new_node);
 	}
 	new_node->SetModelNode(model_node);
-	//new_node->SetModel(model_node->GetModel());
 	ZMasher::Vector3f position;
 
 	new_node->SetPosition(position);
@@ -194,20 +193,9 @@ ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 	{
 		ASSERT(false, "DERP");
 	}
-	return InitModelInstanceNode(model_node);
-}
-
-bool findTexture(FbxNode* inNode)
-{
-	for (short i = 0; i < inNode->GetChildCount(); i++)
-	{
-		//if (inNode->GetMater)
-		{
-
-		}
-	}
-
-	return false;
+	ZMModelInstanceNode* node = InitModelInstanceNode(model_node);
+	m_ModelInstances.Add(node);
+	return node;
 }
 
 ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* parent)
@@ -223,8 +211,6 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* 
 		return parent;
 	}
 	
-	
-
 	std::vector<ZMasher::Vector4f> control_points;
 
 	for (short i = 0; i < mesh->GetControlPointsCount(); i++)
