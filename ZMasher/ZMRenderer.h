@@ -21,7 +21,7 @@ public:
 
 	void RenderGrid(ZMD3DInterface& d3dinterface);
 
-	__forceinline void SetCamera(Camera* camera);
+	inline void SetCamera(Camera* camera);
 
 	/*
 		This should later on be the lowest step in loading a model,
@@ -33,8 +33,6 @@ private:
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	BaseShader* m_Shader;
 	Camera* m_Camera;
-	//std::vector<ZMModelInstanceNode*> m_ModelInstances;
-	
 };
 
 __forceinline void ZMRenderer::SetCamera(Camera* camera)

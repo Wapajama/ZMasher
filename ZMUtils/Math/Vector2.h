@@ -1,6 +1,7 @@
 #ifndef VECTOR2_H
 #define VECTOR2_H
 
+#include "Vector2decl.h"
 namespace ZMasher
 {
 	template<typename T>

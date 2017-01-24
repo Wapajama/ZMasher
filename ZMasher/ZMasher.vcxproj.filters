@@ -97,6 +97,7 @@
     <ClInclude Include="GameObject.h">
       <Filter>Source\Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -156,6 +157,7 @@
     <ClCompile Include="TransformComponentManager.cpp">
       <Filter>Source\Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />

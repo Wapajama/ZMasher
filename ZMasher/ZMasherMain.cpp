@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <Time\TimerManager.h>
 #include "GameplayState.h"
+#include <ZMasher\InputManager.h>
+
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -65,6 +67,35 @@ bool ZMasherMain::Update()
 		return false;
 	}
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
+
+	InputManager::Instance()->Update(dt);
+
+#define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
+	if (KEY_DOWN(DIKEYBOARD_W))
+	{
+		MoveForward();
+	}
+	if (KEY_DOWN(DIKEYBOARD_S))
+	{
+		MoveBackwards();
+	}
+	if (KEY_DOWN(DIKEYBOARD_A))
+	{
+		MoveLeft();
+	}
+	if(KEY_DOWN(DIKEYBOARD_D))
+	{
+		MoveRight();
+	}
+	if (KEY_DOWN(DIKEYBOARD_LEFT))
+	{
+		RotateLeft();
+	}
+	if (KEY_DOWN(DIKEYBOARD_RIGHT))
+	{
+		RotateRight();
+	}
+
 	Render();
 	if (!m_GameState->Update(dt))
 	{
@@ -148,6 +179,9 @@ bool ZMasherMain::CreateD3D()
 		assert(test);
 		return false;
 	}
+	
+	InputManager::Create(GetModuleHandle(NULL), m_WinVals.m_WindowHandle, m_WinVals.m_Resolution.x, m_WinVals.m_Resolution.y);
+
 	return true;
 }
 
@@ -160,7 +194,7 @@ void ZMasherMain::Render()
 	m_D3DInterface.EndScene();
 }
 
-const float global_speed = 900.f;
+const float global_speed = 50.f;
 
 void ZMasherMain::MoveForward()
 {
@@ -209,30 +243,30 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 		/*
 			TODO: replace this with legitimate gameplay code
 		*/
-		if (wparam == 'W')
-		{
-			ZMasherMain::Instance()->MoveForward();
-		}
-		if(wparam == 'S')
-		{
-			ZMasherMain::Instance()->MoveBackwards();
-		}
-		if (wparam == 'A')
-		{
-			ZMasherMain::Instance()->MoveLeft();
-		}
-		if (wparam == 'D')
-		{			
-			ZMasherMain::Instance()->MoveRight();
-		}
-		if (wparam == VK_LEFT)
-		{
-			ZMasherMain::Instance()->RotateLeft();				
-		}
-		if (wparam == VK_RIGHT)
-		{
-			ZMasherMain::Instance()->RotateRight();
-		}
+		//if (wparam == 'W')
+		//{
+		//	ZMasherMain::Instance()->MoveForward();
+		//}
+		//if(wparam == 'S')
+		//{
+		//	ZMasherMain::Instance()->MoveBackwards();
+		//}
+		//if (wparam == 'A')
+		//{
+		//	ZMasherMain::Instance()->MoveLeft();
+		//}
+		//if (wparam == 'D')
+		//{			
+		//	ZMasherMain::Instance()->MoveRight();
+		//}
+		//if (wparam == VK_LEFT)
+		//{
+		//	ZMasherMain::Instance()->RotateLeft();				
+		//}
+		//if (wparam == VK_RIGHT)
+		//{
+		//	ZMasherMain::Instance()->RotateRight();
+		//}
 
 		return 0;
 
