@@ -102,6 +102,7 @@ namespace ZMasher
 			};
 			__m128 m_Data[4];//used for SIMD operations
 			float m_Elements[4][4];//used for pros B)
+			float m_ElementsSingle[16];
 		};
 
 
@@ -117,6 +118,8 @@ namespace ZMasher
 		inline Matrix44f& operator-=(const Matrix44f& operand);
 		inline Matrix44f& operator*=(const Matrix44f& operand);
 
+		inline Matrix44f operator~()const;
+
 			//operators with vector
 
 		inline Vector4f operator*(const Vector4f& operand)const;
@@ -128,6 +131,8 @@ namespace ZMasher
 		Matrix44f operator*(const float scalar)const;
 
 		Matrix44f& operator*=(const float scalar);
+
+		inline float& operator[](const int index);
 
 		//utility
 
@@ -142,11 +147,13 @@ namespace ZMasher
 		inline float GetRotationY()const;
 		inline float GetRotationZ()const;
 
-		inline static const Matrix44f Identity();
+		inline Vector4f GetVectorForward()const;
+		inline Vector4f GetVectorUp()const;
+		inline Vector4f GetVectorLeft()const;
 
-		inline static const Matrix44f CreateRotationMatrixX(const float radians);
 		inline static const Matrix44f CreateRotationMatrixY(const float radians);
 		inline static const Matrix44f CreateRotationMatrixZ(const float radians);
+
 
 	};
 

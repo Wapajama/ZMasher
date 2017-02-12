@@ -37,10 +37,15 @@ void InputManager::Update(const float dt)
 	m_DirectInputKeyboard->Acquire();
 	m_DirectInputKeyboard->GetDeviceState(256, static_cast<LPVOID>(m_Keystate));
 
-	m_DirectInputMouse->Acquire();
-	m_DirectInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), static_cast<LPVOID>(&m_Mousestate));
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+	RECT windowPos;
+	GetWindowRect(m_WindowHandle, &windowPos);
+	cursorPos.x -= windowPos.left;
+	cursorPos.y -= windowPos.top;
 
-
+	m_MousePos.x = static_cast<int>(cursorPos.x);
+	m_MousePos.y = static_cast<int>(cursorPos.y);
 }
 
 bool InputManager::IsKeyDown(unsigned char key)
@@ -66,6 +71,15 @@ bool InputManager::IsMouseUp(unsigned char key)
 LONG InputManager::MouseScrollValue()
 {
 	return 0;
+}
+
+ZMasher::Vector2i InputManager::MousePos()
+{
+	POINT mouse_point;
+	GetCursorPos(&mouse_point);
+	m_MousePos.x = mouse_point.x;
+	m_MousePos.y = mouse_point.y;
+	return m_MousePos;
 }
 
 bool InputManager::Create(HINSTANCE instance, HWND hwnd, const int window_x, const int window_y)

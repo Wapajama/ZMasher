@@ -43,20 +43,9 @@ bool ZMasherMain::Init()
 
 	m_Renderer.Init(m_D3DInterface);
 	m_Renderer.SetCamera(m_Camera);
-	m_GameState = new GameplayState();
+	m_GameState = new GameplayState(m_Camera);
 	m_GameState->Init(nullptr);
-	//bool lerpDErp = false;
-	//GameObject test_derp;
-	//for (short i = 0; i < 100; i++)
-	//{
-	//	test_derp = m_GameObjectManager.CreateGameObject(1);
-	//	lerpDErp = m_GameObjectManager.IsAlive(test_derp);
-	//}
-	//TimerManager::GetInstance()->Update();
-	//GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
-	//lerpDErp = m_GameObjectManager.IsAlive(test_derp);
-	//GM_TOGGLE_ALIVE_GO(test_derp.m_ID);
-	//lerpDErp = m_GameObjectManager.IsAlive(test_derp);
+	TimerManager::GetInstance()->Update();
 	return true;
 }
 
@@ -66,41 +55,21 @@ bool ZMasherMain::Update()
 	{
 		return false;
 	}
+	TimerManager::GetInstance()->Update();
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
 	InputManager::Instance()->Update(dt);
 
-#define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
-	if (KEY_DOWN(DIKEYBOARD_W))
-	{
-		MoveForward();
-	}
-	if (KEY_DOWN(DIKEYBOARD_S))
-	{
-		MoveBackwards();
-	}
-	if (KEY_DOWN(DIKEYBOARD_A))
-	{
-		MoveLeft();
-	}
-	if(KEY_DOWN(DIKEYBOARD_D))
-	{
-		MoveRight();
-	}
-	if (KEY_DOWN(DIKEYBOARD_LEFT))
-	{
-		RotateLeft();
-	}
-	if (KEY_DOWN(DIKEYBOARD_RIGHT))
-	{
-		RotateRight();
-	}
-
 	Render();
+
+	RECT window_rect;
+	GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
+	reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
 	if (!m_GameState->Update(dt))
 	{
 		return false;
 	}
+	SetCursorPos((window_rect.left + window_rect.right)/ 2, (window_rect.top + window_rect.bottom) / 2);
 	return true;
 }
 
@@ -192,40 +161,6 @@ void ZMasherMain::Render()
 	m_Renderer.Render(m_D3DInterface);
 	
 	m_D3DInterface.EndScene();
-}
-
-const float global_speed = 50.f;
-
-void ZMasherMain::MoveForward()
-{
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, -global_speed * 0.016f));
-}
-
-void ZMasherMain::MoveBackwards()
-{
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(0,0, global_speed * 0.016f));
-}
-
-void ZMasherMain::MoveRight()
-{
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(-global_speed * 0.016f, 0,0));
-}
-
-void ZMasherMain::MoveLeft()
-{
-	m_Camera->SetPosition(m_Camera->GetPosition() + Vector3f(global_speed * 0.016f, 0,0));
-}
-
-const float global_rotation_speed = 0.1f;
-
-void ZMasherMain::RotateRight()
-{
-	m_Camera->RotateY(global_rotation_speed);
-}
-
-void ZMasherMain::RotateLeft()
-{
-	m_Camera->RotateY(-global_rotation_speed);
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

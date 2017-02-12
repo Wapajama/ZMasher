@@ -23,13 +23,7 @@ public:
 		TODO: remove and replace with legitimate game code
 	*/
 	
-	void MoveForward();
-	void MoveBackwards();
-	void MoveRight();
-	void MoveLeft();
 
-	void RotateRight();
-	void RotateLeft();
 
 	inline ZMD3DInterface* GetD3DInterface();
 
@@ -45,7 +39,7 @@ private:
 	ZMWinApiCointainer m_WinVals;
 	ZMD3DInterface m_D3DInterface;
 
-	Camera* m_Camera;
+	Camera* m_Camera;//TODO: redo design of this 
 	ZMRenderer m_Renderer;
 	GameState* m_GameState;
 

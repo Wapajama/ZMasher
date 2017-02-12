@@ -22,6 +22,8 @@ public:
 
 	LONG MouseScrollValue();
 
+	ZMasher::Vector2i MousePos();
+
 	static bool Create(HINSTANCE instance, HWND hwnd, const int window_x, const int window_y);
 
 private:
@@ -33,9 +35,11 @@ private:
 	DIMOUSESTATE m_Mousestate;
 	DIMOUSESTATE m_PreviousMouseState;
 
+
+
 	void ResetInputStates();
 
-	ZMasher::Vector2f m_MousePos;
+	ZMasher::Vector2i m_MousePos;
 	ZMasher::Vector2i m_WindowSize;
 
 	BYTE m_Keystate[256];

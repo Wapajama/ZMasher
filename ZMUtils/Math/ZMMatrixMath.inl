@@ -213,8 +213,7 @@ namespace ZMasher
 		
 		return result;
 	}
-
-
+	
 	ZM_ALWAYS_INLINE void Matrix44AddDir(Matrix44f& operand1, const Matrix44f& operand2)
 	{
 #ifdef ZM_MATH_USE_SIMD
@@ -411,8 +410,6 @@ namespace ZMasher
 		operand.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
 	}
 
-	//rip these guys out to a designated .inl file
-
 	inline Matrix44f Matrix44f::operator+(const Matrix44f& operand)const
 	{
 		return Matrix44f(Matrix44Add(*this, operand));
@@ -427,7 +424,6 @@ namespace ZMasher
 	{
 		return Matrix44f(Matrix44Mul(*this, operand));
 	}
-
 
 	inline Matrix44f& Matrix44f::operator+=(const Matrix44f& operand)
 	{
@@ -447,32 +443,151 @@ namespace ZMasher
 		return *this;
 	}
 
+	inline float& Matrix44f::operator[](const int index)
+	{
+		return m_ElementsSingle[index];
+	}
 
-	//inline Vector4f Matrix44f::operator*(const Vector4f& operand)const
-	//{
-	//	Vector4f result;
+	inline Matrix44f Matrix44f::operator~()const
+	{
+		//Vector3f invPos;
+		//invPos.x = (-m_Elements[0][3] * m_Elements[0][0]) + (-m_Elements[1][3] * m_Elements[1][0]) + (-m_Elements[2][3] * m_Elements[2][0]);
+		//invPos.y = (-m_Elements[0][3] * m_Elements[0][1]) + (-m_Elements[1][3] * m_Elements[1][1]) + (-m_Elements[2][3] * m_Elements[2][1]);
+		//invPos.z = (-m_Elements[0][3] * m_Elements[0][2]) + (-m_Elements[1][3] * m_Elements[1][2]) + (-m_Elements[2][3] * m_Elements[2][2]);
 
-	//	
+		//return Matrix44f(m_Elements[0][0], m_Elements[1][0], m_Elements[2][0], invPos.x,
+		//				m_Elements[0][1], m_Elements[1][1], m_Elements[2][1], invPos.y,
+		//				m_Elements[0][2], m_Elements[1][2], m_Elements[2][2], invPos.z,
+		//				-m_Elements[3][0], -m_Elements[3][1], -m_Elements[3][3], m_Elements[3][3]);
+		Matrix44f m = *this;
+		Matrix44f inv;
+		float det;
+		int i;
 
-	//	return result;
-	//}
+		inv[0] = m[5] * m[10] * m[15] -
+			m[5] * m[11] * m[14] -
+			m[9] * m[6] * m[15] +
+			m[9] * m[7] * m[14] +
+			m[13] * m[6] * m[11] -
+			m[13] * m[7] * m[10];
 
-	//inline Vector4f& Matrix44f::operator*=(const Vector4f& operand)
-	//{
+		inv[4] = -m[4] * m[10] * m[15] +
+			m[4] * m[11] * m[14] +
+			m[8] * m[6] * m[15] -
+			m[8] * m[7] * m[14] -
+			m[12] * m[6] * m[11] +
+			m[12] * m[7] * m[10];
 
-	//}
+		inv[8] = m[4] * m[9] * m[15] -
+			m[4] * m[11] * m[13] -
+			m[8] * m[5] * m[15] +
+			m[8] * m[7] * m[13] +
+			m[12] * m[5] * m[11] -
+			m[12] * m[7] * m[9];
 
+		inv[12] = -m[4] * m[9] * m[14] +
+			m[4] * m[10] * m[13] +
+			m[8] * m[5] * m[14] -
+			m[8] * m[6] * m[13] -
+			m[12] * m[5] * m[10] +
+			m[12] * m[6] * m[9];
 
-	//Matrix44f Matrix44f::operator*(const float scalar)const
-	//{
-	//	return Matrix44SMulScal(*this, scalar);
-	//}
+		inv[1] = -m[1] * m[10] * m[15] +
+			m[1] * m[11] * m[14] +
+			m[9] * m[2] * m[15] -
+			m[9] * m[3] * m[14] -
+			m[13] * m[2] * m[11] +
+			m[13] * m[3] * m[10];
 
-	//Matrix44f& Matrix44f::operator*=(const float scalar)
-	//{
-	//	Matrix44MulScalDir(*this, scalar);
-	//	return *this;
-	//}
+		inv[5] = m[0] * m[10] * m[15] -
+			m[0] * m[11] * m[14] -
+			m[8] * m[2] * m[15] +
+			m[8] * m[3] * m[14] +
+			m[12] * m[2] * m[11] -
+			m[12] * m[3] * m[10];
+
+		inv[9] = -m[0] * m[9] * m[15] +
+			m[0] * m[11] * m[13] +
+			m[8] * m[1] * m[15] -
+			m[8] * m[3] * m[13] -
+			m[12] * m[1] * m[11] +
+			m[12] * m[3] * m[9];
+
+		inv[13] = m[0] * m[9] * m[14] -
+			m[0] * m[10] * m[13] -
+			m[8] * m[1] * m[14] +
+			m[8] * m[2] * m[13] +
+			m[12] * m[1] * m[10] -
+			m[12] * m[2] * m[9];
+
+		inv[2] = m[1] * m[6] * m[15] -
+			m[1] * m[7] * m[14] -
+			m[5] * m[2] * m[15] +
+			m[5] * m[3] * m[14] +
+			m[13] * m[2] * m[7] -
+			m[13] * m[3] * m[6];
+
+		inv[6] = -m[0] * m[6] * m[15] +
+			m[0] * m[7] * m[14] +
+			m[4] * m[2] * m[15] -
+			m[4] * m[3] * m[14] -
+			m[12] * m[2] * m[7] +
+			m[12] * m[3] * m[6];
+
+		inv[10] = m[0] * m[5] * m[15] -
+			m[0] * m[7] * m[13] -
+			m[4] * m[1] * m[15] +
+			m[4] * m[3] * m[13] +
+			m[12] * m[1] * m[7] -
+			m[12] * m[3] * m[5];
+
+		inv[14] = -m[0] * m[5] * m[14] +
+			m[0] * m[6] * m[13] +
+			m[4] * m[1] * m[14] -
+			m[4] * m[2] * m[13] -
+			m[12] * m[1] * m[6] +
+			m[12] * m[2] * m[5];
+
+		inv[3] = -m[1] * m[6] * m[11] +
+			m[1] * m[7] * m[10] +
+			m[5] * m[2] * m[11] -
+			m[5] * m[3] * m[10] -
+			m[9] * m[2] * m[7] +
+			m[9] * m[3] * m[6];
+
+		inv[7] = m[0] * m[6] * m[11] -
+			m[0] * m[7] * m[10] -
+			m[4] * m[2] * m[11] +
+			m[4] * m[3] * m[10] +
+			m[8] * m[2] * m[7] -
+			m[8] * m[3] * m[6];
+
+		inv[11] = -m[0] * m[5] * m[11] +
+			m[0] * m[7] * m[9] +
+			m[4] * m[1] * m[11] -
+			m[4] * m[3] * m[9] -
+			m[8] * m[1] * m[7] +
+			m[8] * m[3] * m[5];
+
+		inv[15] = m[0] * m[5] * m[10] -
+			m[0] * m[6] * m[9] -
+			m[4] * m[1] * m[10] +
+			m[4] * m[2] * m[9] +
+			m[8] * m[1] * m[6] -
+			m[8] * m[2] * m[5];
+
+		det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+		if (det == 0)
+			return false;
+
+		det = 1.0 / det;
+
+		for (i = 0; i < 16; i++)
+			inv[i] = inv[i] * det;
+
+		return inv;
+	}
 
 
 	inline void Matrix44f::SetTranslation(const Vector4f& operand)

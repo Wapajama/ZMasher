@@ -19,11 +19,6 @@ ZMRenderer::~ZMRenderer(void)
 
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 {
-	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
-	m_Camera->UpdateProjMatrix();
-	m_Camera->GetWorldOrientation(cameraWorldMatrix);
-	m_Camera->GetProjectionMatrix(projectionMatrix);
-
 	/*
 		TODO:
 			- Fix shaders into proper files instead of fucking retarded classes -.-
@@ -35,8 +30,6 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 	*/
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
-		ZMasher::Matrix44f transform = ZMModelFactory::Instance()->m_ModelInstances[i]->GetTransform();
-		ZMModelFactory::Instance()->m_ModelInstances[i]->SetTransform(ZMasher::Matrix44f::CreateRotationMatrixY(0.016f) * transform);
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
 }
@@ -63,13 +56,15 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 	{
 		DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 		m_Camera->UpdateProjMatrix();
-		m_Camera->GetWorldOrientation(cameraWorldMatrix);
+
+		const ZMasher::Matrix44f view_matrix = ~m_Camera->GetWorldOrientation();
+		cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
+		//m_Camera->GetOrientation(cameraWorldMatrix);
 		m_Camera->GetProjectionMatrix(projectionMatrix);
 
 		model->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
 
-
-		const ZMasher::Matrix44f current_transform =  parent_orientation * model->GetTransform();
+		const ZMasher::Matrix44f current_transform =  model->GetTransform()* parent_orientation;
 
 		modelWorldMatrix.r[0] = current_transform.m_Data[0];
 		modelWorldMatrix.r[1] = current_transform.m_Data[1];

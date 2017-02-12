@@ -19,7 +19,7 @@ RasterizerState BackFaceCulling
 {
 	cullmode = back;
 };
-static float ticking_dir = 3.f;
+
 float4 TexturePixelShader(PixelInputType input) :SV_TARGET
 {
 	float4 textureColor;
@@ -36,9 +36,9 @@ PixelInputType TextureVertexShader(VertexInputType input)
 {
 	PixelInputType output;
 
-	input.position.w = 1.f;
+	output.position = input.position;
 
-	output.position = mul(input.position, worldMatrix);
+	output.position = mul(output.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
 
