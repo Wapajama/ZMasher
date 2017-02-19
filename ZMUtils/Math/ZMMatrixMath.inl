@@ -27,8 +27,6 @@ namespace ZMasher
 
 #endif // ZM_MATH_USE_SIMD
 
-		
-
 		return result;
 	}
 
@@ -450,15 +448,6 @@ namespace ZMasher
 
 	inline Matrix44f Matrix44f::operator~()const
 	{
-		//Vector3f invPos;
-		//invPos.x = (-m_Elements[0][3] * m_Elements[0][0]) + (-m_Elements[1][3] * m_Elements[1][0]) + (-m_Elements[2][3] * m_Elements[2][0]);
-		//invPos.y = (-m_Elements[0][3] * m_Elements[0][1]) + (-m_Elements[1][3] * m_Elements[1][1]) + (-m_Elements[2][3] * m_Elements[2][1]);
-		//invPos.z = (-m_Elements[0][3] * m_Elements[0][2]) + (-m_Elements[1][3] * m_Elements[1][2]) + (-m_Elements[2][3] * m_Elements[2][2]);
-
-		//return Matrix44f(m_Elements[0][0], m_Elements[1][0], m_Elements[2][0], invPos.x,
-		//				m_Elements[0][1], m_Elements[1][1], m_Elements[2][1], invPos.y,
-		//				m_Elements[0][2], m_Elements[1][2], m_Elements[2][2], invPos.z,
-		//				-m_Elements[3][0], -m_Elements[3][1], -m_Elements[3][3], m_Elements[3][3]);
 		Matrix44f m = *this;
 		Matrix44f inv;
 		float det;
@@ -592,18 +581,12 @@ namespace ZMasher
 
 	inline void Matrix44f::SetTranslation(const Vector4f& operand)
 	{
-		m41 = operand.x;
-		m42 = operand.y;
-		m43 = operand.z;
-		m44 = operand.w;//think twice before changing m44!
+		m_Vectors[3] = operand;
 	}
 
 	inline Vector4f Matrix44f::GetTranslation()const
 	{
-		return Vector4f(m41,
-						m42,
-						m43,
-						m44);
+		return m_Vectors[3];
 	}
 
 
@@ -620,6 +603,22 @@ namespace ZMasher
 	inline void Matrix44f::RotateZ(const float radians)
 	{
 		(*this) *= CreateRotationMatrixZ(radians);
+	}
+
+
+	inline Vector4f Matrix44f::GetVectorForward()const
+	{
+		return m_Vectors[2];
+	}
+
+	inline Vector4f Matrix44f::GetVectorUp()const
+	{
+		return m_Vectors[1];
+	}
+
+	inline Vector4f Matrix44f::GetVectorLeft()const
+	{
+		return m_Vectors[0];
 	}
 
 
@@ -672,6 +671,24 @@ namespace ZMasher
 		rotationMatrix.m22 = cosine;
 
 		return rotationMatrix;
+	}
+
+	inline const Matrix44f Matrix44f::CreateRotationMatrixAroundAxis(const Vector4f& vector, const float radians)
+	{
+		Matrix44f matrix = Identity();
+		matrix.m_Vectors[0].x = vector.x*vector.x*(1 - cos(radians)) + cos(radians);
+		matrix.m_Vectors[0].y = vector.x*vector.y*(1 - cos(radians)) - vector.z*sin(radians);
+		matrix.m_Vectors[0].z = vector.x*vector.z*(1 - cos(radians)) + vector.y*sin(radians);
+
+		matrix.m_Vectors[1].x = vector.x*vector.y*(1 - cos(radians)) + vector.z*sin(radians);
+		matrix.m_Vectors[1].y = vector.y*vector.y*(1 - cos(radians)) + cos(radians);
+		matrix.m_Vectors[1].z = vector.y*vector.z*(1 - cos(radians)) - vector.x*sin(radians);
+
+		matrix.m_Vectors[2].x = vector.x*vector.z*(1 - cos(radians)) - vector.y*sin(radians);
+		matrix.m_Vectors[2].y = vector.y*vector.z*(1 - cos(radians)) + vector.x*sin(radians);
+		matrix.m_Vectors[2].z = vector.z*vector.z*(1 - cos(radians)) + cos(radians);
+		
+		return matrix;
 	}
 
 }

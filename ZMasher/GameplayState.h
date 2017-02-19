@@ -36,7 +36,7 @@ private:
 	GrowArray<GameObject> m_GameObjects;
 	Camera* m_Camera;
 	ZMasher::Matrix44f m_TransToFollow;
-
+	float m_Dt;
 	float m_RotationX;
 	float m_RotationY;
 

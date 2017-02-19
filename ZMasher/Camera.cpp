@@ -24,6 +24,11 @@ void Camera::SetPosition(const Vector3f& pos)
 	m_Orientation.SetTranslation(Vector4f(pos, m_Orientation.GetTranslation().w));
 }
 
+void Camera::SetOrientation(const ZMasher::Matrix44f& orientation)
+{
+	m_Orientation = orientation;
+}
+
 void Camera::SetWindowSize(const ZMasher::Vector2i& size)
 {
 	m_WindowSize = size;
@@ -70,7 +75,7 @@ ZMasher::Matrix44f Camera::GetWorldOrientation()const
 void Camera::RotateX(const float radians)
 {
 	const ZMasher::Vector4f temp_pos = m_Orientation.GetTranslation();
-	m_Orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, 1));
+	m_Orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, temp_pos.w));
 	m_Orientation *= ZMasher::Matrix44f::CreateRotationMatrixX(radians);
 	m_Orientation.SetTranslation(temp_pos);
 }
@@ -78,7 +83,7 @@ void Camera::RotateX(const float radians)
 void Camera::RotateY(const float radians)
 {
 	const ZMasher::Vector4f temp_pos = m_Orientation.GetTranslation();
-	m_Orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, 1));
+	m_Orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, temp_pos.w));
 	m_Orientation *= ZMasher::Matrix44f::CreateRotationMatrixY(radians);
 	m_Orientation.SetTranslation(temp_pos);
 }

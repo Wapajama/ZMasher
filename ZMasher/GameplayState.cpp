@@ -40,6 +40,7 @@ bool GameplayState::Init(const char* args)
 
 bool GameplayState::Update(const float dt)
 {
+	m_Dt = dt;
 #define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
 	if (KEY_DOWN(DIKEYBOARD_W))
 	{
@@ -73,6 +74,9 @@ bool GameplayState::Update(const float dt)
 	{
 		RotateDown();
 	}
+	ZMasher::Vector3f translation = m_Camera->GetPosition();
+	translation.y = 0.f;
+	m_Camera->SetPosition(translation);
 
 	MouseRotation(dt);
 
@@ -81,26 +85,30 @@ bool GameplayState::Update(const float dt)
 	return true;
 }
 
-const float global_speed = -200.f;
+const float global_speed = 200.f;
 
 void GameplayState::MoveForward()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + ZMasher::Vector3f(0,0, -global_speed * 0.016f));
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_Dt);
+	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveBackwards()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + ZMasher::Vector3f(0,0, global_speed * 0.016f));
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_Dt);
+	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveRight()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + ZMasher::Vector3f(-global_speed * 0.016f, 0,0));
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_Dt);
+	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveLeft()
 {
-	m_Camera->SetPosition(m_Camera->GetPosition() + ZMasher::Vector3f(global_speed * 0.016f, 0,0));
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_Dt);
+	m_Camera->SetPosition(translation);
 }
 
 const float global_rotation_speed = 0.5f;
@@ -126,13 +134,27 @@ void GameplayState::RotateDown()
 {
 	m_RotationX += global_rotation_speed;
 }
-static int derp = 0;
+
 void GameplayState::MouseRotation(const float dt)
 {
 	const ZMasher::Vector2i mouse_pos = InputManager::Instance()->MousePos();
 	const ZMasher::Vector2i diff_pos = m_PrevMousePos - mouse_pos;
-	derp++;
-	//m_PrevMousePos = mouse_pos;
-	m_Camera->RotateX(global_rotation_speed*diff_pos.y*dt);
+
+	ZMasher::Matrix44f cam_orientation = m_Camera->GetWorldOrientation();
+	const ZMasher::Vector4f vector_up = cam_orientation.GetVectorUp();
+	const ZMasher::Vector4f vector_lf = cam_orientation.GetVectorLeft();
+	const ZMasher::Vector4f cam_trans = cam_orientation.GetTranslation();
+
+	cam_orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, cam_trans.w));
+
+	//cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_up, global_rotation_speed*diff_pos.x*dt);
+	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y*dt);
+
+	cam_orientation.SetTranslation(cam_trans);
+
+	m_Camera->SetOrientation(cam_orientation);
+
 	m_Camera->RotateY(global_rotation_speed*diff_pos.x*dt);
+	//m_Camera->RotateX(global_rotation_speed*diff_pos.y*dt);
+
 }

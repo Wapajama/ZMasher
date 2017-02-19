@@ -90,6 +90,8 @@ namespace ZMasher
 			m_Data[3] = w;
 		}
 
+		inline ~Matrix44f() {}
+
 		//member variables
 		union
 		{
@@ -101,6 +103,7 @@ namespace ZMasher
 				float m41, m42, m43, m44;
 			};
 			__m128 m_Data[4];//used for SIMD operations
+			Vector4f m_Vectors[4];
 			float m_Elements[4][4];//used for pros B)
 			float m_ElementsSingle[16];
 		};
@@ -151,10 +154,13 @@ namespace ZMasher
 		inline Vector4f GetVectorUp()const;
 		inline Vector4f GetVectorLeft()const;
 
+		inline static const Matrix44f Identity();
+
+		inline static const Matrix44f CreateRotationMatrixX(const float radians);
 		inline static const Matrix44f CreateRotationMatrixY(const float radians);
 		inline static const Matrix44f CreateRotationMatrixZ(const float radians);
 
-
+		inline static const Matrix44f CreateRotationMatrixAroundAxis(const Vector4f& vector, const float radians);
 	};
 
 }
