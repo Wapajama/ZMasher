@@ -26,6 +26,18 @@
     <Filter Include="Source\Gameplay">
       <UniqueIdentifier>{f03c44c7-a426-4607-acec-6a51c6c5038c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Gameplay\ComponentManager">
+      <UniqueIdentifier>{a990f937-6700-4f19-8209-85485bc17db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Gameplay\GameObject">
+      <UniqueIdentifier>{d0e44a18-1b4c-4707-8043-cf08d9ffaa91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Gameplay\GameState">
+      <UniqueIdentifier>{0e8f45c3-f8ef-4a6d-8cee-da58d7aea7bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Gameplay\Systems">
+      <UniqueIdentifier>{edf9fa33-2a48-4a63-be46-5c97135b06ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMAPIStructs.h">
@@ -73,31 +85,46 @@
     <ClInclude Include="ModelShader.h">
       <Filter>Source\Shaders\CPU</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectManager.h">
-      <Filter>Source\Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Source\Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="GameplayState.h">
-      <Filter>Source\Gameplay</Filter>
+    <ClInclude Include="InputManager.h">
+      <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="ComponentManager.h">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
     <ClInclude Include="DebugNameComponentManager.h">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponentManager.h">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
     <ClInclude Include="TransformComponentManager.h">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>Source\Gameplay\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayState.h">
+      <Filter>Source\Gameplay\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Source\Gameplay\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletComponentManager.h">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletSystem.h">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponentManager.h">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -136,28 +163,43 @@
     <ClCompile Include="ModelShader.cpp">
       <Filter>Source\Shaders\CPU</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjectManager.cpp">
-      <Filter>Source\Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="GameplayState.cpp">
-      <Filter>Source\Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>Source\Gameplay</Filter>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="ComponentManager.cpp">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
     <ClCompile Include="DebugNameComponentManager.cpp">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
     <ClCompile Include="MeshComponentManager.cpp">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
     <ClCompile Include="TransformComponentManager.cpp">
-      <Filter>Source\Gameplay</Filter>
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>Source\Gameplay\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayState.cpp">
+      <Filter>Source\Gameplay\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source\Gameplay\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletComponentManager.cpp">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletSystem.cpp">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComponentManager.cpp">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />

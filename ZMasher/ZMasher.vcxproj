@@ -20,7 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseShader.h" />
+    <ClInclude Include="BulletComponentManager.h" />
+    <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionComponentManager.h" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="DebugNameComponentManager.h" />
     <ClInclude Include="dllHeader.h" />
@@ -31,6 +35,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MeshComponentManager.h" />
     <ClInclude Include="ModelShader.h" />
+    <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TransformComponentManager.h" />
     <ClInclude Include="ZMAPIStructs.h" />
@@ -46,7 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseShader.cpp" />
+    <ClCompile Include="BulletComponentManager.cpp" />
+    <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugNameComponentManager.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
@@ -55,6 +64,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MeshComponentManager.cpp" />
     <ClCompile Include="ModelShader.cpp" />
+    <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TransformComponentManager.cpp" />
     <ClCompile Include="ZMasherMain.cpp" />
@@ -106,6 +116,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\tinyxml2\tinyxml2.vcxproj">
+      <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ZMUtils\ZMUtils.vcxproj">
       <Project>{0f507ca4-0f6b-4edf-966e-bdce07f791a1}</Project>
     </ProjectReference>
@@ -183,9 +196,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\tinyxml2\;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -217,17 +230,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\tinyxml2\;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;dinput8.lib;Effects11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;Effects11.lib;d3dx11.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

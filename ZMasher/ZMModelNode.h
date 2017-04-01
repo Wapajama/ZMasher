@@ -1,7 +1,7 @@
 #pragma once
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMMatrix44.h>
-
+#include <string>
 
 class ZMModel;
 class ZMModelNode
@@ -19,6 +19,8 @@ public:
 
 	inline ZMasher::Matrix44f GetTransform()const;
 	inline void SetTransform(const ZMasher::Matrix44f& transform);
+
+	std::string m_UglyName;
 
 private:
 	ZMModel* m_Model;

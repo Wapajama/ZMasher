@@ -25,17 +25,18 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 
-	bool CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices);
+	//TODO: move the textures someplace else
+	bool CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices, const char* texture_path);
 
 private:
 
 	bool InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
-	bool Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices);
-	//void SinfulHardcoding(CurrentVertexType*& vertexes, unsigned long*& indexes);
+	bool Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, const char* texture_path);
+
 	void ShutDownBuffers();
 	void SetBufferVars(ID3D11DeviceContext* context);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* path);
+	bool LoadTexture(ID3D11Device* device, const char* path);
 	void ReleaseTexture();
 
 	ID3D11Buffer* m_VertexBuffer;

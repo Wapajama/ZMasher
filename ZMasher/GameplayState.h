@@ -16,8 +16,10 @@ public:
 	bool Init(const char* args)override;
 	bool Update(const float dt)override;
 	
-	ZMasher::Vector2i m_PrevMousePos;
 private:
+	//lazy implementation
+	ZMasher::Vector2i m_PrevMousePos;
+	ZMasher::Vector2i m_MousePos;
 
 
 	void MouseRotation(const float dt);
@@ -27,10 +29,7 @@ private:
 	void MoveRight();
 	void MoveLeft();
 
-	void RotateRight();
-	void RotateLeft();
-	void RotateUp();
-	void RotateDown();
+	void ShootBullet();
 
 	GameObjectManager m_GameObjectManager;
 	GrowArray<GameObject> m_GameObjects;

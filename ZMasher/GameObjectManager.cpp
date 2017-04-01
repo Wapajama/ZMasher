@@ -1,22 +1,32 @@
 #include "GameObjectManager.h"
 
 GameObjectManager::GameObjectManager()
+	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
+	, m_CollisionSystem(&m_CollisionCompManager, &m_TransformManager)
 {
 	m_CurrentID = 0;
-
 }
 
 GameObjectManager::~GameObjectManager()
 {
 }
 
-void GameObjectManager::Update(const float)
+void GameObjectManager::Update(const float dt)
 {
+	UpdateAllComponentManagers();//removes dead components
+
+	m_BulletSystem.Simulate(dt);
+	m_CollisionSystem.Simulate(dt);
+
 	m_MeshManager.Update(&m_TransformManager);
 }
 
 bool GameObjectManager::Init()
 {
+	m_ComponentManagers.Add(&m_BulletCompManager);
+	m_ComponentManagers.Add(&m_MeshManager);
+	m_ComponentManagers.Add(&m_TransformManager);
+	m_ComponentManagers.Add(&m_CollisionCompManager);
 	return true;
 }
 
@@ -36,13 +46,15 @@ GameObject GameObjectManager::CreateGameObject()
 	return new_game_object;
 }
 
-bool GameObjectManager::IsAlive(GameObject game_object)
+void GameObjectManager::UpdateAllComponentManagers()
 {
-	return game_object.m_ID & GAME_OBJECT_ALIVE_BIT;
+	for (short i = 0; i < m_ComponentManagers.Size(); i++)
+	{
+		ASSERT(m_ComponentManagers[i]->Update(), "Failed to update a componentmanager!");
+	}
 }
 
 void GameObjectManager::Destroy(GameObject& game_Object)
 {
-
+	//go through all componentmanagers and remove the gameobject
 }
-

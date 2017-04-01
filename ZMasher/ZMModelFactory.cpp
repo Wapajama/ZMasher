@@ -10,6 +10,7 @@
 #include <ZMUtils\DataStructures\GrowArray.h>
 #include <ZMasher\ZMModelInstanceNode.h>
 #include <ZMasher\ZMModelNode.h>
+#include <tinyxml2.h>
 
 #ifdef IOS_REF
 #undef  IOS_REF
@@ -171,7 +172,7 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 	new_node->SetModelNode(model_node);
 	ZMasher::Vector3f position;
 
-	new_node->SetPosition(position);
+	//new_node->SetPosition(position);
 	for (short i = 0; i < model_node->ChildCount(); ++i)
 	{
 		InitModelInstanceNode(model_node->GetChild(i), new_node);
@@ -179,26 +180,67 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 	return new_node;
 }
 
+const char* MODELFACTORY_ALBEDO_TEXTURE_KEY = "albedoTexture";
+const char* MODELFACTORY_MODEL_KEY = "model";
+const char* MODELFACTORY_FILEPATH_KEY = "filepath";
+
 ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 {
-	const bool result = LoadScene(m_FbxManager, m_Scene, model_path);
-	ASSERT(result, "ZMModelFactory::LoadModelInstance Failed to init");
+	tinyxml2::XMLDocument doc;// (model_path);
+	std::string derp = tinyxml2::XMLDocument::ErrorIDToName(doc.LoadFile(model_path));
 
-	ZMModelNode* model_node = new ZMModelNode(nullptr);
-	FbxArray<FbxPose*> pose_array;
-	m_Scene->FillPoseArray(pose_array);
+	tinyxml2::XMLElement* root = doc.RootElement();
+	std::string albedo_texture;
+	std::string model_xml_path;
+	for (tinyxml2::XMLElement* it = root->FirstChildElement(); 
+			it != nullptr; 
+			it = it->NextSiblingElement())
+	{
+		if (std::strcmp( it->Name(), MODELFACTORY_ALBEDO_TEXTURE_KEY) == 0)
+		{
+			albedo_texture = it->Attribute(MODELFACTORY_FILEPATH_KEY);
+			continue;
+		}
+		if (std::strcmp(it->Name(), MODELFACTORY_MODEL_KEY) == 0)
+		{
+			model_xml_path = it->Attribute(MODELFACTORY_FILEPATH_KEY);
+		}
+	}
 
-	model_node = ProcessMeshHierarchy(m_Scene->GetRootNode(), model_node);
+	ZMModelNode* model_node = nullptr;
+
+	for (short i = 0; i < m_ModelNodes.Size(); i++)
+	{
+		if (std::strcmp(m_ModelNodes[i]->m_UglyName.c_str(), model_path) == 0)
+		{
+			model_node = m_ModelNodes[i];
+			break;
+		}
+	}
+
 	if (model_node == nullptr)
 	{
-		ASSERT(false, "DERP");
+		const bool result = LoadScene(m_FbxManager, m_Scene, model_xml_path.c_str());
+		ASSERT(result, "ZMModelFactory::LoadModelInstance Failed to init");
+
+		model_node = new ZMModelNode(nullptr);
+		m_ModelNodes.Add(model_node);
+		model_node->m_UglyName = model_path;
+		//FbxArray<FbxPose*> pose_array;
+		//m_Scene->FillPoseArray(pose_array);
+		model_node = ProcessMeshHierarchy(m_Scene->GetRootNode(), albedo_texture.c_str(), model_node);
+		if (model_node == nullptr)
+		{
+			ASSERT(false, "Model failed to load!");
+			return nullptr;
+		}
 	}
 	ZMModelInstanceNode* node = InitModelInstanceNode(model_node);
 	m_ModelInstances.Add(node);
 	return node;
 }
 
-ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* parent)
+ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const char* texture_path, ZMModelNode* parent)
 {
 	FbxMesh* mesh = inNode->GetMesh();
 	//no mesh to be found in this node, keep going with children instead
@@ -206,21 +248,24 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* 
 	{
 		for (short i = 0; i < inNode->GetChildCount(); ++i)
 		{
-			ProcessMeshHierarchy(inNode->GetChild(i), parent);
+			ProcessMeshHierarchy(inNode->GetChild(i), texture_path, parent);
 		}
 		return parent;
 	}
 	
 	std::vector<ZMasher::Vector4f> control_points;
-
+	control_points.reserve(1024);
 	for (short i = 0; i < mesh->GetControlPointsCount(); i++)
 	{
 		ZMasher::Vector4f cp;
+		//char msg[512];
+		//sprintf_s(msg, "derp: %i", i);
+		//OutputDebugStringA(msg);
 		cp.x = static_cast<float>(mesh->GetControlPointAt(i).mData[0]);
 		cp.y = static_cast<float>(mesh->GetControlPointAt(i).mData[1]);
 		cp.z = static_cast<float>(mesh->GetControlPointAt(i).mData[2]);
 		cp.w = 0.f;
-		control_points.push_back(cp);
+		control_points.push_back(ZMasher::Vector4f(cp));
 	}
 
 	int tri_count = mesh->GetPolygonCount();
@@ -273,7 +318,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* 
 
 	ZMModel* model = new ZMModel();
 
-	if (model->CreateModel(m_Device, vertexes, indexes, vertex_count, index_count) == false)
+	if (model->CreateModel(m_Device, vertexes, indexes, vertex_count, index_count, texture_path) == false)
 	{
 		//something's fucky -.-
 		ASSERT(false, "CreateModel failed!");
@@ -288,7 +333,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* 
 
 	for (short i = 0; i < inNode->GetChildCount(); ++i)
 	{
-		ProcessMeshHierarchy(inNode->GetChild(i), model_node);
+		ProcessMeshHierarchy(inNode->GetChild(i), texture_path, model_node);
 	}
 	//It's seems like the relative position of the models are saved in nodes called "pose". 
 	//Task is, get the poses and apply them to children accordingly

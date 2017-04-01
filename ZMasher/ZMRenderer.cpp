@@ -28,6 +28,13 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
 			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
 	*/
+	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
+	{
+		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
+		{
+			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass niggaz aint gon and hidin some danglin pointers in da hood yao -.-
+		}
+	}
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());

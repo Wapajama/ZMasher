@@ -13,7 +13,6 @@ GameplayState::GameplayState(Camera* camera)
 {
 }
 
-
 GameplayState::~GameplayState()
 {
 }
@@ -22,6 +21,8 @@ bool GameplayState::Init(const char* args)
 {
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
+	m_GameObjectManager.Init();
+	bool test = false;
 	for (int i = 0; i < 10; ++i)
 	{
 		GameObject new_object = m_GameObjectManager.CreateGameObject();
@@ -32,7 +33,8 @@ bool GameplayState::Init(const char* args)
 			transform.RotateY(M_PI / 2);
 		}
 		m_GameObjectManager.TransformManager()->AddComponent(new_object, transform);
-		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/Truax_Studio_Mac11.FBX"));
+		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/sphere.model"));
+		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
 	}
 
 	return true;
@@ -58,22 +60,16 @@ bool GameplayState::Update(const float dt)
 	{
 		MoveRight();
 	}
-	if (KEY_DOWN(DIKEYBOARD_LEFT))
+	static float lazy_timer = 0.f;
+	lazy_timer -= dt;
+	if (InputManager::Instance()->IsMouseDown(DIK_LMOUSE) &&
+		lazy_timer <= 0.f)
 	{
-		RotateLeft();
+		//SPAWN BULLET FROM PLAYER
+		lazy_timer = 1.01;
+		ShootBullet();
 	}
-	if (KEY_DOWN(DIKEYBOARD_RIGHT))
-	{
-		RotateRight();
-	}
-	if (KEY_DOWN(DIKEYBOARD_UP))
-	{
-		RotateUp();
-	}
-	if (KEY_DOWN(DIKEYBOARD_DOWN))
-	{
-		RotateDown();
-	}
+
 	ZMasher::Vector3f translation = m_Camera->GetPosition();
 	translation.y = 0.f;
 	m_Camera->SetPosition(translation);
@@ -111,34 +107,22 @@ void GameplayState::MoveLeft()
 	m_Camera->SetPosition(translation);
 }
 
-const float global_rotation_speed = 0.5f;
-
-void GameplayState::RotateRight()
+void GameplayState::ShootBullet()
 {
-	m_Camera->RotateY(global_rotation_speed);
-	m_RotationY += global_rotation_speed;
+	GameObject bullet = m_GameObjectManager.CreateGameObject();
+	m_GameObjectManager.TransformManager()->AddComponent(bullet, m_Camera->GetWorldOrientation());
+	m_GameObjectManager.MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance("../data/sphere.model"));
+	m_GameObjectManager.BulletCompManager()->AddComponent(bullet, 10.f, 1337, 3);
+	m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, 10);
 }
 
-void GameplayState::RotateLeft()
-{
-	m_Camera->RotateY(-global_rotation_speed);
-	m_RotationY -= global_rotation_speed;
-}
-
-void GameplayState::RotateUp()
-{
-	m_RotationX -= global_rotation_speed;
-}
-
-void GameplayState::RotateDown()
-{
-	m_RotationX += global_rotation_speed;
-}
+const float global_rotation_speed = 0.2f;
 
 void GameplayState::MouseRotation(const float dt)
 {
-	const ZMasher::Vector2i mouse_pos = InputManager::Instance()->MousePos();
-	const ZMasher::Vector2i diff_pos = m_PrevMousePos - mouse_pos;
+	m_PrevMousePos = m_MousePos;
+	m_MousePos = InputManager::Instance()->MousePos();
+	const ZMasher::Vector2i diff_pos = m_PrevMousePos - m_MousePos;
 
 	ZMasher::Matrix44f cam_orientation = m_Camera->GetWorldOrientation();
 	const ZMasher::Vector4f vector_up = cam_orientation.GetVectorUp();
@@ -147,7 +131,6 @@ void GameplayState::MouseRotation(const float dt)
 
 	cam_orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, cam_trans.w));
 
-	//cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_up, global_rotation_speed*diff_pos.x*dt);
 	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y*dt);
 
 	cam_orientation.SetTranslation(cam_trans);
@@ -155,6 +138,4 @@ void GameplayState::MouseRotation(const float dt)
 	m_Camera->SetOrientation(cam_orientation);
 
 	m_Camera->RotateY(global_rotation_speed*diff_pos.x*dt);
-	//m_Camera->RotateX(global_rotation_speed*diff_pos.y*dt);
-
 }

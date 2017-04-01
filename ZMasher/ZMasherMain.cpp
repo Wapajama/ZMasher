@@ -62,14 +62,14 @@ bool ZMasherMain::Update()
 
 	Render();
 
-	RECT window_rect;
-	GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
-	reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
+	//RECT window_rect;
+	//GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
+	//reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
 	if (!m_GameState->Update(dt))
 	{
 		return false;
 	}
-	SetCursorPos((window_rect.left + window_rect.right)/ 2, (window_rect.top + window_rect.bottom) / 2);
+	//SetCursorPos((window_rect.left + window_rect.right)/ 2, (window_rect.top + window_rect.bottom) / 2);
 	return true;
 }
 

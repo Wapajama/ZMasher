@@ -16,7 +16,7 @@ ZMModel::~ZMModel()
 {
 }
 
-bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices)
+bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, const char* texture_path)
 {
 	bool success = false;
 
@@ -27,7 +27,7 @@ bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned l
 		return false;
 	}
 
-	success = LoadTexture( device, L"../../ZMasher/Data/mactex.jpg");
+	success = LoadTexture( device, texture_path);
 
 	if (success == false)
 	{
@@ -138,7 +138,7 @@ ID3D11ShaderResourceView* ZMModel::GetTexture()
 	return m_Texture->GetTexture();
 }
 
-bool ZMModel::LoadTexture(ID3D11Device* device, WCHAR* path )
+bool ZMModel::LoadTexture(ID3D11Device* device, const char* path )
 {
 	if (m_Texture != nullptr)
 	{
@@ -202,9 +202,9 @@ bool ZMModel::LoadTexture(ID3D11Device* device, WCHAR* path )
 //	vertices[iterate] = CurrentVertexType( 1.0 ,-1.0, 1.0, 1.0, 1.0 );indices[iterate] = iterate; ++iterate;
 //}
 
-bool ZMModel::CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices)
+bool ZMModel::CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices, const char* texture_path)
 {
 	m_VertexCount = n_verts;
 	m_IndexCount = n_indices;
-	return Init(device, vertices, indices);
+	return Init(device, vertices, indices, texture_path);
 }

@@ -5,6 +5,11 @@
 #include <Math\Vector2.h>
 #include <bitset>
 
+#define DIK_LMOUSE 0
+#define DIK_RMOUSE 1
+#define DIK_MIDDLE_MOUSE 2
+#define DIK_MOUSEMACRO 3
+
 class InputManager:
 	public ZMSingleton<InputManager>
 {
@@ -29,25 +34,25 @@ public:
 private:
 
 	LPDIRECTINPUT8 m_DirectInput;
-	LPDIRECTINPUTDEVICE8 m_DirectInputKeyboard;
-	LPDIRECTINPUTDEVICE8 m_DirectInputMouse;
-
-	DIMOUSESTATE m_Mousestate;
-	DIMOUSESTATE m_PreviousMouseState;
-
-
-
+	ZMasher::Vector2i m_WindowSize;
+	
 	void ResetInputStates();
 
-	ZMasher::Vector2i m_MousePos;
-	ZMasher::Vector2i m_WindowSize;
-
+	//Keyboard
+	LPDIRECTINPUTDEVICE8 m_DirectInputKeyboard;
 	BYTE m_Keystate[256];
 	BYTE m_PreviousKeyState[256];
-
 	std::bitset<256> m_KeyPressedFlags;
 	std::bitset<256> m_KeyReleasedFlags;
 	HINSTANCE m_InstanceHandle;
 	HWND m_WindowHandle;
+
+	//Mouse
+	LPDIRECTINPUTDEVICE8 m_DirectInputMouse;
+	std::bitset<4> m_PressedMouseKeyFlags;
+	std::bitset<4> m_ReleasedMouseKeyFlags;
+	DIMOUSESTATE m_Mousestate;
+	DIMOUSESTATE m_PreviousMouseState;
+	ZMasher::Vector2i m_MousePos;
 };
 

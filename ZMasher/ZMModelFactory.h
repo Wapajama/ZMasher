@@ -32,7 +32,7 @@ private:
 
 	FbxManager* m_FbxManager;
 	FbxScene* m_Scene;
-	ZMModelNode* ProcessMeshHierarchy(FbxNode* inNode, ZMModelNode* parent = nullptr);
+	ZMModelNode* ProcessMeshHierarchy(FbxNode* inNode, const char* texture_path, ZMModelNode* parent = nullptr);
 
 	//data orient this?
 	GrowArray<ZMModelInstanceNode*> m_ModelInstances;

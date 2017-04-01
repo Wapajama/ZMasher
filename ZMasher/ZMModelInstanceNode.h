@@ -4,6 +4,7 @@
 #include <Math\ZMMatrix44.h>
 #include <DataStructures\GrowArray.h>
 
+
 class ZMModel;
 class ZMModelNode;
 
@@ -26,8 +27,12 @@ public:
 	inline ZMModelInstanceNode* GetChild(const int index);
 	__forceinline const int ChildCount()const;
 
-private:
+	inline void MarkForDelete() { m_MarkedForDelete = true; }
+	inline bool IsMarkedForDelete()const {return m_MarkedForDelete;};
 
+
+private:
+	bool m_MarkedForDelete;
 	ZMModelNode* m_ModelNode;
 	ZMasher::Matrix44f m_Transform;
 
