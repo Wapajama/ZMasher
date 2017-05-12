@@ -29,7 +29,7 @@ float4 TexturePixelShader(PixelInputType input) :SV_TARGET
 
 	float dir_light = dot(normalize(float3(input.norm.xyz)), normalize(light_dir));
 	dir_light = clamp(dir_light, 0.5, 1);
-	return textureColor*dir_light;
+	return textureColor;
 }
 
 PixelInputType TextureVertexShader(VertexInputType input)

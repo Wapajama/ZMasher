@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<components>
+	<component name="HPComponent"  hp="300"/>
+	<component name="AIComponent" Damage="20" RotationSpeed="0.01" Speed="50" Type="3" MinionTag="hej"/>
+	<component name="sphereColliderComponent" radius="30"/>
+	<!-- <component name="sphereColliderComponent" radius="20"/> -->
+</components>

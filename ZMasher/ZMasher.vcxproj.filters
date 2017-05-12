@@ -124,7 +124,22 @@
     <ClInclude Include="CollisionSystem.h">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="MovementSystem.h" />
+    <ClInclude Include="MovementSystem.h">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureContainer.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureTypeEnums.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">
@@ -199,7 +214,19 @@
     <ClCompile Include="CollisionSystem.cpp">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="MovementSystem.cpp" />
+    <ClCompile Include="MovementSystem.cpp">
+      <Filter>Source\Gameplay\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureContainer.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source\ContentSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />
@@ -224,6 +251,12 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="texture.fx">
+      <Filter>Source\Shaders\GPU</Filter>
+    </FxCompile>
+    <FxCompile Include="PBRShader.fx">
+      <Filter>Source\Shaders\GPU</Filter>
+    </FxCompile>
+    <FxCompile Include="Skybox.fx">
       <Filter>Source\Shaders\GPU</Filter>
     </FxCompile>
   </ItemGroup>

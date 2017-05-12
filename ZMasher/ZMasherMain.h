@@ -29,7 +29,7 @@ public:
 
 private:
 
-	void Render();
+	void Render(const float dt);
 
 	ZMasherMain();
 	~ZMasherMain();

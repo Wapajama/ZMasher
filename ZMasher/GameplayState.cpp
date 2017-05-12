@@ -9,7 +9,8 @@
 GameplayState::GameplayState(Camera* camera) 
 	: m_Camera(camera),
 	m_RotationX(0), 
-	m_RotationY(0)
+	m_RotationY(0),
+	m_SpeedModifier(1.f)
 {
 }
 
@@ -22,18 +23,17 @@ bool GameplayState::Init(const char* args)
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	m_GameObjectManager.Init();
-	bool test = false;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
-		GameObject new_object = m_GameObjectManager.CreateGameObject();
-		m_GameObjects.Add(new_object);
-		transform.SetTranslation(position + ZMasher::Vector4f(0, 0, -500 + i * 100, 0));
+		transform.SetTranslation(position + ZMasher::Vector4f(0, 0, 75 - i * 15, 0));
 		if (i%2)
 		{
 			transform.RotateY(M_PI / 2);
 		}
+		GameObject new_object = m_GameObjectManager.CreateGameObject();
+		m_GameObjects.Add(new_object);
 		m_GameObjectManager.TransformManager()->AddComponent(new_object, transform);
-		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/sphere.model"));
+		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/dragonfly01/dragonfly01.model"));
 		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
 	}
 
@@ -44,6 +44,11 @@ bool GameplayState::Update(const float dt)
 {
 	m_Dt = dt;
 #define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
+	const float prev_modifier = m_SpeedModifier;
+	if (KEY_DOWN(DIKEYBOARD_LCONTROL))
+	{
+		m_SpeedModifier = 0.1f;
+	}
 	if (KEY_DOWN(DIKEYBOARD_W))
 	{
 		MoveForward();
@@ -60,6 +65,15 @@ bool GameplayState::Update(const float dt)
 	{
 		MoveRight();
 	}
+	if (KEY_DOWN(DIKEYBOARD_R))
+	{
+		MoveUp();
+	}
+	if (KEY_DOWN(DIKEYBOARD_F))
+	{
+		MoveDown();
+	}
+	m_SpeedModifier = prev_modifier;
 	static float lazy_timer = 0.f;
 	lazy_timer -= dt;
 	if (InputManager::Instance()->IsMouseDown(DIK_LMOUSE) &&
@@ -67,13 +81,8 @@ bool GameplayState::Update(const float dt)
 	{
 		//SPAWN BULLET FROM PLAYER
 		lazy_timer = 1.01;
-		ShootBullet();
+		//ShootBullet();
 	}
-
-	ZMasher::Vector3f translation = m_Camera->GetPosition();
-	translation.y = 0.f;
-	m_Camera->SetPosition(translation);
-
 	MouseRotation(dt);
 
 	m_GameObjectManager.Update(dt);
@@ -85,25 +94,37 @@ const float global_speed = 200.f;
 
 void GameplayState::MoveForward()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_SpeedModifier*m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveBackwards()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_SpeedModifier*m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveRight()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_SpeedModifier*m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveLeft()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_SpeedModifier*m_Dt);
+	m_Camera->SetPosition(translation);
+}
+
+void GameplayState::MoveUp()
+{
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp()*global_speed*m_SpeedModifier*m_Dt);
+	m_Camera->SetPosition(translation);
+}
+
+void GameplayState::MoveDown()
+{
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp()*global_speed*m_SpeedModifier*m_Dt);
 	m_Camera->SetPosition(translation);
 }
 

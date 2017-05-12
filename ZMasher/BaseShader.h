@@ -23,6 +23,8 @@ struct MatrixBufferType
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
+	DirectX::XMVECTOR cam_pos;
+	float d_time;
 };
 
 class BaseShader
@@ -32,10 +34,8 @@ public:
 	~BaseShader();
 
 	virtual bool Apply(ID3D11DeviceContext* context) = 0;
-	bool SetShaderVars(ID3D11DeviceContext*,
-					   const DirectX::XMMATRIX&,
-					   const DirectX::XMMATRIX&,
-					   const DirectX::XMMATRIX&);
+	bool SetShaderVars(ID3D11DeviceContext*context,
+					   const MatrixBufferType& constant_buffer);
 
 	virtual bool Create(wchar_t* source_file, ID3D11Device* device);
 

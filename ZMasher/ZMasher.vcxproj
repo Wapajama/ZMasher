@@ -33,10 +33,19 @@
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialFactory.h" />
     <ClInclude Include="MeshComponentManager.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="MovementSystem.h" />
+    <FxCompile Include="PBRShader.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <FileType>CppHeader</FileType>
+    </FxCompile>
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureClass.h" />
+    <ClInclude Include="TextureContainer.h" />
+    <ClInclude Include="TextureTypeEnums.h" />
     <ClInclude Include="TransformComponentManager.h" />
     <ClInclude Include="ZMAPIStructs.h" />
     <ClInclude Include="ZMasherMain.h" />
@@ -62,10 +71,14 @@
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialFactory.cpp" />
     <ClCompile Include="MeshComponentManager.cpp" />
     <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="MovementSystem.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureClass.cpp" />
+    <ClCompile Include="TextureContainer.cpp" />
     <ClCompile Include="TransformComponentManager.cpp" />
     <ClCompile Include="ZMasherMain.cpp" />
     <ClCompile Include="ZMasherUtilities.cpp" />
@@ -103,6 +116,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Skybox.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="texture.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -207,6 +223,14 @@
       <AdditionalDependencies>d3d11.lib;dinput8.lib;Effects11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ShaderType>
+      </ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>
+      </ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -243,6 +267,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;dinput8.lib;Effects11.lib;d3dx11.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

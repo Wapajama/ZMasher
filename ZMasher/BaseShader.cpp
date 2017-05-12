@@ -64,9 +64,7 @@ bool BaseShader::Apply(ID3D11DeviceContext* context)
 }
 
 bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
-							   const DirectX::XMMATRIX& world,
-							   const DirectX::XMMATRIX& view,
-							   const DirectX::XMMATRIX& projection )
+							   const MatrixBufferType& constant_buffer)
 {
 	HRESULT infoResult = S_OK;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -78,14 +76,15 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	MatrixBufferType* dataPtr = nullptr;
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	DirectX::XMMATRIX worldLocal = DirectX::XMMatrixTranspose(world);
-	DirectX::XMMATRIX viewLocal = DirectX::XMMatrixTranspose(view);
-	DirectX::XMMATRIX projectionLocal = DirectX::XMMatrixTranspose(projection);
+	DirectX::XMMATRIX worldLocal = DirectX::XMMatrixTranspose(constant_buffer.world);
+	DirectX::XMMATRIX viewLocal = DirectX::XMMatrixTranspose(constant_buffer.view);
+	DirectX::XMMATRIX projectionLocal = DirectX::XMMatrixTranspose(constant_buffer.projection);
 
 	dataPtr->world = worldLocal;
 	dataPtr->view = viewLocal;
 	dataPtr->projection = projectionLocal;
-
+	dataPtr->cam_pos = constant_buffer.cam_pos;
+	dataPtr->d_time = constant_buffer.d_time;
 	context->Unmap(m_MatrixBuffer, 0);
 
 	unsigned int bufferNumber = 0;

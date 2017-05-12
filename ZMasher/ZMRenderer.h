@@ -15,7 +15,7 @@ public:
 	ZMRenderer(void);
 	~ZMRenderer(void);
 
-	void Render(ZMD3DInterface& d3dinterface);
+	void Render(ZMD3DInterface& d3dinterface, const float dt);
 
 	void Init(ZMD3DInterface& d3dinterface);
 
@@ -33,6 +33,7 @@ private:
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	BaseShader* m_Shader;
 	Camera* m_Camera;
+	float m_Dt;
 };
 
 __forceinline void ZMRenderer::SetCamera(Camera* camera)

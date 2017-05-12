@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<components>
+	<component name="HPComponent"  hp="200"/>
+	<component name="AIComponent" Damage="10" RotationSpeed="0.009" Speed="150.0" Type="1"/>
+	<component name="sphereColliderComponent" radius="30"/>
+	<!-- <component name="sphereColliderComponent" radius="14.437"/> -->
+	
+</components>

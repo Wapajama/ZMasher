@@ -1,0 +1,7 @@
+<Animations>
+	<Animation AnimationName="Attack" StartFrame="35" EndFrame="55" />
+	<Animation AnimationName="Walk" StartFrame="5" EndFrame="30" />
+	<Animation AnimationName="Idle" StartFrame="60" EndFrame="115" />
+	<Animation AnimationName="Hit" StartFrame="120" EndFrame="145" />
+	<Animation AnimationName="Death" StartFrame="145" EndFrame="260" />
+</Animations>

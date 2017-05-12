@@ -28,6 +28,8 @@ private:
 	void MoveBackwards();
 	void MoveRight();
 	void MoveLeft();
+	void MoveUp();
+	void MoveDown();
 
 	void ShootBullet();
 
@@ -38,5 +40,5 @@ private:
 	float m_Dt;
 	float m_RotationX;
 	float m_RotationY;
-
+	float m_SpeedModifier;
 };

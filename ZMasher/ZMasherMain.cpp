@@ -60,7 +60,7 @@ bool ZMasherMain::Update()
 
 	InputManager::Instance()->Update(dt);
 
-	Render();
+	Render(dt);
 
 	//RECT window_rect;
 	//GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
@@ -154,11 +154,11 @@ bool ZMasherMain::CreateD3D()
 	return true;
 }
 
-void ZMasherMain::Render()
+void ZMasherMain::Render(const float dt)
 {
 	m_D3DInterface.BeginScene();
 
-	m_Renderer.Render(m_D3DInterface);
+	m_Renderer.Render(m_D3DInterface, dt);
 	
 	m_D3DInterface.EndScene();
 }

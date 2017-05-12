@@ -7,6 +7,7 @@
 #include "ZMasherUtilities.h"
 #include "ZMModelFactory.h"
 #include "ZMModelNode.h"
+#include <D3D11.h>
 
 ZMRenderer::ZMRenderer(void)
 {
@@ -17,7 +18,7 @@ ZMRenderer::~ZMRenderer(void)
 {
 }
 
-void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
+void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 {
 	/*
 		TODO:
@@ -28,6 +29,13 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface)
 			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
 			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
 	*/
+
+	const float dt_cap = FLT_MAX;
+	m_Dt+= dt;
+	if (m_Dt > dt_cap)
+	{
+		m_Dt-=dt_cap;
+	}
 	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
 	{
 		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
@@ -48,7 +56,7 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	m_Shader = new ModelShader();
 
-	const bool succeded = m_Shader->Create(L"texture.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	const bool succeded = m_Shader->Create(L"PBRShader.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	ASSERT(succeded, "shader failed to init!");
 }
 
@@ -78,12 +86,23 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 		modelWorldMatrix.r[2] = current_transform.m_Data[2];
 		modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
+		DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
+		cam_pos.m128_f32[3] = 1.f;
 		const bool succeded = m_Shader->SetShaderVars(d3dinterface.GetContext(),
-														 modelWorldMatrix,
-														 cameraWorldMatrix,
-														 projectionMatrix);
+														{modelWorldMatrix,
+														cameraWorldMatrix,
+														projectionMatrix,
+														cam_pos, 
+														m_Dt});
 		ASSERT(succeded, "shader failed to init!");
-		reinterpret_cast<ModelShader*>(m_Shader)->SetShaderResource(model->GetModelNode()->GetModel()->GetTexture());
+		ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_Shader);
+		Material* material = model->GetModelNode()->GetModel()->GetMaterial();
+
+		model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
+		model_shader->SetShaderResource(eTextureType::NORMAL, material->GetTexture(eTextureType::NORMAL));
+		model_shader->SetShaderResource(eTextureType::AMBIENT_OCCLUSION, material->GetTexture(eTextureType::AMBIENT_OCCLUSION));
+		model_shader->SetShaderResource(eTextureType::ROUGHNESS, material->GetTexture(eTextureType::ROUGHNESS));
+		model_shader->SetShaderResource(eTextureType::SUBSTANCE, material->GetTexture(eTextureType::SUBSTANCE));
 		
 		m_Shader->Apply(d3dinterface.GetContext());
 
