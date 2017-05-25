@@ -252,6 +252,7 @@ ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 	return node;
 }
 
+//TODO: refactor this function, very hard to navigate in atm
 ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::string& model_xml_path, ZMModelNode* parent)
 {
 	FbxMesh* mesh = inNode->GetMesh();
@@ -327,8 +328,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::st
 		}
 	}
 
-	ZMModel* model = new ZMModel();
-	m_Materials.Add(Material());
+	ZMModel* model = AddModel();
 
 	if (model->CreateModel(m_Device, vertexes, indexes, vertex_count, index_count, &m_Materials.GetLast()) == false)
 	{
@@ -354,7 +354,7 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::st
 		model->GetMaterial()->AddTexture(eTextureType::SUBSTANCE, temp_texture->GetResourceView());
 	}
 
-	ZMModelNode* model_node = new ZMModelNode(model);
+	ZMModelNode* model_node = new ZMModelNode(model);//TODO: don't do new here
 	if (parent != nullptr)
 	{
 		parent->AddChild(model_node);
@@ -376,4 +376,24 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::st
 									   TO_FLOAT(node_transform.Get(3, 0)), TO_FLOAT(node_transform.Get(3, 1)), TO_FLOAT(node_transform.Get(3, 2)), TO_FLOAT(node_transform.Get(3, 3)));
 	model_node->SetTransform(model_transform);
 	return model_node;
+}
+
+ZMModel* ZMModelFactory::AddModel()
+{
+	ZMModel* model = new ZMModel();//TODO: Oh jesus fuck do something about this ASAP
+	m_Materials.Add(Material());
+	return model;
+}
+
+ZMModelInstanceNode* ZMModelFactory::LoadSkyBox(const char* skybox_path)
+{
+	ZMModel* model = AddModel();
+
+	unsigned long* indexes= nullptr;
+	CurrentVertexType* vertexes = nullptr;
+
+	model->CreateCube(m_Device, vertexes, indexes, &m_Materials.GetLast());
+	Texture* temp_texture = m_TextureContainer.GetTexture(skybox_path);
+	model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
+	return InitModelInstanceNode(new ZMModelNode(model));
 }

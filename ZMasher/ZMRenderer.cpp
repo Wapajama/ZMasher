@@ -43,6 +43,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass niggaz aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
+	RenderSkybox(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
@@ -58,6 +59,12 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	const bool succeded = m_Shader->Create(L"PBRShader.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	ASSERT(succeded, "shader failed to init!");
+
+	m_SkyboxShader = new ModelShader();
+	const bool succeded_skybox = m_SkyboxShader->Create(L"Skybox.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	ASSERT(succeded_skybox, "shader failed to init!");
+
+	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox("../data/cubemaps/Skybox001.dds");
 }
 
 void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
@@ -74,7 +81,6 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		const ZMasher::Matrix44f view_matrix = ~m_Camera->GetWorldOrientation();
 		cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
-		//m_Camera->GetOrientation(cameraWorldMatrix);
 		m_Camera->GetProjectionMatrix(projectionMatrix);
 
 		model->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
@@ -112,4 +118,42 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 	{
 		RenderModelHierarchy(d3dinterface, model->GetChild(i), model->GetTransform());
 	}
+}
+
+void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
+{
+	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
+	m_Camera->UpdateProjMatrix();
+	ZMasher::Matrix44f camera_ori = m_Camera->GetWorldOrientation();
+	camera_ori.SetTranslation(ZMasher::Vector4f(0,0,0,1));
+	const ZMasher::Matrix44f view_matrix = ~camera_ori;
+	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
+	m_Camera->GetProjectionMatrix(projectionMatrix);
+
+	m_Skybox->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
+
+	const ZMasher::Matrix44f current_transform = m_Skybox->GetTransform();
+
+	modelWorldMatrix.r[0] = current_transform.m_Data[0];
+	modelWorldMatrix.r[1] = current_transform.m_Data[1];
+	modelWorldMatrix.r[2] = current_transform.m_Data[2];
+	modelWorldMatrix.r[3] = current_transform.m_Data[3];
+
+	DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
+	cam_pos.m128_f32[3] = 1.f;
+	const bool succeded = m_SkyboxShader->SetShaderVars(d3dinterface.GetContext(),
+														{modelWorldMatrix,
+														cameraWorldMatrix,
+														projectionMatrix,
+														cam_pos, 
+														m_Dt});
+	ASSERT(succeded, "shader failed to init!");
+	ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_SkyboxShader);
+	Material* material = m_Skybox->GetModelNode()->GetModel()->GetMaterial();
+
+	model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
+		
+	m_SkyboxShader->Apply(d3dinterface.GetContext());
+
+	d3dinterface.GetContext()->DrawIndexed(m_Skybox->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
 }

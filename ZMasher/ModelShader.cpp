@@ -19,6 +19,10 @@ bool ModelShader::Apply(ID3D11DeviceContext* context)
 {
 	//centralize shader variable names?
 	GetDX11Effect()->GetVariableByName("albedoTexture")->AsShaderResource()->SetResource(m_Textures[static_cast<unsigned char>(eTextureType::ALBEDO)]);
+	if (GetDX11Effect()->GetVariableByName("skybox"))
+	{
+		GetDX11Effect()->GetVariableByName("skybox")->AsShaderResource()->SetResource(m_Textures[static_cast<unsigned char>(eTextureType::ALBEDO)]);
+	}
 	GetDX11Effect()->GetVariableByName("normalTexture")->AsShaderResource()->SetResource(m_Textures[static_cast<unsigned char>(eTextureType::NORMAL)]);
 	GetDX11Effect()->GetVariableByName("ambientOcclusionTexture")->AsShaderResource()->SetResource(m_Textures[static_cast<unsigned char>(eTextureType::AMBIENT_OCCLUSION)]);
 	GetDX11Effect()->GetVariableByName("roughnessTexture")->AsShaderResource()->SetResource(m_Textures[static_cast<unsigned char>(eTextureType::ROUGHNESS)]);

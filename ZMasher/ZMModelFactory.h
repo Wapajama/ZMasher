@@ -25,7 +25,9 @@ class ZMModelFactory: public ZMSingleton<ZMModelFactory>
 public:
 	ZMModelFactory();
 	ZMModelInstanceNode* LoadModelInstance(const char * model_path);
+	ZMModelInstanceNode* LoadSkyBox(const char* skybox_path);//TODO: Create a neater implementation of this
 	inline void SetDevice(ID3D11Device* device) { m_Device = device; m_TextureContainer.SetDevice(device); }
+
 private:
 
 	ZMModelInstanceNode* InitModelInstanceNode(ZMModelNode* root_node, ZMModelInstanceNode* instance_node = nullptr);
@@ -33,6 +35,8 @@ private:
 	FbxManager* m_FbxManager;
 	FbxScene* m_Scene;
 	ZMModelNode* ProcessMeshHierarchy(FbxNode* inNode, const std::string& model_path_str, ZMModelNode* parent = nullptr);
+
+	ZMModel* AddModel();
 
 	//data orient this?
 	GrowArray<ZMModelInstanceNode*> m_ModelInstances;

@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include "ZMVertexTypes.h"
 
-typedef VertexPosNormUV CurrentVertexType;
+typedef VertexPosNormUV CurrentVertexType;//TODO: Repeal and replace!
 class Material;
 struct ResGUID
 {
@@ -24,8 +24,9 @@ public:
 
 	inline Material* GetMaterial() { return m_Material; };
 
-	//TODO: move the textures someplace else
 	bool CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices, Material* material);
+
+	void CreateCube(ID3D11Device* device, CurrentVertexType*& vertices, unsigned long*& indices, Material* material);//TODO: make interface for creating arbitrary shapes
 
 private:
 
