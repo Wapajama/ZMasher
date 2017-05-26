@@ -20,15 +20,6 @@ ZMRenderer::~ZMRenderer(void)
 
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 {
-	/*
-		TODO:
-			- Fix shaders into proper files instead of fucking retarded classes -.-
-			- Should probably wait with the implementation of the data orientation
-			until... something?
-			- Fix model loading for different cool formats, another big project!
-			- For .obj, .COLLADA, .mesh , .dae, and see what happens :3
-			- Another project to create an in-house filetype, so that we can tailor in- and outputs as we like
-	*/
 
 	const float dt_cap = FLT_MAX;
 	m_Dt+= dt;
@@ -44,6 +35,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 		}
 	}
 	RenderSkybox(d3dinterface);
+	Render2DTerrain(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
@@ -65,12 +57,24 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 	ASSERT(succeded_skybox, "shader failed to init!");
 
 	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox("../data/cubemaps/Skybox001.dds");
+
+	m_TerrainShader = new ModelShader();
+	const bool succeded_flatTerrain = m_TerrainShader->Create(L"FlatTerrain.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	ASSERT(succeded_flatTerrain, "shader failed to init!");
+
+	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain("../data/maps/grass.jpg");
+
 }
 
 void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
 {
 	
 }
+
+//BOILERPLATE 
+//BOILERPLATE 
+//EVERYWHERE :D:D:D:D
+//(but seriously extract the everloving shit outta this)
 
 void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation)
 {
@@ -156,4 +160,41 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 	m_SkyboxShader->Apply(d3dinterface.GetContext());
 
 	d3dinterface.GetContext()->DrawIndexed(m_Skybox->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
+}
+
+void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
+{
+	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
+	m_Camera->UpdateProjMatrix();
+	ZMasher::Matrix44f camera_ori = m_Camera->GetWorldOrientation();
+	const ZMasher::Matrix44f view_matrix = ~camera_ori;
+	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
+	m_Camera->GetProjectionMatrix(projectionMatrix);
+
+	m_Terrain->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
+
+	const ZMasher::Matrix44f current_transform = m_Terrain->GetTransform();
+
+	modelWorldMatrix.r[0] = current_transform.m_Data[0];
+	modelWorldMatrix.r[1] = current_transform.m_Data[1];
+	modelWorldMatrix.r[2] = current_transform.m_Data[2];
+	modelWorldMatrix.r[3] = current_transform.m_Data[3];
+
+	DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
+	cam_pos.m128_f32[3] = 1.f;
+	const bool succeded = m_TerrainShader->SetShaderVars(d3dinterface.GetContext(),
+														{modelWorldMatrix,
+														cameraWorldMatrix,
+														projectionMatrix,
+														cam_pos, 
+														m_Dt});
+	ASSERT(succeded, "shader failed to init!");
+	ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_TerrainShader);
+	Material* material = m_Terrain->GetModelNode()->GetModel()->GetMaterial();
+
+	model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
+		
+	m_TerrainShader->Apply(d3dinterface.GetContext());
+
+	d3dinterface.GetContext()->DrawIndexed(m_Terrain->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
 }

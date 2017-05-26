@@ -26,7 +26,12 @@ public:
 
 	bool CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices, Material* material);
 
-	void CreateCube(ID3D11Device* device, CurrentVertexType*& vertices, unsigned long*& indices, Material* material);//TODO: make interface for creating arbitrary shapes
+	//TODO: make interface for creating arbitrary shapes
+	void CreateCube(ID3D11Device* device, CurrentVertexType*& vertices, unsigned long*& indices, Material* material);
+	void CreatePlaneHorizontal(ID3D11Device* device, CurrentVertexType*& vertices, unsigned long*& indices, Material* material,
+								const float height = -5.f, 
+								const float width = 1000.f,
+								const float length = 1000.f);
 
 private:
 

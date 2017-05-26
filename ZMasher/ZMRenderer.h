@@ -30,12 +30,23 @@ public:
 	*/
 
 private:
+
+	//TODO: Let ZMRenderer merely be the "hub" of rendering interfaces, let
+	//another class implement the render steps (renderblocks? posteffect helper?)
+
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	void RenderSkybox(ZMD3DInterface& d3dinterface);
-	BaseShader* m_Shader;
+	void Render2DTerrain(ZMD3DInterface& d3dinterface);
+
+	//TODO: create scene class that wraps all content specific data
+	BaseShader* m_Shader; 
 	BaseShader* m_SkyboxShader;
+	BaseShader* m_TerrainShader;
 	Camera* m_Camera;
 	ZMModelInstanceNode* m_Skybox;
+	ZMModelInstanceNode* m_Terrain;
+
+
 	float m_Dt;
 };
 

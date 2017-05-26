@@ -397,3 +397,19 @@ ZMModelInstanceNode* ZMModelFactory::LoadSkyBox(const char* skybox_path)
 	model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
 	return InitModelInstanceNode(new ZMModelNode(model));
 }
+
+ZMModelInstanceNode* ZMModelFactory::Load2DTerrain(	const char* texture_path,
+													const float height,
+													const float width,
+													const float length)
+{
+	ZMModel* model = AddModel();
+
+	CurrentVertexType* vertices = nullptr;
+	unsigned long* indices = nullptr;
+
+	model->CreatePlaneHorizontal(m_Device, vertices, indices, &m_Materials.GetLast());
+	Texture* temp_texture = m_TextureContainer.GetTexture(texture_path);
+	model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
+	return InitModelInstanceNode(new ZMModelNode(model));
+}

@@ -177,6 +177,40 @@ void ZMModel::CreateCube(ID3D11Device* device, CurrentVertexType*& vertices, uns
 	ASSERT(init_res, "");
 }
 
+void ZMModel::CreatePlaneHorizontal(ID3D11Device* device, CurrentVertexType*& vertices, unsigned long*& indices, Material* material,
+								const float height, 
+								const float width,
+								const float length)
+{
+	m_VertexCount = 4;
+	m_IndexCount = 6;
+
+	vertices = new CurrentVertexType[m_VertexCount];
+	indices = new unsigned long[m_IndexCount];
+
+	int iterate = 0;
+	const float texture_size = 1024;
+	const float max_tex = length/128;
+	vertices[iterate] = CurrentVertexType( width/2.f ,height, length/2.f , 0, 0 ); ++iterate;
+	vertices[iterate] = CurrentVertexType( width/2.f ,height, -length/2.f, 0, max_tex ); ++iterate;
+
+	vertices[iterate] = CurrentVertexType( -(width/2.f) ,height, length/2.f , max_tex, 0 ); ++iterate;
+	vertices[iterate] = CurrentVertexType( -(width/2.f) ,height, -length/2.f, max_tex, max_tex ); ++iterate;
+
+
+	iterate = 0;
+	indices[iterate] = 0; ++iterate;
+	indices[iterate] = 1; ++iterate;
+	indices[iterate] = 2; ++iterate;
+
+	indices[iterate] = 1; ++iterate;
+	indices[iterate] = 3; ++iterate;
+	indices[iterate] = 2;
+
+	const bool init_res = Init(device, vertices, indices, material);
+	ASSERT(init_res, "");
+}
+
 bool ZMModel::CreateModel(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, int n_verts, int n_indices, Material* material)
 {
 	m_VertexCount = n_verts;

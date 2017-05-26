@@ -38,6 +38,10 @@
     <ClInclude Include="MeshComponentManager.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="MovementSystem.h" />
+    <FxCompile Include="FlatTerrain.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="PBRShader.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <FileType>CppHeader</FileType>

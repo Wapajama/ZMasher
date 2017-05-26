@@ -26,6 +26,10 @@ public:
 	ZMModelFactory();
 	ZMModelInstanceNode* LoadModelInstance(const char * model_path);
 	ZMModelInstanceNode* LoadSkyBox(const char* skybox_path);//TODO: Create a neater implementation of this
+	ZMModelInstanceNode* Load2DTerrain(const char* texture_path,
+									   const float height = -5.f, 
+									   const float width = 1000.f,
+									   const float length = 1000.f);//TODO: same as above
 	inline void SetDevice(ID3D11Device* device) { m_Device = device; m_TextureContainer.SetDevice(device); }
 
 private:
