@@ -42,3 +42,27 @@ bool CollisionComponentManager::Update()
 	m_Collisions.RemoveAll();//should have been read since last time,
 	return true;
 }
+
+MomentumComponent* CollisionComponentManager::GetMomentumComponent(GameObject game_object)
+{
+	for (short i = 0; i < m_Momentums.Size(); i++)
+	{
+		if (m_Momentums[i].m_GameObject == game_object)
+		{
+			return &m_Momentums[i];
+		}
+	}
+	return nullptr;
+}
+
+SphereCollisionComponent* CollisionComponentManager::GetSphereCollisionComponent(GameObject game_object)
+{
+	for (short i = 0; i < m_Spheres.Size(); i++)
+	{
+		if (m_Spheres[i].m_GameObject == game_object)
+		{
+			return &m_Spheres[i];
+		}
+	}
+	return nullptr;
+}

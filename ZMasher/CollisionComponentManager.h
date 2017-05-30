@@ -39,6 +39,7 @@ struct MomentumComponent //no need for gameobject id, they are aligned in the sa
 	GameObject m_GameObject;
 	float m_Weight;
 	ZMasher::Vector3f m_Speed;
+	ZMasher::Vector3f m_Acceleration;
 };
 
 struct CollisionInfoComponent
@@ -67,6 +68,10 @@ public:
 	bool Init()override;
 	void Destroy()override;
 	bool Update()override;
+
+	//TODO: optimize these
+	MomentumComponent* GetMomentumComponent(GameObject game_object);
+	SphereCollisionComponent* GetSphereCollisionComponent(GameObject game_object);
 
 private:
 

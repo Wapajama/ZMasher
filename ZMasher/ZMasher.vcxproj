@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIComponentManager.h" />
+    <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseShader.h" />
+    <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="Camera.h" />
@@ -63,7 +66,10 @@
     <ClInclude Include="ZMVertexTypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIComponentManager.cpp" />
+    <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="BaseShader.cpp" />
+    <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="Camera.cpp" />

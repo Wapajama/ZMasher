@@ -3,9 +3,11 @@
 #include "MeshComponentManager.h"
 #include "BulletComponentManager.h"
 #include "BulletSystem.h"
+#include "AIComponentManager.h"
 #include <ZMasher\GameObject.h>
 #include <ZMasher\CollisionComponentManager.h>
 #include <ZMasher\CollisionSystem.h>
+#include <ZMasher\AISystem.h>
 
 //Dataoriented entitysystem
 class GameObjectManager
@@ -26,6 +28,8 @@ public:
 	inline TransformComponentManager* TransformManager() { return &m_TransformManager; }
 	inline BulletComponentManager* BulletCompManager() {return &m_BulletCompManager;}
 	inline CollisionComponentManager* CollisionCompManager() {return &m_CollisionCompManager;}
+	inline AIComponentManager* AICompManager() {return &m_AICompManager;}
+
 private:
 
 	void UpdateAllComponentManagers();
@@ -34,11 +38,17 @@ private:
 
 	ID_TYPE m_CurrentID;
 
-	MeshComponentManager m_MeshManager;//TODO: This class is getting blobbed because of all the componentmanagers, extract to another class
+	//TODO: GameObjectManager is getting blobbed because of all the componentmanagers and systems, extract to another class
+	GameObject m_GameObjects[NUMBER_OF_GAME_OBJECTS];
+
+	MeshComponentManager m_MeshManager;
 	TransformComponentManager m_TransformManager;
 	BulletComponentManager m_BulletCompManager;
-	GameObject m_GameObjects[NUMBER_OF_GAME_OBJECTS];
-	BulletSystem m_BulletSystem;//Holy mother of jesus christ wtf is this doing here EXTRACT ASAP
+	AIComponentManager m_AICompManager;
+
+	BulletSystem m_BulletSystem;
 	CollisionSystem m_CollisionSystem;
 	CollisionComponentManager m_CollisionCompManager;
+	AISystem m_AISystem;
+
 };

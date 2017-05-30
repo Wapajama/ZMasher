@@ -3,6 +3,7 @@
 GameObjectManager::GameObjectManager()
 	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
 	, m_CollisionSystem(&m_CollisionCompManager, &m_TransformManager)
+	, m_AISystem(&m_AICompManager, &m_CollisionCompManager, &m_TransformManager)
 {
 	m_CurrentID = 0;
 }
@@ -13,12 +14,13 @@ GameObjectManager::~GameObjectManager()
 
 void GameObjectManager::Update(const float dt)
 {
-	UpdateAllComponentManagers();//removes dead components
+	UpdateAllComponentManagers();//removes dead components,TODO: name change?
 
 	m_BulletSystem.Simulate(dt);
 	m_CollisionSystem.Simulate(dt);
+	m_AISystem.Simulate(dt);
 
-	m_MeshManager.Update(&m_TransformManager);
+	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
 }
 
 bool GameObjectManager::Init()
@@ -27,6 +29,7 @@ bool GameObjectManager::Init()
 	m_ComponentManagers.Add(&m_MeshManager);
 	m_ComponentManagers.Add(&m_TransformManager);
 	m_ComponentManagers.Add(&m_CollisionCompManager);
+	m_ComponentManagers.Add(&m_AICompManager);
 	return true;
 }
 
@@ -57,4 +60,5 @@ void GameObjectManager::UpdateAllComponentManagers()
 void GameObjectManager::Destroy(GameObject& game_Object)
 {
 	//go through all componentmanagers and remove the gameobject
+	ASSERT(false, "not yet implemented!");
 }

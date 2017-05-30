@@ -302,6 +302,9 @@ namespace ZMasher
 	///////////////////////////////////////////////////////////////////////////////////
 	/*			VECTOR3f		*/
 	///////////////////////////////////////////////////////////////////////////////////
+#ifdef ZM_MATH_USE_SIMD //don't use it for Vector3f, seems broken af atm
+#undef ZM_MATH_USE_SIMD
+#endif // ZM_MATH_USE_SIMD
 
 	ZM_ALWAYS_INLINE const Vector3f Vector3Add(const Vector3f& operand1, const Vector3f& operand2)
 	{
@@ -406,11 +409,14 @@ namespace ZMasher
 		return sqrt(ZMasher::Length2(operand));
 	}
 
+#define SET_W_TO_ZERO m_Data.m128_f32[3] = CAST(0)//else it will create garbage data
+
 	inline Vector3f::Vector3f()
 	{
 		x = CAST(0);
 		y = CAST(0);
 		z = CAST(0);
+		SET_W_TO_ZERO;
 	}
 
 	inline Vector3f::Vector3f(const Vector3f& copy)
@@ -428,6 +434,7 @@ namespace ZMasher
 		x = ax;
 		y = ay;
 		z = az;
+		SET_W_TO_ZERO;
 	}
 
 	inline Vector3f::Vector3f(const __m128& data)
@@ -441,6 +448,7 @@ namespace ZMasher
 		x = arrayPtr[0];
 		y = arrayPtr[1];
 		z = arrayPtr[2];
+		SET_W_TO_ZERO;
 	}
 
 	inline Vector3f::~Vector3f()

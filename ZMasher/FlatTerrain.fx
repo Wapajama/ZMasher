@@ -2,14 +2,14 @@
 #include "SharedPixelShaderData.ps"
 
 TextureCube skybox;
-//SamplerState samAnisotropic
-//{
-//	Filter = ANISOTROPIC;
-//	MaxAnisotropy = 4;
-//
-//	AddressU = WRAP;
-//	AddressV = WRAP;
-//};
+SamplerState samAnisotropicTerrain
+{
+	Filter = ANISOTROPIC;
+	MaxAnisotropy = 4;
+
+	AddressU = MIRROR;
+	AddressV = MIRROR;
+};
 
 struct VertexInputType
 {
@@ -50,7 +50,7 @@ float4 PBR_PS(PixelInputType input) :SV_TARGET
 {
 	float4 color;
 
-	color = albedoTexture.Sample(samAnisotropic, input.tex);
+	color = albedoTexture.Sample(samAnisotropicTerrain, input.tex);
 	//return float4(1,0,0,1);
 	return color;
 }

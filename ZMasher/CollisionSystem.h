@@ -14,6 +14,8 @@ public:
 
 private:
 
+	bool SimulatePhysics(const float dt);
+
 	CollisionComponentManager* m_CollisionCompManager;
 	TransformComponentManager* m_TransformCompManager;
 };

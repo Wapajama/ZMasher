@@ -35,6 +35,7 @@ bool GameplayState::Init(const char* args)
 		m_GameObjectManager.TransformManager()->AddComponent(new_object, transform);
 		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/dragonfly01/dragonfly01.model"));
 		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
+		m_GameObjectManager.AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 	}
 
 	return true;
