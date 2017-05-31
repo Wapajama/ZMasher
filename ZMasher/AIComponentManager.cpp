@@ -29,9 +29,28 @@ AIComponent* AIComponentManager::GetComponent(GameObject game_object)
 	return nullptr;
 }
 
+const AIType* AIComponentManager::GetAIType(eAIType type)
+{
+	return &m_AITypes[type];
+}
+
 bool AIComponentManager::Init()
 {
+	for (short i = 0; i < eAIType::AITYPE_COUNT; i++)
+	{
+		m_AITypes.Add(AIType());
+	}
+
+	HardcodedAITypes();
+
 	return true;
+}
+
+void AIComponentManager::HardcodedAITypes()
+{
+	m_AITypes[eAIType::ZOLDIER].m_ArrivedDist = 3.0f;
+	m_AITypes[eAIType::ZOLDIER].m_ArrivingDist = 30.f;
+	m_AITypes[eAIType::ZOLDIER].m_MaxSpeed = 30.f;
 }
 
 bool AIComponentManager::Update()

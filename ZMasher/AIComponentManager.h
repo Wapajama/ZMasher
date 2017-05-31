@@ -23,8 +23,8 @@ enum eAIType
 struct AIType
 {
 	float m_MaxSpeed;
-	float m_ArriveDistance;
-
+	float m_ArrivingDist;//when the AI will start slowing down
+	float m_ArrivedDist;//when the AI will stop
 };
 
 struct AIComponent
@@ -47,11 +47,14 @@ public:
 
 	//TODO: optimize this, currently bruteforced
 	AIComponent* GetComponent(GameObject game_object);
-
+	const AIType* GetAIType(eAIType type);
 	bool Init();
 	bool Update();
 
 private:
+
+	void HardcodedAITypes();
+
 	friend class AISystem;
 	GrowArray<AIType> m_AITypes;
 	GrowArray<AIComponent> m_AIComponents;

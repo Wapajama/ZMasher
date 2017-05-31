@@ -58,7 +58,7 @@ bool CollisionSystem::Simulate(const float dt)
 
 bool CollisionSystem::SimulatePhysics(const float dt)
 {
-	const float frame_time = dt < 0.001 ? 0.016 : dt;
+	const float frame_time = dt > 0.03 ? 0.016 : dt;
 	for (short i = 0; i < m_CollisionCompManager->m_Momentums.Size(); i++)
 	{
 		GameObject game_object = m_CollisionCompManager->m_Momentums[i].m_GameObject;

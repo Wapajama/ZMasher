@@ -30,6 +30,12 @@ bool GameObjectManager::Init()
 	m_ComponentManagers.Add(&m_TransformManager);
 	m_ComponentManagers.Add(&m_CollisionCompManager);
 	m_ComponentManagers.Add(&m_AICompManager);
+
+	for (short i = 0; i < m_ComponentManagers.Size(); i++)
+	{
+		const bool result = m_ComponentManagers[i]->Init();
+		ASSERT(result, "ComponentManager failed to init!");
+	}
 	return true;
 }
 

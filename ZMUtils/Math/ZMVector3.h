@@ -13,7 +13,7 @@ namespace ZMasher
 
 namespace ZMasher
 {
-	class __declspec(align(16)) Vector3f
+	class Vector3f
 	{
 	public:
 		inline Vector3f();
