@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "ZMModel.h"
 #include "ZMRenderer.h"
+#include <Profiler.h>
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
@@ -18,12 +19,11 @@ public:
 
 	bool Init();
 	bool Update();
+	static void Destroy();
 
 	/*
 		TODO: remove and replace with legitimate game code
 	*/
-	
-
 
 	inline ZMD3DInterface* GetD3DInterface();
 
@@ -42,6 +42,13 @@ private:
 	Camera* m_Camera;//TODO: redo design of this 
 	ZMRenderer m_Renderer;
 	GameState* m_GameState;
+	
+#ifdef BENCHMARK
+	ProfilerTaskID m_TotalFrame;
+	ProfilerTaskID m_LogicFrame;
+	ProfilerTaskID m_RenderFrame;
+#endif // BENCHMMARK
+
 
 	void InitWindowClass();
 	void CreateWinApiWindow();

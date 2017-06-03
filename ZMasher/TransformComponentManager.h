@@ -3,6 +3,7 @@
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMMatrix44.h>
 #include <ZMasher\GameObject.h>
+#include <Profiler.h>
 
 struct TransformComponent
 {
@@ -34,5 +35,6 @@ public:
 
 private:
 	GrowArray<TransformComponent> m_Transforms;
+	ProfilerTaskID m_GetTransformTimeStamp;
 };
 

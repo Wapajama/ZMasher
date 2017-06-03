@@ -71,7 +71,7 @@ float4 PBR_PS(PixelInputType input) :SV_TARGET
 	float4 substance = substanceTexture.Sample(samAnisotropic, input.tex);
 	float AP = pow(8192, roughness);
 
-	float3 light_dir = normalize(float3(cos(d_time), -0.5, sin(d_time)));
+	float3 light_dir = normalize(float3(cos(0), -0.5, sin(0)));
 	float3 light_col = float3(.5, 0.5, 0.5);
 
 	const float4 eyeVec = normalize(cam_pos - input.position);

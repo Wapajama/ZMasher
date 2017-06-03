@@ -61,6 +61,8 @@
     <ClInclude Include="Time\Time.h" />
     <ClInclude Include="Time\Timer.h" />
     <ClInclude Include="Time\TimerManager.h" />
+    <ClInclude Include="DataStructures\BinarySearchTree.h" />
+    <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">
@@ -90,6 +92,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Time\TimerManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

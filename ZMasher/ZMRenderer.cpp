@@ -16,11 +16,12 @@ ZMRenderer::ZMRenderer(void)
 
 ZMRenderer::~ZMRenderer(void)
 {
+	ZMModelFactory::Instance()->Release();
 }
 
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 {
-
+	
 	const float dt_cap = FLT_MAX;
 	m_Dt+= dt;
 	if (m_Dt > dt_cap)

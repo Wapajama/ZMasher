@@ -2,7 +2,7 @@
 #include <ZMasher\BaseSystem.h>
 #include <Math\ZMVector3.h>
 #include <Math\ZMMatrix44.h>
-
+#include <Profiler.h>
 class AISystem
 	:public BaseSystem
 {
@@ -12,9 +12,12 @@ public:
 			 class TransformComponentManager* transform);
 	~AISystem();
 
+	bool Init(void* arguments)override;
 	bool Simulate(const float dt);
 
 private:
+
+	ProfilerTaskID m_AIInternalTimeStamp;
 
 	void FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vector3f& direction);
 
@@ -24,6 +27,8 @@ private:
 		const class AIType* m_Type;
 		ZMasher::Vector3f m_ToTarget;
 	};
+
+	void AddNewZoldier();
 
 	ZMasher::Vector3f Seek(const SteeringArgs& args);
 	ZMasher::Vector3f Arrive(const SteeringArgs& args);

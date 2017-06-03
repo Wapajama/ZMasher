@@ -32,7 +32,7 @@ SingleTonClass * ZMSingleton<SingleTonClass>::Instance()
 template<typename SingleTonClass>
 void ZMSingleton<SingleTonClass>::Release()
 {
-	delete m_Instance:
+	delete m_Instance;
 }
 
 template<typename SingleTonClass>

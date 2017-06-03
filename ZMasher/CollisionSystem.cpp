@@ -25,49 +25,54 @@ bool CollisionSystem::Simulate(const float dt)
 {
 	//BRUTEFOOOOOOOOOOOOOOOOOOOORCE
 	//TODO: Optimize this, might be a major task
-	for (int i = 0; i < m_CollisionCompManager->m_Spheres.Size(); ++i)
-	{
-		for (int j = 0; j < m_CollisionCompManager->m_Spheres.Size(); ++j)
-		{
-			const GameObject object_a = m_CollisionCompManager->m_Spheres[i].m_GameObject;
-			const GameObject object_b = m_CollisionCompManager->m_Spheres[j].m_GameObject;
-			if (m_TransformCompManager->GetTransform(object_a) &&
-				m_TransformCompManager->GetTransform(object_b) &&
-				GAME_OBJECT_IS_ALIVE(object_a) &&
-				GAME_OBJECT_IS_ALIVE(object_b) &&
-				SphereVsSphereTest(m_CollisionCompManager->m_Spheres[i],
-								   m_CollisionCompManager->m_Spheres[j],
-								   m_TransformCompManager->GetTransform(object_a)->GetTranslation(),
-								   m_TransformCompManager->GetTransform(object_b)->GetTranslation()))
-			{
-				//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[i].m_GameObject,
-				//																m_CollisionCompManager->m_Spheres[j].m_GameObject));
-				//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[j].m_GameObject,
-				//																m_CollisionCompManager->m_Spheres[i].m_GameObject));
-				
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[i].m_GameObject);
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[j].m_GameObject);
+	//for (int i = 0; i < m_CollisionCompManager->m_Spheres.Size(); ++i)
+	//{
+	//	for (int j = i; j < m_CollisionCompManager->m_Spheres.Size(); ++j)
+	//	{
+	//		SphereCollisionComponent& sphereA = m_CollisionCompManager->m_Spheres[i];
+	//		SphereCollisionComponent& sphereB = m_CollisionCompManager->m_Spheres[j];
+	//		const GameObject object_a = sphereA.m_GameObject;
+	//		const GameObject object_b = sphereB.m_GameObject;
+	//		ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(object_a);
+	//		ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
+	//		if (transformA &&
+	//			transformB &&
+	//			GAME_OBJECT_IS_ALIVE(object_a) &&
+	//			GAME_OBJECT_IS_ALIVE(object_b) &&
+	//			SphereVsSphereTest(sphereA,
+	//							   sphereB,
+	//							   transformA->GetTranslation(),
+	//							   transformB->GetTranslation()))
+	//		{
+	//			//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[i].m_GameObject,
+	//			//																m_CollisionCompManager->m_Spheres[j].m_GameObject));
+	//			//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[j].m_GameObject,
+	//			//																m_CollisionCompManager->m_Spheres[i].m_GameObject));
+	//			
+	//			//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[i].m_GameObject);
+	//			//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[j].m_GameObject);
 
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_a)->m_GameObject);
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_b)->m_GameObject);
-			}
-		}
-	}
+	//			//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_a)->m_GameObject);
+	//			//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_b)->m_GameObject);
+	//		}
+	//	}
+	//}
 	return SimulatePhysics(dt);
 }
 
 bool CollisionSystem::SimulatePhysics(const float dt)
 {
-	const float frame_time = dt > 0.03 ? 0.016 : dt;
+	const float frame_time = dt;
 	for (short i = 0; i < m_CollisionCompManager->m_Momentums.Size(); i++)
 	{
 		GameObject game_object = m_CollisionCompManager->m_Momentums[i].m_GameObject;
-		if (m_TransformCompManager->GetTransform(game_object) == nullptr)
+		ZMasher::Matrix44f* transform = m_TransformCompManager->GetTransform(game_object);
+		if (transform == nullptr)
 		{
 			continue;
 		}
-		m_TransformCompManager->GetTransform(game_object)->SetTranslation(
-			m_TransformCompManager->GetTransform(game_object)->GetTranslation() + 
+		transform->SetTranslation(
+			transform->GetTranslation() + 
 			ZMasher::Vector4f(m_CollisionCompManager->m_Momentums[i].m_Speed*frame_time));
 	}
 	return true;

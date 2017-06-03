@@ -6,6 +6,7 @@
 #include "ZMasherUtilities.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <DataStructures\BinarySearchTree.h>
 
 GameplayState::GameplayState(Camera* camera) 
 	: m_Camera(camera),
@@ -21,14 +22,13 @@ GameplayState::~GameplayState()
 
 bool GameplayState::Init(const char* args)
 {
-	m_Camera->SetPosition(ZMasher::Vector3f(200, 40, -100));
-
+	m_Camera->SetPosition(ZMasher::Vector3f(100, 40, -100));
 
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	m_GameObjectManager.Init();
 	const float range = 100;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 250; ++i)
 	{
 		transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-range, range), 0, ZMasher::GetRandomFloat(-range, range), 0));
 		if (i%2)
@@ -42,7 +42,7 @@ bool GameplayState::Init(const char* args)
 		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
 		m_GameObjectManager.AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 		
-		m_GameObjectManager.AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(200, 1, transform.GetTranslation().z));
+		m_GameObjectManager.AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(100, 1, transform.GetTranslation().z));
 	}
 
 	return true;

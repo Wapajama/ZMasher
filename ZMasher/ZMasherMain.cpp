@@ -6,6 +6,43 @@
 #include "GameplayState.h"
 #include <ZMasher\InputManager.h>
 
+#include <iostream>
+#include <fstream>
+
+#include <DataStructures\BinarySearchTree.h>
+#include <ZMasher/ZMasherUtilities.h>
+
+class IntComparer
+	:public ZMasher::BSTComparator<int>
+{
+public:
+	bool LessThan(const int& one,const int& two)const override
+	{
+		return one < two;
+	}
+	bool GreaterThan(const int& one,const int& two)const override
+	{
+		return one > two;
+	}
+	bool Equals(const int& one,const int& two)const override
+	{
+		return one == two;
+	}
+};
+
+//ZMasher::BinarySearchTree<int, IntComparer> test;
+//
+//void BinaryTreeTest()
+//{
+//	int derp = 0;
+//	for (short i = 0; i < 100; i++)
+//	{
+//		derp= ZMasher::GetRandomInt(-1000, 1000);
+//		test.Insert(derp);
+//	}
+//	ZMasher::BSTNode<int, IntComparer>* test_node = test.Exists(derp);
+//}
+
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -15,10 +52,12 @@ ZMasherMain::ZMasherMain()
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
 	m_WinVals.m_Resolution.x = 1280;
 	m_WinVals.m_Resolution.y = 720;
+	Profiler::Create();
 }
 
 ZMasherMain::~ZMasherMain()
 {
+	Profiler::Release();
 }
 
 ZMasherMain* ZMasherMain::Instance()
@@ -32,6 +71,14 @@ ZMasherMain* ZMasherMain::Instance()
 
 bool ZMasherMain::Init()
 {
+	//BinaryTreeTest();
+
+#ifdef BENCHMARK
+	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
+	m_RenderFrame = Profiler::Instance()->AddTask("Render");
+	m_LogicFrame = Profiler::Instance()->AddTask("Logic");
+#endif // BENCHMARK
+	
 	InitWindowClass();
 	CreateWinApiWindow();
 	const bool test = CreateD3D();
@@ -45,6 +92,7 @@ bool ZMasherMain::Init()
 	m_Renderer.SetCamera(m_Camera);
 	m_GameState = new GameplayState(m_Camera);
 	m_GameState->Init(nullptr);
+
 	TimerManager::GetInstance()->Update();
 	return true;
 }
@@ -56,21 +104,50 @@ bool ZMasherMain::Update()
 		return false;
 	}
 	TimerManager::GetInstance()->Update();
+
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
+#ifdef BENCHMARK
+	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
+	if (!benchmark)
+	{
+		return false;
+	}
+#endif // BENCHMARK_TEST
 	InputManager::Instance()->Update(dt);
 
+#ifdef BENCHMARK
+	Profiler::Instance()->BeginTask(m_TotalFrame);
+	Profiler::Instance()->BeginTask(m_RenderFrame);
+#endif // BENCHMARK
+
 	Render(dt);
+
+#ifdef BENCHMARK
+	Profiler::Instance()->EndTask(m_RenderFrame);
+	Profiler::Instance()->BeginTask(m_LogicFrame);
+#endif // BENCHMARK
 
 	//RECT window_rect;
 	//GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
 	//reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
 	if (!m_GameState->Update(dt))
 	{
+		Profiler::Instance()->EndTask(m_LogicFrame);
 		return false;
 	}
+#ifdef BENCHMARK
+	Profiler::Instance()->EndTask(m_LogicFrame);
+	Profiler::Instance()->EndTask(m_TotalFrame);
+#endif // BENCHMARK
+
 	//SetCursorPos((window_rect.left + window_rect.right)/ 2, (window_rect.top + window_rect.bottom) / 2);
 	return true;
+}
+
+void ZMasherMain::Destroy()
+{
+	delete m_Instance;
 }
 
 bool ZMasherMain::HandleWinMsg()
@@ -174,34 +251,6 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 		{
 			SendMessage(hwnd, WM_CLOSE, 0, 0);
 		}
-
-		/*
-			TODO: replace this with legitimate gameplay code
-		*/
-		//if (wparam == 'W')
-		//{
-		//	ZMasherMain::Instance()->MoveForward();
-		//}
-		//if(wparam == 'S')
-		//{
-		//	ZMasherMain::Instance()->MoveBackwards();
-		//}
-		//if (wparam == 'A')
-		//{
-		//	ZMasherMain::Instance()->MoveLeft();
-		//}
-		//if (wparam == 'D')
-		//{			
-		//	ZMasherMain::Instance()->MoveRight();
-		//}
-		//if (wparam == VK_LEFT)
-		//{
-		//	ZMasherMain::Instance()->RotateLeft();				
-		//}
-		//if (wparam == VK_RIGHT)
-		//{
-		//	ZMasherMain::Instance()->RotateRight();
-		//}
 
 		return 0;
 

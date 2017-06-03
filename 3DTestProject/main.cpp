@@ -9,13 +9,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   int nCmdShow)
 {
 	srand(time(0));
+
 	const bool test = ZMasherMain::Instance()->Init();
 
 	assert(test);
 
 	while (ZMasherMain::Instance()->Update())
 	{
-		Sleep(1);
 	}
+	ZMasherMain::Destroy();
+	
 	return 0;
 }

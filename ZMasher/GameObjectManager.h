@@ -8,6 +8,7 @@
 #include <ZMasher\CollisionComponentManager.h>
 #include <ZMasher\CollisionSystem.h>
 #include <ZMasher\AISystem.h>
+#include <Profiler.h>
 
 //Dataoriented entitysystem
 class GameObjectManager
@@ -50,5 +51,12 @@ private:
 	CollisionSystem m_CollisionSystem;
 	CollisionComponentManager m_CollisionCompManager;
 	AISystem m_AISystem;
+
+#ifdef BENCHMARK
+	ProfilerTaskID m_CollisionTimeStamp;
+	ProfilerTaskID m_AITimeStamp;
+	ProfilerTaskID m_MeshCompManagerTimeStamp;
+#endif // BENCHMARK
+
 
 };
