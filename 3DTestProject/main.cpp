@@ -8,7 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine,
 				   int nCmdShow)
 {
-	srand(time(0));
+	//srand(time(0));
+	srand(1);
 
 	const bool test = ZMasherMain::Instance()->Init();
 

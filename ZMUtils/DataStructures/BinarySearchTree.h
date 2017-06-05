@@ -19,41 +19,44 @@ namespace ZMasher
 	struct BSTNode
 	{
 		BSTNode()
+			: left(nullptr)
+			, right(nullptr)
+			, parent(nullptr)
 		{
-			m_LeftNode = nullptr;
-			m_RightNode = nullptr;
 		}
-		BSTNode(const Type& value, BSTNode* left = nullptr, BSTNode* right = nullptr)
+		BSTNode(const Type& a_value, BSTNode* a_parent = nullptr, BSTNode* a_left = nullptr, BSTNode* a_right = nullptr)
+			: value(a_value)
+			, parent(a_parent)
+			, left(a_left)
+			, right(a_right)
 		{
-			m_Value = value;
-			m_LeftNode = left;
-			m_RightNode = right;
 		}
 		bool operator<(const BSTNode& other)
 		{
-			return m_Comparator.LessThan(m_Value, other.m_Value);
+			return m_Comparator.LessThan(value, other.value);
 		}
 		bool operator>(const BSTNode& other)
 		{
-			return m_Comparator.GreaterThan(m_Value, other.m_Value);
+			return m_Comparator.GreaterThan(value, other.value);
 		}
 		bool operator==(const BSTNode& other)
 		{
-			return m_Comparator.Equals(m_Value, other.m_Value);
+			return m_Comparator.Equals(value, other.value);
 		}
 
-		Type m_Value;
-		BSTNode* m_LeftNode;
-		BSTNode* m_RightNode;
+		Type value;
+		BSTNode* left;
+		BSTNode* right;
+		BSTNode* parent;
 	private:
 		Comparator m_Comparator;
 	};
 
 	//Memory Allocation
 	TEMPLATE_HEADER
-	static BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, BSTNode TEMPLATE_ARGS* left = nullptr, BSTNode TEMPLATE_ARGS* right = nullptr)
+	static BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, BSTNode TEMPLATE_ARGS* parent = nullptr, BSTNode TEMPLATE_ARGS* left = nullptr, BSTNode TEMPLATE_ARGS* right = nullptr)
 	{
-		return new BSTNode TEMPLATE_ARGS(value, left, right);
+		return new BSTNode TEMPLATE_ARGS(value, parent, left, right);//TODO: add allocator
 	}
 
 	TEMPLATE_HEADER
@@ -64,22 +67,26 @@ namespace ZMasher
 		BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node);
 		~BinarySearchTree();
 
+		BSTNode TEMPLATE_ARGS* Insert(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Insert(const Type& value);
+
 		BSTNode TEMPLATE_ARGS* Delete(BSTNode TEMPLATE_ARGS* node);
+		BSTNode TEMPLATE_ARGS* Delete(const Type& value);
 
 		BSTNode TEMPLATE_ARGS* Find(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Find(const Type& value);
 
+		void TestIfCorrect();//TODO: REMOVE THIS
+
 	private:
 
-		BSTNode TEMPLATE_ARGS* FindRecursive(BSTNode TEMPLATE_ARGS* node, const Type& value, BSTNode TEMPLATE_ARGS* parent, BSTNode TEMPLATE_ARGS* grand_parent);
-		BSTNode TEMPLATE_ARGS* InsertValueRecursive(BSTNode TEMPLATE_ARGS* node, const Type& value);
+		void Test(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent);
 
 		void Rotate(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent);
+		void RotateRight(BSTNode TEMPLATE_ARGS* node);
+		void RotateLeft(BSTNode TEMPLATE_ARGS* node);
 
-		BSTNode TEMPLATE_ARGS* Splay(BSTNode TEMPLATE_ARGS* current,
-									 BSTNode TEMPLATE_ARGS* parent,
-									 BSTNode TEMPLATE_ARGS* grand_parent);
+		BSTNode TEMPLATE_ARGS* Splay(BSTNode TEMPLATE_ARGS* node);
 
 		BSTNode TEMPLATE_ARGS* m_Root;
 		int m_NumberOfNodes;
@@ -104,35 +111,54 @@ namespace ZMasher
 	}
 
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(const Type& value)
+	void BinarySearchTree TEMPLATE_ARGS::TestIfCorrect()//TODO: REMOVE THIS
 	{
-		++m_NumberOfNodes;
-		if (m_Root == nullptr)
-		{
-			m_Root = AllocateNode TEMPLATE_ARGS(value);
-			return m_Root;
-		}
-		return InsertValueRecursive(m_Root, value);
+		Test(m_Root, nullptr);
 	}
 
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertValueRecursive(BSTNode TEMPLATE_ARGS* node, const Type& value)
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(const Type& value)
 	{
-		ASSERT(node != nullptr, "Node is nullptr!");
+		++m_NumberOfNodes;
+		BSTNode TEMPLATE_ARGS* inserted = AllocateNode TEMPLATE_ARGS(value);
 
-		if (m_Comparer.LessThan(value, node->m_Value))
+		if (m_Root == nullptr)
 		{
-			if (node->m_LeftNode == nullptr)
+			m_Root = inserted;
+			return m_Root;
+		}
+		return Insert(inserted);
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(BSTNode TEMPLATE_ARGS* inserted)
+	{
+		BSTNode TEMPLATE_ARGS* current = m_Root;
+		while (true)
+		{
+			if (m_Comparer.LessThan(inserted->value, current->value))
 			{
-				return node->m_LeftNode = AllocateNode TEMPLATE_ARGS(value);
+				if (current->left == nullptr)
+				{
+					current->left = inserted;
+					inserted->parent = current;
+					break;
+				}
+				current = current->left;
 			}
-			return InsertValueRecursive(node->m_LeftNode, value);
+			else
+			{
+				if (current->right == nullptr)
+				{
+					current->right = inserted;
+					inserted->parent = current;
+					break;
+				}
+				current = current->right;
+			}
 		}
-		if (node->m_RightNode == nullptr)
-		{
-			return node->m_RightNode = AllocateNode TEMPLATE_ARGS(value);
-		}
-		return InsertValueRecursive(node->m_RightNode, value);
+		Splay(inserted);
+		return inserted;
 	}
 
 	TEMPLATE_HEADER
@@ -145,101 +171,160 @@ namespace ZMasher
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Find(BSTNode TEMPLATE_ARGS* node)
 	{
-
-		return nullptr;
+		return Find(node->value);
 	}
 
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Find(const Type& value)
 	{
-		if (m_Root == nullptr)
-		{
-			return m_Root;
-		}
+		BSTNode TEMPLATE_ARGS* current = m_Root;
 
-		return FindRecursive(m_Root, value);
-	}
-
-	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::FindRecursive(BSTNode TEMPLATE_ARGS* node,
-																		 const Type& value,
-																		 BSTNode TEMPLATE_ARGS* parent,
-																		 BSTNode TEMPLATE_ARGS* grand_parent)
-	{
-		ASSERT(node != nullptr, "Node is nullptr!");
-		if (m_Comparer.Equals(value, node->m_Value))
+		//break means return nullptr
+		while (true)
 		{
-			return node;
-		}
-		if (m_Comparer.LessThan(value, node->m_Value))
-		{
-			if (node->m_LeftNode == nullptr)
+			if (m_Comparer.Equals(value, current->value))
 			{
-				return nullptr;
+				Splay(current);
+				return current;
 			}
-			return FindRecursive(node->m_LeftNode, value);
+			if (m_Comparer.LessThan(value, current->value))
+			{
+				if (current->left == nullptr)
+				{
+					break;
+				}
+				current = current->left;
+			}
+			else
+			{
+				if (current->right == nullptr)
+				{
+					break;
+				}
+				current = current->right;
+			}
 		}
-		if (node->m_RightNode == nullptr)
-		{
-			return nullptr;
-		}
-		return FindRecursive(node->m_RightNode, value);
+		Splay(current);
+		return nullptr;
 	}
 
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::Rotate(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent)
 	{
-		//less than
-		if (m_Comparer.LessThan(node->m_Value, parent->m_Value))
+		if (parent->left == node)
 		{
-			BSTNode TEMPLATE_ARGS* temp = node->m_RightNode;
-			node->m_RightNode = parent;
-			parent->m_LeftNode = temp;
-			return;
+			RotateRight(parent);
 		}
-		//greater than, equals to
-		BSTNode TEMPLATE_ARGS* temp = node->m_LeftNode;
-		node->m_LeftNode = parent;
-		parent->m_RightNode = temp;
+		else
+		{
+			RotateLeft(parent);
+		}
 	}
 
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Splay(	BSTNode TEMPLATE_ARGS* current,
-																	BSTNode TEMPLATE_ARGS* parent,
-																	BSTNode TEMPLATE_ARGS* grand_parent)
+	void BinarySearchTree TEMPLATE_ARGS::RotateRight(BSTNode TEMPLATE_ARGS* node)
 	{
-		//zig zag
-		if (current == parent->m_LeftNode && //leftchild of a rightchild
-			parent == grand_parent->m_RightNode || 
+		BSTNode TEMPLATE_ARGS* parent_tree = node->parent;
 
-			current == parent->m_RightNode &&
-			parent == grand_parent->m_LeftNode)
+		BSTNode TEMPLATE_ARGS* temp = node->left->right;
+		node->left->right = node;
+		node->left->parent = parent_tree;
+		node->parent = node->left;
+		node->left = temp;
+		if (node->left != nullptr)
 		{
-			Rotate(current, parent);
-			Rotate(current, grand_parent);
-			return current;
+			node->left->parent = node;
 		}
 
-		//zig zig
-		if (current == parent->m_LeftNode && //leftchild of a rightchild
-			parent == grand_parent->m_LeftNode || 
-
-			current == parent->m_RightNode &&
-			parent == grand_parent->m_RightNode)
+		if (parent_tree == nullptr)
 		{
-			Rotate(parent, grand_parent);
-			Rotate(current, parent);
-			return current;
+			return;
+		}
+		if (parent_tree->right == node)
+		{
+			parent_tree->right = node->parent;
+		}
+		else
+		{
+			parent_tree->left = node->parent;
+		}
+	}
+
+	TEMPLATE_HEADER
+	void BinarySearchTree TEMPLATE_ARGS::RotateLeft(BSTNode TEMPLATE_ARGS* node)
+	{
+		BSTNode TEMPLATE_ARGS* parent_tree = node->parent;
+
+		BSTNode TEMPLATE_ARGS* temp = node->right->left;
+		node->right->left = node;
+		node->right->parent = parent_tree;
+		node->parent = node->right;
+		node->right = temp;
+		if (node->right != nullptr)
+		{
+			node->right->parent = node;
 		}
 
-		//zig
-		if (grand_parent == nullptr)//we have hit root node
+		if (parent_tree == nullptr)
 		{
-			Rotate(current, parent);
-			return current;
+			return;
+		}
+		if (parent_tree->left == node)
+		{
+			parent_tree->left = node->parent;
+		}
+		else
+		{
+			parent_tree->right = node->parent;
+		}
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Splay(BSTNode TEMPLATE_ARGS* node)
+	{
+		ASSERT(node != nullptr, "node is nullptr!");
+
+		BSTNode TEMPLATE_ARGS* current = node;
+		while (true)
+		{
+			//done
+			if (current->parent == nullptr)//some of the rotations set its parent to nullptr
+			{
+				m_Root = current;
+				break;
+			}
+			//zig
+			if (current->parent == m_Root)
+			{
+				Rotate(current, current->parent);
+				m_Root = current;
+				break;
+			}
+			//zig zig
+			if (current->parent->parent->left ==	current->parent &&
+				current->parent->left ==			current ||
+				
+				current->parent->parent->right == current->parent &&
+				current->parent->right ==			current)
+			{
+				Rotate(current->parent, current->parent->parent);
+				Rotate(current, current->parent);
+				continue;
+			}
+
+			//zig zag
+			if (current->parent->parent->left ==	current->parent &&
+				current->parent->right ==			current ||
+				
+				current->parent->parent->right ==	current->parent &&
+				current->parent->left ==			current)
+			{
+				Rotate(current, current->parent);
+				Rotate(current, current->parent);
+				continue;
+			}
 		}
 
-		ASSERT(false, "Splay Failed!");
-		return nullptr;
+		return current;
 	}
 }

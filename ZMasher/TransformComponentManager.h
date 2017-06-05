@@ -5,6 +5,7 @@
 #include <ZMasher\GameObject.h>
 #include <Profiler.h>
 
+
 struct TransformComponent
 {
 	TransformComponent() {}

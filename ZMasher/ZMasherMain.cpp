@@ -30,18 +30,23 @@ public:
 	}
 };
 
-//ZMasher::BinarySearchTree<int, IntComparer> test;
-//
-//void BinaryTreeTest()
-//{
-//	int derp = 0;
-//	for (short i = 0; i < 100; i++)
-//	{
-//		derp= ZMasher::GetRandomInt(-1000, 1000);
-//		test.Insert(derp);
-//	}
-//	ZMasher::BSTNode<int, IntComparer>* test_node = test.Exists(derp);
-//}
+ZMasher::BinarySearchTree<int, IntComparer> test;
+
+void BinaryTreeTest()
+{
+	int derp = 0;
+	for (int i = 0; i < 10000; i++)
+	{
+		derp= ZMasher::GetRandomInt(-1000, 1000);
+		test.Insert(derp);
+	}
+	ZMasher::BSTNode<int, IntComparer>* test_node = test.Find(derp);
+	test_node =nullptr;
+	while(test_node == nullptr)
+	{
+		test_node = test.Find(ZMasher::GetRandomInt(-1000, 1000));
+	}
+}
 
 using namespace ZMasher;
 
@@ -71,7 +76,7 @@ ZMasherMain* ZMasherMain::Instance()
 
 bool ZMasherMain::Init()
 {
-	//BinaryTreeTest();
+	BinaryTreeTest();
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
