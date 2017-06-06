@@ -39,13 +39,12 @@ bool AISystem::Simulate(const float dt)
 			//Profiler::Instance()->EndTask(m_AIInternalTimeStamp);
 			continue;
 		}
-		Profiler::Instance()->BeginTask(m_AIInternalTimeStamp);
+		AIComponent* ai_comp = m_AIMngr->GetComponent(game_object);
 
 		const ZMasher::Vector3f position = ZMasher::Vector3f(transform_comp->m_Transform.GetTranslation());
-		const float length_to_target = (m_AIMngr->GetComponent(game_object)->m_TargetPos - position).Length();
+		const float length_to_target = (ai_comp->m_TargetPos - position).Length();
 		const AIType* ai_type = m_AIMngr->GetAIType(m_AIMngr->m_AIComponents[i].m_Type);
 
-		AIComponent* ai_comp = m_AIMngr->GetComponent(game_object);
 		if (length_to_target < ai_type->m_ArrivedDist)
 		{
 			//if(GAME_OBJECT_IS_ALIVE(transform_comp->m_GameObject))
@@ -57,10 +56,9 @@ bool AISystem::Simulate(const float dt)
 			//}
 			transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f( -100, position.y, ZMasher::GetRandomFloat(-100, 100), transform_comp->m_Transform.GetTranslation().w));
 			ai_comp->m_TargetPos.z = transform_comp->m_Transform.GetTranslation().z;
-			Profiler::Instance()->EndTask(m_AIInternalTimeStamp);
 			continue;
 		}
-		Profiler::Instance()->EndTask(m_AIInternalTimeStamp);
+		
 
 		
 		SteeringArgs steer_args{ai_comp, ai_type, ai_comp->m_TargetPos - position}; 
@@ -79,15 +77,18 @@ bool AISystem::Simulate(const float dt)
 		}
 
 		ClampMaxSpeed(steering, ai_type);
-		m_CollisionMngr->GetMomentumComponent(game_object)->m_Speed = steering;
-
+		auto momentum = m_CollisionMngr->GetMomentumComponent(game_object);
+		if (momentum != nullptr)
+		{
+			momentum->m_Speed = steering;
+		}
 	}
 	return true;
 }
 
 ZMasher::Vector3f AISystem::Seek(const SteeringArgs& args)
 {
-	ZMasher::Vector3f steering = args.m_ToTarget;//TODO: refactor this line
+	ZMasher::Vector3f steering = args.m_ToTarget;
 	steering.Normalize();
 	steering*=args.m_Type->m_MaxSpeed;
 	return steering;

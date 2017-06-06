@@ -22,6 +22,7 @@ void CollisionComponentManager::AddComponent(const CollisionType filter,
 {
 	m_Spheres.Add(SphereCollisionComponent(filter, radius, game_object));
 	m_Momentums.Add(MomentumComponent(game_object, weight, speed));
+	m_LookupSet.Insert({game_object, m_Spheres.Size()-1});
 }
 
 bool CollisionComponentManager::Init()
@@ -34,9 +35,7 @@ void CollisionComponentManager::Destroy()
 }
 
 bool CollisionComponentManager::Update()
-{
-	
-
+{ 
 	ComponentManager::RemoveDeadComponents(m_Spheres);
 	ComponentManager::RemoveDeadComponents(m_Momentums);
 	m_Collisions.RemoveAll();//should have been read since last time,
@@ -45,24 +44,26 @@ bool CollisionComponentManager::Update()
 
 MomentumComponent* CollisionComponentManager::GetMomentumComponent(GameObject game_object)
 {
-	for (short i = 0; i < m_Momentums.Size(); i++)
-	{
-		if (m_Momentums[i].m_GameObject == game_object)
-		{
-			return &m_Momentums[i];
-		}
-	}
-	return nullptr;
+	//for (short i = 0; i < m_Momentums.Size(); i++)
+	//{
+	//	if (m_Momentums[i].m_GameObject == game_object)
+	//	{
+	//		return &m_Momentums[i];
+	//	}
+	//}
+	//return nullptr;
+	return &m_Momentums[m_LookupSet.Find({game_object, -1})->value.index];
 }
 
 SphereCollisionComponent* CollisionComponentManager::GetSphereCollisionComponent(GameObject game_object)
 {
-	for (short i = 0; i < m_Spheres.Size(); i++)
-	{
-		if (m_Spheres[i].m_GameObject == game_object)
-		{
-			return &m_Spheres[i];
-		}
-	}
-	return nullptr;
+	//for (short i = 0; i < m_Spheres.Size(); i++)
+	//{
+	//	if (m_Spheres[i].m_GameObject == game_object)
+	//	{
+	//		return &m_Spheres[i];
+	//	}
+	//}
+	//return nullptr;
+	return &m_Spheres[m_LookupSet.Find({game_object, -1})->value.index];
 }

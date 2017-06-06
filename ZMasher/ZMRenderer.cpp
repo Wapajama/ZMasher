@@ -21,13 +21,13 @@ ZMRenderer::~ZMRenderer(void)
 
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 {
-	
 	const float dt_cap = FLT_MAX;
 	m_Dt+= dt;
 	if (m_Dt > dt_cap)
 	{
 		m_Dt-=dt_cap;
 	}
+	
 	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
 	{
 		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
@@ -35,16 +35,21 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass niggaz aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
+	Profiler::Instance()->BeginTask(m_ModelsTimeStamp);
 	RenderSkybox(d3dinterface);
 	Render2DTerrain(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
+	Profiler::Instance()->EndTask(m_ModelsTimeStamp);
+
 }
 
 void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
+	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
+
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
 

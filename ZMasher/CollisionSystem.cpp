@@ -7,6 +7,7 @@ CollisionSystem::CollisionSystem(CollisionComponentManager* collision_comp_manag
 	: m_CollisionCompManager(collision_comp_manager)
 	, m_TransformCompManager(transform_comp_manager)
 {
+	//list_ID = m_TransformCompManager->RegisterList(1024);
 }
 
 static bool SphereVsSphereTest(const SphereCollisionComponent& sphere_a, const SphereCollisionComponent& sphere_b,

@@ -2,6 +2,7 @@
 #include "ComponentManager.h"
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMVector3.h>
+#include <DataStructures\BinarySearchTree.h>
 
 typedef unsigned short CollisionType;
 enum eCOLLISIONTYPE: CollisionType
@@ -42,6 +43,30 @@ struct MomentumComponent //no need for gameobject id, they are aligned in the sa
 	ZMasher::Vector3f m_Acceleration;
 };
 
+struct SphereIndexPair
+{
+	GameObject game_object;
+	int index;
+};
+
+class SphereComparer
+	: public ZMasher::BSTComparator<SphereIndexPair>
+{
+public:
+	bool LessThan(const SphereIndexPair& one,const SphereIndexPair& two)const override
+	{
+		return one.game_object.m_ID < two.game_object.m_ID;
+	}
+	bool GreaterThan(const SphereIndexPair& one,const SphereIndexPair& two)const override
+	{
+		return one.game_object.m_ID > two.game_object.m_ID;
+	}
+	bool Equals(const SphereIndexPair& one,const SphereIndexPair& two)const override
+	{
+		return one.game_object == two.game_object;
+	}
+};
+
 struct CollisionInfoComponent
 {
 	CollisionInfoComponent(GameObject object, GameObject collide_object) :
@@ -69,7 +94,6 @@ public:
 	void Destroy()override;
 	bool Update()override;
 
-	//TODO: optimize these
 	MomentumComponent* GetMomentumComponent(GameObject game_object);
 	SphereCollisionComponent* GetSphereCollisionComponent(GameObject game_object);
 
@@ -78,6 +102,8 @@ private:
 	GrowArray<SphereCollisionComponent> m_Spheres;
 	GrowArray<MomentumComponent> m_Momentums;
 	GrowArray<CollisionInfoComponent> m_Collisions;
+
+	ZMasher::BinarySearchTree<SphereIndexPair, SphereComparer> m_LookupSet;
 
 	friend class CollisionSystem;
 };

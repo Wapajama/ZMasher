@@ -29,6 +29,5 @@ public:
 
 private:
 
-	///MemoryContainer<ModelComponent, 1024> m_ModelComponents;//TODO: PUT THIS IN RENDERMANAGER OR SOMETHING, DATA ORIENTED
 	GrowArray<ModelComponent> m_ModelComponents;
 };

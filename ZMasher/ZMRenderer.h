@@ -3,6 +3,7 @@
 #include "ZMModel.h"
 #include "ZMModelInstanceNode.h"
 #include <Math\ZMMatrix44.h>
+#include <Profiler.h>
 
 class Camera;
 class ZMD3DInterface;
@@ -46,6 +47,9 @@ private:
 	ZMModelInstanceNode* m_Skybox;
 	ZMModelInstanceNode* m_Terrain;
 
+#ifdef BENCHMARK
+	ProfilerTaskID m_ModelsTimeStamp;
+#endif // BENCHMMARK
 
 	float m_Dt;
 };

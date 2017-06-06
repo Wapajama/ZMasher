@@ -1,6 +1,6 @@
 #include "TransformComponentManager.h"
 
-TransformComponentManager::TransformComponentManager()
+TransformComponentManager::TransformComponentManager():m_Transforms(1024)
 {
 }
 
@@ -23,6 +23,7 @@ bool TransformComponentManager::Update()
 bool TransformComponentManager::AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform)
 {
 	m_Transforms.Add(TransformComponent(game_object, transform));
+	m_LookupSet.Insert({game_object, m_Transforms.Size()-1});
 	return true;
 }
 
@@ -38,14 +39,7 @@ ZMasher::Matrix44f* TransformComponentManager::GetTransform(GameObject game_obje
 
 TransformComponent* TransformComponentManager::GetTransformComp(GameObject game_object)
 {
-	for (short i = 0; i < m_Transforms.Size(); ++i)
-	{
-		if (m_Transforms[i].m_GameObject == game_object)
-		{
-			return &m_Transforms[i];
-		}
-	}
-	return nullptr;
+	return &m_Transforms[m_LookupSet.Find({game_object, -1})->value.index];
 }
 
 void TransformComponentManager::Destroy()

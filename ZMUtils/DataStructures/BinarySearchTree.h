@@ -67,7 +67,6 @@ namespace ZMasher
 		BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node);
 		~BinarySearchTree();
 
-		BSTNode TEMPLATE_ARGS* Insert(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Insert(const Type& value);
 
 		BSTNode TEMPLATE_ARGS* Delete(BSTNode TEMPLATE_ARGS* node);
@@ -76,9 +75,8 @@ namespace ZMasher
 		BSTNode TEMPLATE_ARGS* Find(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Find(const Type& value);
 
-		void TestIfCorrect();//TODO: REMOVE THIS
-
 	private:
+		BSTNode TEMPLATE_ARGS* InsertInternal(const Type& value);
 
 		void Test(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent);
 
@@ -110,46 +108,72 @@ namespace ZMasher
 	{
 	}
 
-	TEMPLATE_HEADER
-	void BinarySearchTree TEMPLATE_ARGS::TestIfCorrect()//TODO: REMOVE THIS
-	{
-		Test(m_Root, nullptr);
-	}
+	//TEMPLATE_HEADER
+	//void BinarySearchTree TEMPLATE_ARGS::TestIfCorrect()
+	//{
+	//	Test(m_Root, nullptr);
+	//}
+	//
+	//static int max_counter = 0;
+	//static int counter = 0;
+	//TEMPLATE_HEADER
+	//void BinarySearchTree TEMPLATE_ARGS::Test(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent)
+	//{
+	//	if (node == nullptr)
+	//	{
+	//		return;
+	//	}
+	//	++counter;
+	//	if (counter > max_counter)
+	//	{
+	//		max_counter = counter;
+	//	}
+	//	ASSERT(node->parent == parent, "nodes parent is wrong!");
+
+	//	Test(node->left, node);
+	//	Test(node->right, node);
+
+	//}
 
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(const Type& value)
 	{
 		++m_NumberOfNodes;
-		BSTNode TEMPLATE_ARGS* inserted = AllocateNode TEMPLATE_ARGS(value);
-
 		if (m_Root == nullptr)
 		{
-			m_Root = inserted;
+			m_Root = AllocateNode TEMPLATE_ARGS(value);
 			return m_Root;
 		}
-		return Insert(inserted);
+		return InsertInternal(value);
 	}
 
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(BSTNode TEMPLATE_ARGS* inserted)
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertInternal(const Type& value)
 	{
 		BSTNode TEMPLATE_ARGS* current = m_Root;
+		BSTNode TEMPLATE_ARGS* inserted = nullptr;
 		while (true)
 		{
-			if (m_Comparer.LessThan(inserted->value, current->value))
+			if (m_Comparer.LessThan(value, current->value))
 			{
 				if (current->left == nullptr)
 				{
+					inserted = AllocateNode TEMPLATE_ARGS(value);
 					current->left = inserted;
 					inserted->parent = current;
 					break;
 				}
 				current = current->left;
 			}
+			else if (m_Comparer.Equals(value, current->value))
+			{
+				return nullptr;//can't have two of the same value
+			}
 			else
 			{
 				if (current->right == nullptr)
 				{
+					inserted =  AllocateNode TEMPLATE_ARGS(value);
 					current->right = inserted;
 					inserted->parent = current;
 					break;

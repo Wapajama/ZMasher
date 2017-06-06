@@ -9,7 +9,7 @@ struct GameObject
 {
 	ID_TYPE m_ID;
 
-	bool operator==(const GameObject& game_object)
+	bool operator==(const GameObject& game_object)const
 	{
 		//make sure they are both dead first
 		GameObject first = *this;

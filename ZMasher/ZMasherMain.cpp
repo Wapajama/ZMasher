@@ -35,17 +35,19 @@ ZMasher::BinarySearchTree<int, IntComparer> test;
 void BinaryTreeTest()
 {
 	int derp = 0;
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
-		derp= ZMasher::GetRandomInt(-1000, 1000);
+		derp= ZMasher::GetRandomInt(-100000, 100000);
 		test.Insert(derp);
 	}
+	test.TestIfCorrect();
 	ZMasher::BSTNode<int, IntComparer>* test_node = test.Find(derp);
 	test_node =nullptr;
 	while(test_node == nullptr)
 	{
 		test_node = test.Find(ZMasher::GetRandomInt(-1000, 1000));
 	}
+	test.TestIfCorrect();
 }
 
 using namespace ZMasher;
@@ -76,7 +78,7 @@ ZMasherMain* ZMasherMain::Instance()
 
 bool ZMasherMain::Init()
 {
-	BinaryTreeTest();
+	//BinaryTreeTest();
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
@@ -113,11 +115,11 @@ bool ZMasherMain::Update()
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
 #ifdef BENCHMARK
-	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
-	if (!benchmark)
-	{
-		return false;
-	}
+	//const bool benchmark = Profiler::Instance()->IterateFrame(dt);
+	//if (!benchmark)
+	//{
+	//	return false;
+	//}
 #endif // BENCHMARK_TEST
 	InputManager::Instance()->Update(dt);
 
@@ -222,7 +224,7 @@ bool ZMasherMain::CreateD3D()
 	m_WinVals.m_Fullscreen = false;
 	m_WinVals.m_ScreenDepth = 1000.f;
 	m_WinVals.m_ScreenNear = 0.1f;
-	m_WinVals.m_VSync = true;
+	m_WinVals.m_VSync = false;
 
 	const bool test = m_D3DInterface.Init(m_WinVals);
 	if (test == false)
