@@ -29,5 +29,5 @@ public:
 
 private:
 
-	GrowArray<ModelComponent> m_ModelComponents;
+	GrowArray<ModelComponent, short, 512> m_ModelComponents;
 };

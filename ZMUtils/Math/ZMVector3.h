@@ -13,20 +13,20 @@ namespace ZMasher
 
 namespace ZMasher
 {
-	class Vector3f
+	class __declspec(align(16)) Vector3f
 	{
 	public:
 		inline Vector3f();
 		inline Vector3f(const Vector3f& copy);
 		inline explicit Vector3f(const Vector4f&);
-		inline explicit Vector3f(const __m128& data);
+		//inline explicit Vector3f(const __m128& data);
 		inline explicit Vector3f(const float x, const float y, const float z);
 		inline explicit Vector3f(float* arrayPtr);
 		inline ~Vector3f();
 
 		union
 		{
-			__m128 m_Data;
+			//__m128 m_Data;
 			struct
 			{
 				float x;

@@ -80,7 +80,7 @@ private:
 
 	friend class AISystem;
 	GrowArray<AIType> m_AITypes;
-	GrowArray<AIComponent> m_AIComponents;
+	GrowArray<AIComponent, short, 512> m_AIComponents;
 	ZMasher::BinarySearchTree<AIIndexPair, AIComparer> m_LookupSet;
 };
 

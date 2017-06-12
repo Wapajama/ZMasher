@@ -99,9 +99,9 @@ public:
 
 private:
 
-	GrowArray<SphereCollisionComponent> m_Spheres;
-	GrowArray<MomentumComponent> m_Momentums;
-	GrowArray<CollisionInfoComponent> m_Collisions;
+	GrowArray<SphereCollisionComponent, short, 512> m_Spheres;
+	GrowArray<MomentumComponent, short, 512> m_Momentums;
+	GrowArray<CollisionInfoComponent, short, 512> m_Collisions;
 
 	ZMasher::BinarySearchTree<SphereIndexPair, SphereComparer> m_LookupSet;
 

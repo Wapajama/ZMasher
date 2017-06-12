@@ -32,29 +32,32 @@ public:
 
 ZMasher::BinarySearchTree<int, IntComparer> test;
 
-void BinaryTreeTest()
-{
-	int derp = 0;
-	for (int i = 0; i < 100000; i++)
-	{
-		derp= ZMasher::GetRandomInt(-100000, 100000);
-		test.Insert(derp);
-	}
-	test.TestIfCorrect();
-	ZMasher::BSTNode<int, IntComparer>* test_node = test.Find(derp);
-	test_node =nullptr;
-	while(test_node == nullptr)
-	{
-		test_node = test.Find(ZMasher::GetRandomInt(-1000, 1000));
-	}
-	test.TestIfCorrect();
-}
+//void BinaryTreeTest()
+//{
+//	int derp = 0;
+//	for (int i = 0; i < 100000; i++)
+//	{
+//		derp= ZMasher::GetRandomInt(-100000, 100000);
+//		test.Insert(derp);
+//	}
+//	test.TestIfCorrect();
+//	ZMasher::BSTNode<int, IntComparer>* test_node = test.Find(derp);
+//	test_node =nullptr;
+//	while(test_node == nullptr)
+//	{
+//		test_node = test.Find(ZMasher::GetRandomInt(-1000, 1000));
+//	}
+//	test.TestIfCorrect();
+//}
 
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
+#include <iostream>
+
 ZMasherMain::ZMasherMain()
+	:m_Camera(nullptr)
 {
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
 	m_WinVals.m_Resolution.x = 1280;
@@ -78,12 +81,17 @@ ZMasherMain* ZMasherMain::Instance()
 
 bool ZMasherMain::Init()
 {
+	AllocConsole();
+	//freopen("CONIN$", "r", stdin);
+	//freopen("CONOUT$", "w", stdout);
+	//freopen("CONOUT$", "w", stderr);
 	//BinaryTreeTest();
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
 	m_RenderFrame = Profiler::Instance()->AddTask("Render");
 	m_LogicFrame = Profiler::Instance()->AddTask("Logic");
+	m_RenderInternalFrame = Profiler::Instance()->AddTask("RenderInternal");
 #endif // BENCHMARK
 	
 	InitWindowClass();
@@ -91,9 +99,15 @@ bool ZMasherMain::Init()
 	const bool test = CreateD3D();
 	assert(test);
 
-	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
+	void* cam_mem = _mm_malloc(sizeof(Camera), 16);
+	m_Camera = new(cam_mem) Camera(Vector2<int>(m_WinVals.m_Resolution.x,
 									   m_WinVals.m_Resolution.y));
-	m_Camera->SetPosition(Vector3f(0, 0, 10.f));
+
+	std::cout << "camera pointer:" << m_Camera << std::endl;
+	if (m_Camera != nullptr)
+	{
+		m_Camera->SetPosition(Vector3f(0, 0, 10.f));
+	}
 
 	m_Renderer.Init(m_D3DInterface);
 	m_Renderer.SetCamera(m_Camera);
@@ -115,11 +129,11 @@ bool ZMasherMain::Update()
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
 #ifdef BENCHMARK
-	//const bool benchmark = Profiler::Instance()->IterateFrame(dt);
-	//if (!benchmark)
-	//{
-	//	return false;
-	//}
+	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
+	if (!benchmark)
+	{
+		return false;
+	}
 #endif // BENCHMARK_TEST
 	InputManager::Instance()->Update(dt);
 
@@ -224,7 +238,7 @@ bool ZMasherMain::CreateD3D()
 	m_WinVals.m_Fullscreen = false;
 	m_WinVals.m_ScreenDepth = 1000.f;
 	m_WinVals.m_ScreenNear = 0.1f;
-	m_WinVals.m_VSync = false;
+	m_WinVals.m_VSync = true;
 
 	const bool test = m_D3DInterface.Init(m_WinVals);
 	if (test == false)
@@ -241,10 +255,11 @@ bool ZMasherMain::CreateD3D()
 void ZMasherMain::Render(const float dt)
 {
 	m_D3DInterface.BeginScene();
-
 	m_Renderer.Render(m_D3DInterface, dt);
 	
+	Profiler::Instance()->BeginTask(m_RenderInternalFrame);
 	m_D3DInterface.EndScene();
+	Profiler::Instance()->EndTask(m_RenderInternalFrame);
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

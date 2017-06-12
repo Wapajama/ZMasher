@@ -34,6 +34,7 @@ private:
 
 	//TODO: Let ZMRenderer merely be the "hub" of rendering interfaces, let
 	//another class implement the render steps (renderblocks? posteffect helper?)
+	//rule of thumb: no data must be stored here, save for some smaller pointers
 
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	void RenderSkybox(ZMD3DInterface& d3dinterface);

@@ -4,7 +4,7 @@
 #include <Math/ZMMatrix44.h>
 #include <Math/Vector2decl.h>
 
-class Camera
+class __declspec(align(16)) Camera
 {
 public:
 	Camera(const ZMasher::Vector2<int>& window_size);
@@ -20,6 +20,8 @@ public:
 	ZMasher::Vector3f GetPosition();
 	ZMasher::Matrix44f GetWorldOrientation()const;
 
+	void GetWorldOrientationaTest(ZMasher::Matrix44f& matrix)const;
+
 	void SetWindowSize(const ZMasher::Vector2i& size);
 	const ZMasher::Vector2i GetWindowSize()const;
 
@@ -28,6 +30,9 @@ public:
 	void RotateZ(const float radians);
 
 private:
+
+	ZMasher::Matrix44f m_Orientation;
+	ZMasher::Matrix44f m_ProjectionMatrix;
 
 	float m_FOV;
 	float m_AspectRatio;
@@ -39,8 +44,5 @@ private:
 
 	ZMasher::Vector2<int> m_WindowSize;
 
-	ZMasher::Matrix44f m_Orientation;
-	ZMasher::Matrix44f m_ProjectionMatrix;
-	
 };
 

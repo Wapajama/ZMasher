@@ -91,7 +91,7 @@ bool ZMModel::InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, uns
 		return false;
 	}
 
-	delete[] vertices;
+	delete[] vertices;//TODO: move this memory management somewhere else
 	vertices = 0;
 
 	delete[] indices;

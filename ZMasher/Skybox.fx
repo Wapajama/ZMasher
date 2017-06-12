@@ -58,10 +58,7 @@ PixelInputType PBR_VS(VertexInputType input)
 
 float4 PBR_PS(PixelInputType input) :SV_TARGET
 {
-	float4 color;
-
-	color = skybox.SampleLevel(samAnisotropic, input.norm.xyz, 1);
-	//return float4(1,0,0,1);
+	float4 color = skybox.SampleLevel(samAnisotropic, input.norm.xyz, 1);
 	return color;
 }
 

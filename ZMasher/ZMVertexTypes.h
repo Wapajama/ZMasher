@@ -55,6 +55,7 @@ struct VertexPosNormUV
 		m_Position.x = x;
 		m_Position.y = y;
 		m_Position.z = z;
+		m_Position.w = 0;
 
 		m_Tex.x = u;
 		m_Tex.y = v;
@@ -62,6 +63,7 @@ struct VertexPosNormUV
 		m_Normal.x = 0;
 		m_Normal.y = 0;
 		m_Normal.z = 0;
+		m_Normal.w = 0;
 	}
 
 

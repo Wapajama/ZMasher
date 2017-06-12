@@ -3,6 +3,7 @@
 #include "mathdefines.h"
 
 //#define ZM_PERMUTE_PS( v, c ) _mm_shuffle_ps( v, v, c )
+#define ZM_MATH_USE_SIMD
 namespace ZMasher
 {
 	extern ZM_ALWAYS_INLINE const Vector4f Vector4MulScalar(const Vector4f& operand, const float scalar);

@@ -3,9 +3,6 @@
 
 
 CollisionComponentManager::CollisionComponentManager() 
-	: m_Spheres(128)
-	, m_Momentums(128)
-	, m_Collisions(128)
 {
 }
 

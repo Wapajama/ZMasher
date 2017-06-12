@@ -1,9 +1,11 @@
 #pragma once
 
 #include <Debugging\ZMDebugger.h>
+#include <immintrin.h>
+#include <vcruntime_new.h>
 
-#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32>
-#define GROW_ARRAY_DECL GrowArray<Type, SizeType, size>
+#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32, SizeType alignment = -1>
+#define GROW_ARRAY_DECL GrowArray<Type, SizeType, size, alignment>
 
 GROW_ARRAY_TEMPLATE
 class GrowArray
@@ -22,7 +24,7 @@ public:
 	__forceinline Type& GetLast()const;
 
 	inline void Add(const Type& value);
-	inline void Add(const GrowArray<Type, SizeType, size>& value);
+	inline void Add(const GROW_ARRAY_DECL& value);
 	inline void Add(const Type* array, SizeType size, const bool reverse_order = false);
 
 	void RemoveAll();
@@ -203,15 +205,39 @@ inline void GROW_ARRAY_DECL::Resize(const SizeType size, const bool copy_previou
 	{
 		Type* prev_array = m_Data;
 
-		m_Data = new Type[m_CurrentMaxSize];
+		if (alignment == -1)
+		{
+			m_Data = new Type[m_CurrentMaxSize];
+		}
+		else
+		{
+			void* data = _mm_malloc(sizeof(Type)*m_CurrentMaxSize, alignment);
+			m_Data = new(data) Type[m_CurrentMaxSize];
+		}
 
 		Add(prev_array, prev_size);
-		delete[] prev_array;
+		if (alignment == -1)
+		{
+			delete[] prev_array;
+		}
+		else
+		{
+			_mm_free(prev_array);
+		}
 	}
 	else
 	{
-		delete[] m_Data;
-		m_Data = new Type[m_CurrentMaxSize];
+		if (alignment == -1)
+		{
+			delete[] m_Data;
+			m_Data = new Type[m_CurrentMaxSize];
+		}
+		else
+		{
+			_mm_free(m_Data);
+			void* data = _mm_malloc(sizeof(Type)*m_CurrentMaxSize, alignment);
+			m_Data = new(data) Type[m_CurrentMaxSize];
+		}
 	}
 }
 GROW_ARRAY_TEMPLATE

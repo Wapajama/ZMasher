@@ -1,6 +1,6 @@
 #include "TransformComponentManager.h"
 
-TransformComponentManager::TransformComponentManager():m_Transforms(1024)
+TransformComponentManager::TransformComponentManager()
 {
 }
 

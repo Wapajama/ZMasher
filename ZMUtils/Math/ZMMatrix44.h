@@ -3,10 +3,9 @@
 #include <dvec.h>
 #include "ZMVector.h"
 
-
 namespace ZMasher
 {
-	class Matrix44f
+	class __declspec(align(16)) Matrix44f
 	{
 	public:
 
@@ -14,10 +13,24 @@ namespace ZMasher
 
 		inline Matrix44f()
 		{
+			*this = Identity();
 		}
 
 		inline Matrix44f(const Matrix44f& copy)
 		{
+			//printf("testderp %ld %ld %ld\n", 
+			//	   (intptr_t)(&m_Data[0]) & 0xF, 
+			//	   (intptr_t)(&copy.m_Data[0]) & 0xF,
+			//	   (intptr_t)(&m_Data[1]) & 0xF);
+			//printf("testderp %ld %ld %ld\n", 
+			//	   (intptr_t)(this), 
+			//	   (intptr_t)(&copy),
+			//	   (intptr_t)(&m_Data[0]));
+			//
+			//intptr_t test1 = (intptr_t)(&m_Data[0]) & 0xF;
+			//intptr_t test2 = (intptr_t)(&copy.m_Data[0]) & 0xF;
+			//intptr_t test3 = (intptr_t)(&m_Data[1]) & 0xF;
+
 			m_Data[0] = copy.m_Data[0];
 			m_Data[1] = copy.m_Data[1];
 			m_Data[2] = copy.m_Data[2];

@@ -167,7 +167,8 @@ ZMModelFactory::ZMModelFactory()
 
 ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_node, ZMModelInstanceNode* instance_node)
 {
-	ZMModelInstanceNode* new_node = new ZMModelInstanceNode();
+	void* model_mem = _mm_malloc(sizeof(ZMModelInstanceNode), 16);
+	ZMModelInstanceNode* new_node = new(model_mem) ZMModelInstanceNode();
 	if (instance_node != nullptr)
 	{
 		instance_node->AddModelInstanceNode(new_node);
@@ -282,8 +283,8 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::st
 	const int index_count = tri_count * 3;
 	const int vertex_count = tri_count * 3;
 
-	unsigned long* indexes = new unsigned long[index_count];
-	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];
+	unsigned long* indexes = new unsigned long[index_count]; //TODO: Allocate in buffers, note: not so important since these will be freed after loading
+	CurrentVertexType* vertexes = new CurrentVertexType[vertex_count];//TODO: same as above
 	const FbxGeometryElementNormal * lNormalElement = mesh->GetElementNormal(0);
 	ASSERT(lNormalElement, "Normalelement nullptr!");
 	int vertex_counter = 0;

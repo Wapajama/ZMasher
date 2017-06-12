@@ -11,7 +11,7 @@ TextureContainer::~TextureContainer()
 {
 }
 
-Texture* TextureContainer::GetTexture(const char* file_path)
+Texture* TextureContainer::GetTexture(const char* file_path) //TODO: Binary search this?
 {
 	for (short i = 0; i < m_Textures.Size(); ++i)
 	{

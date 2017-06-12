@@ -72,6 +72,38 @@ ZMasher::Matrix44f Camera::GetWorldOrientation()const
 	return m_Orientation;
 }
 
+void Camera::GetWorldOrientationaTest(ZMasher::Matrix44f& matrix)const
+{
+	//m_Orientation.m_Data[0];
+	//matrix.m_Data[0];
+	//matrix.m_Data[0].m128_i32[0];
+	//matrix.m_Data[0].m128_i32[0] = 1;
+	//matrix.m_Data[0].m128_i32[1] = INT_MAX;
+	//matrix.m_Data[0].m128_i32[2] = 2;
+	//matrix.m_Data[0].m128_i32[3] = INT_MAX-1;
+	//
+
+	//matrix.m_Data[0].m128_f32[0] = m_Orientation.m_Data[0].m128_f32[0];
+	//matrix.m_Data[0].m128_f32[1] = m_Orientation.m_Data[0].m128_f32[1];
+	//matrix.m_Data[0].m128_f32[2] = m_Orientation.m_Data[0].m128_f32[2];
+	//matrix.m_Data[0].m128_f32[3] = m_Orientation.m_Data[0].m128_f32[3];
+
+	//printf("testderp %ld %ld %ld\n", 
+	//		(intptr_t)(&matrix.m_Data[0]) & 0xF, 
+	//		(intptr_t)(&m_Orientation.m_Data[0]) & 0xF,
+	//		(intptr_t)(&matrix.m_Data[1]) & 0xF);
+	//printf("testderp %ld %ld %ld\n", 
+	//		(intptr_t)(&matrix.m_Data[0]), 
+	//		(intptr_t)(&m_Orientation),
+	//		(intptr_t)(&matrix.m_Data[1]));
+
+	matrix.m_Data[0] = m_Orientation.m_Data[0];
+	matrix.m_Data[1] = m_Orientation.m_Data[1];
+	matrix.m_Data[2] = m_Orientation.m_Data[2];
+	matrix.m_Data[3] = m_Orientation.m_Data[3];
+
+}
+
 void Camera::RotateX(const float radians)
 {
 	const ZMasher::Vector4f temp_pos = m_Orientation.GetTranslation();

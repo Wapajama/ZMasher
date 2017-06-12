@@ -28,6 +28,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 		m_Dt-=dt_cap;
 	}
 	
+	Profiler::Instance()->BeginTask(m_ModelsTimeStamp);
 	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
 	{
 		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
@@ -35,7 +36,6 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass niggaz aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
-	Profiler::Instance()->BeginTask(m_ModelsTimeStamp);
 	RenderSkybox(d3dinterface);
 	Render2DTerrain(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
@@ -102,7 +102,10 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 		modelWorldMatrix.r[2] = current_transform.m_Data[2];
 		modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
-		DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
+		DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 		cam_pos.m128_f32[3] = 1.f;
 		const bool succeded = m_Shader->SetShaderVars(d3dinterface.GetContext(),
 														{modelWorldMatrix,
@@ -134,7 +137,9 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 {
 	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
-	ZMasher::Matrix44f camera_ori = m_Camera->GetWorldOrientation();
+	ZMasher::Matrix44f camera_ori;
+	//camera_ori = m_Camera->GetWorldOrientation();
+	m_Camera->GetWorldOrientationaTest(camera_ori);
 	camera_ori.SetTranslation(ZMasher::Vector4f(0,0,0,1));
 	const ZMasher::Matrix44f view_matrix = ~camera_ori;
 	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
@@ -142,22 +147,33 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 
 	m_Skybox->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
 
-	const ZMasher::Matrix44f current_transform = m_Skybox->GetTransform();
+	if (m_Skybox == nullptr)
+	{
+		return;
+	}
+	ZMasher::Matrix44f current_transform; 
+	current_transform = m_Skybox->GetTransform();
 
 	modelWorldMatrix.r[0] = current_transform.m_Data[0];
 	modelWorldMatrix.r[1] = current_transform.m_Data[1];
 	modelWorldMatrix.r[2] = current_transform.m_Data[2];
 	modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
-	DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
-	cam_pos.m128_f32[3] = 1.f;
-	const bool succeded = m_SkyboxShader->SetShaderVars(d3dinterface.GetContext(),
-														{modelWorldMatrix,
-														cameraWorldMatrix,
-														projectionMatrix,
-														cam_pos, 
-														m_Dt});
-	ASSERT(succeded, "shader failed to init!");
+	if (m_Camera != nullptr)
+	{
+		DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
+		cam_pos.m128_f32[3] = 1.f;
+		const bool succeded = m_SkyboxShader->SetShaderVars(d3dinterface.GetContext(),
+		{ modelWorldMatrix,
+		cameraWorldMatrix,
+		projectionMatrix,
+		cam_pos,
+		m_Dt });
+		ASSERT(succeded, "shader failed to init!");
+	}
 	ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_SkyboxShader);
 	Material* material = m_Skybox->GetModelNode()->GetModel()->GetMaterial();
 
@@ -172,22 +188,28 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 {
 	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
-	ZMasher::Matrix44f camera_ori = m_Camera->GetWorldOrientation();
+	ZMasher::Matrix44f camera_ori;// = m_Camera->GetWorldOrientation();
+	m_Camera->GetWorldOrientationaTest(camera_ori);
 	const ZMasher::Matrix44f view_matrix = ~camera_ori;
 	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
 	m_Camera->GetProjectionMatrix(projectionMatrix);
 
 	m_Terrain->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
 
-	const ZMasher::Matrix44f current_transform = m_Terrain->GetTransform();
+	ZMasher::Matrix44f current_transform;
+	current_transform = m_Terrain->GetTransform();
 
 	modelWorldMatrix.r[0] = current_transform.m_Data[0];
 	modelWorldMatrix.r[1] = current_transform.m_Data[1];
 	modelWorldMatrix.r[2] = current_transform.m_Data[2];
 	modelWorldMatrix.r[3] = current_transform.m_Data[3];
 
-	DirectX::XMVECTOR cam_pos = m_Camera->GetPosition().m_Data;
+	DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
+	cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
+	cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 	cam_pos.m128_f32[3] = 1.f;
+
 	const bool succeded = m_TerrainShader->SetShaderVars(d3dinterface.GetContext(),
 														{modelWorldMatrix,
 														cameraWorldMatrix,

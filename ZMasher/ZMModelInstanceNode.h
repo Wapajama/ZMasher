@@ -32,9 +32,9 @@ public:
 
 
 private:
+	ZMasher::Matrix44f m_Transform;
 	bool m_MarkedForDelete;
 	ZMModelNode* m_ModelNode;
-	ZMasher::Matrix44f m_Transform;
 
 	GrowArray<ZMModelInstanceNode*> m_Children;
 

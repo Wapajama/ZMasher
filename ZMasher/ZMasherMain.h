@@ -47,6 +47,7 @@ private:
 	ProfilerTaskID m_TotalFrame;
 	ProfilerTaskID m_LogicFrame;
 	ProfilerTaskID m_RenderFrame;
+	ProfilerTaskID m_RenderInternalFrame;
 #endif // BENCHMMARK
 
 
