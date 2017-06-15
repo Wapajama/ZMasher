@@ -3,7 +3,7 @@
 #include "ZMModel.h"
 #include "ZMModelInstanceNode.h"
 #include <Math\ZMMatrix44.h>
-#include <Profiler.h>
+#include <Time/Profiler.h>
 
 class Camera;
 class ZMD3DInterface;

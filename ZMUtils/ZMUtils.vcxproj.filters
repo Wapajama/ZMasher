@@ -19,7 +19,13 @@
       <UniqueIdentifier>{a695b96a-7ab9-4e9f-b360-8184ff3e5b6a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Debug">
-      <UniqueIdentifier>{f59f9e9b-b6d2-4bb6-98b9-f457007a8269}</UniqueIdentifier>
+      <UniqueIdentifier>{82875c69-aa77-4d1e-af17-e7126ad6651f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Time">
+      <UniqueIdentifier>{3cef2166-06d4-42a6-8767-e5649d38dcc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Memory">
+      <UniqueIdentifier>{24fafc2e-0c7a-454a-b670-ae3186666354}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,19 +56,60 @@
     <ClInclude Include="Math\ZMVector4.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Debugging\ZMDebugger.h" />
     <ClInclude Include="Utility\ZMSingleton.h">
       <Filter>Source Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="DataStructures\StackArray.h" />
-    <ClInclude Include="DataStructures\MemoryContainer.h" />
-    <ClInclude Include="Math\Line3D.h" />
-    <ClInclude Include="Time\Ticker.h" />
-    <ClInclude Include="Time\Time.h" />
-    <ClInclude Include="Time\Timer.h" />
-    <ClInclude Include="Time\TimerManager.h" />
-    <ClInclude Include="DataStructures\BinarySearchTree.h" />
-    <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Debugging\ZMDebugger.h">
+      <Filter>Source Files\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\TimerManager.h">
+      <Filter>Source Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\Time.h">
+      <Filter>Source Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\Ticker.h">
+      <Filter>Source Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\Timer.h">
+      <Filter>Source Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\BinarySearchTree.h">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\MemoryContainer.h">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\StackArray.h">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line3D.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Allocator.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\CommonMemoryManagement.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\DynamicAllocation.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\MemoryManager.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\Profiler.h">
+      <Filter>Source Files\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonMemoryManagement.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\StackAllocator.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Mallocator.h">
+      <Filter>Source Files\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">
@@ -74,28 +121,40 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debugging\ZMDebugger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\ZMSingleton.cpp">
-      <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Line3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Time\Ticker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Time\Time.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Time\Timer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Time</Filter>
     </ClCompile>
     <ClCompile Include="Time\TimerManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Time</Filter>
     </ClCompile>
-    <ClCompile Include="Profiler.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Time\Time.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Ticker.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Line3D.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Allocator.cpp">
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\DynamicAllocation.cpp">
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryManager.cpp">
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Profiler.cpp">
+      <Filter>Source Files\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\StackAllocator.cpp">
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Mallocator.cpp">
+      <Filter>Source Files\Memory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

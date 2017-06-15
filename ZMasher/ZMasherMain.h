@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "ZMModel.h"
 #include "ZMRenderer.h"
-#include <Profiler.h>
+#include <Time/Profiler.h>
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 

@@ -8,7 +8,7 @@
 #include <ZMasher\CollisionComponentManager.h>
 #include <ZMasher\CollisionSystem.h>
 #include <ZMasher\AISystem.h>
-#include <Profiler.h>
+#include <Time/Profiler.h>
 
 //Dataoriented entitysystem
 class GameObjectManager

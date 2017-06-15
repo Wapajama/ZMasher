@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommonMemoryManagement.h" />
     <ClInclude Include="DataStructures\BinarySearchTree.h" />
     <ClInclude Include="DataStructures\GrowArray.h" />
     <ClInclude Include="DataStructures\MemoryContainer.h" />
@@ -38,7 +39,13 @@
     <ClInclude Include="Math\Vector2decl.h" />
     <ClInclude Include="Debugging\ZMDebugger.h" />
     <ClInclude Include="Math\ZMMatrix44.h" />
-    <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Memory\Allocator.h" />
+    <ClInclude Include="Memory\CommonMemoryManagement.h" />
+    <ClInclude Include="Memory\DynamicAllocation.h" />
+    <ClInclude Include="Memory\Mallocator.h" />
+    <ClInclude Include="Memory\MemoryManager.h" />
+    <ClInclude Include="Memory\StackAllocator.h" />
+    <ClInclude Include="Time\Profiler.h" />
     <ClInclude Include="Time\Ticker.h" />
     <ClInclude Include="Time\Time.h" />
     <ClInclude Include="Time\Timer.h" />
@@ -55,12 +62,16 @@
   <ItemGroup>
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="Math\Line3D.cpp" />
-    <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Memory\Allocator.cpp" />
+    <ClCompile Include="Memory\DynamicAllocation.cpp" />
+    <ClCompile Include="Memory\Mallocator.cpp" />
+    <ClCompile Include="Memory\MemoryManager.cpp" />
+    <ClCompile Include="Memory\StackAllocator.cpp" />
+    <ClCompile Include="Time\Profiler.cpp" />
     <ClCompile Include="Time\Ticker.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
     <ClCompile Include="Time\TimerManager.cpp" />
-    <ClCompile Include="Utility\ZMSingleton.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0F507CA4-0F6B-4EDF-966E-BDCE07F791A1}</ProjectGuid>

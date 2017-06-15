@@ -3,7 +3,7 @@
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMMatrix44.h>
 #include <ZMasher\GameObject.h>
-#include <Profiler.h>
+#include <Time/Profiler.h>
 #include <DataStructures\BinarySearchTree.h>
 
 struct TransformComponent

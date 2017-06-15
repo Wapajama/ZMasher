@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Debugging\ZMDebugger.h>
 #define TEMPLATE_HEADER template<typename Type, typename Comparator>
 #define TEMPLATE_ARGS <Type, Comparator>
 

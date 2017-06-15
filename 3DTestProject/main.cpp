@@ -2,6 +2,7 @@
 #include <ZMasherMain.h>
 #include "DataStructures\GrowArray.h"
 #include <time.h>
+#include <Memory\MemoryManager.h>
 
 int WINAPI WinMain(HINSTANCE hInstance,
 				   HINSTANCE hPrevInstance,
@@ -10,6 +11,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 {
 	//srand(time(0));
 	srand(1);
+
+	ZMasher::MemoryManager::CreateMemoryManager();
+
+	GrowArray<int> array_test(1024);
+
 
 	const bool test = ZMasherMain::Instance()->Init();
 
