@@ -92,9 +92,6 @@
     <ClInclude Include="Memory\CommonMemoryManagement.h">
       <Filter>Source Files\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\DynamicAllocation.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\MemoryManager.h">
       <Filter>Source Files\Memory</Filter>
     </ClInclude>
@@ -141,9 +138,6 @@
     <ClCompile Include="Memory\Allocator.cpp">
       <Filter>Source Files\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\DynamicAllocation.cpp">
-      <Filter>Source Files\Memory</Filter>
-    </ClCompile>
     <ClCompile Include="Memory\MemoryManager.cpp">
       <Filter>Source Files\Memory</Filter>
     </ClCompile>
@@ -155,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="Memory\Mallocator.cpp">
       <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

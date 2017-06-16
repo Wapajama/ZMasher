@@ -1,6 +1,15 @@
 #include "MemoryManager.h"
 #include <malloc.h>
 #include <vcruntime_new.h>
+
+#include <iostream>
+#include <cmath>
+#include <cerrno>
+#include <cstring>
+#include <clocale>
+
+
+
 namespace ZMasher
 {
 
@@ -17,12 +26,6 @@ namespace ZMasher
 	{
 		m_Allocator->~Allocator();
 		free(m_Allocator);
-	}
-
-	void MemoryManager::CreateMemoryManager()
-	{
-		MemoryManager* data = reinterpret_cast< MemoryManager*>( malloc(sizeof(MemoryManager)));
-		m_Instance = new(data) MemoryManager();
 	}
 
 	void* MemoryManager::Allocate(size_t size)

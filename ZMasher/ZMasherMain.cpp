@@ -62,7 +62,6 @@ ZMasherMain::ZMasherMain()
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
 	m_WinVals.m_Resolution.x = 1280;
 	m_WinVals.m_Resolution.y = 720;
-	Profiler::Create();
 }
 
 ZMasherMain::~ZMasherMain()
@@ -81,10 +80,12 @@ ZMasherMain* ZMasherMain::Instance()
 
 bool ZMasherMain::Init()
 {
+	Profiler::Create();
+
 	AllocConsole();
-	//freopen("CONIN$", "r", stdin);
-	//freopen("CONOUT$", "w", stdout);
-	//freopen("CONOUT$", "w", stderr);
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 	//BinaryTreeTest();
 
 #ifdef BENCHMARK

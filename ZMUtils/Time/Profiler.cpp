@@ -6,15 +6,16 @@
 #include <chrono>
 #include <ctime>
 
+
 #ifdef BENCHMARK
 
 Profiler::Profiler()
+	:m_TimeStampStack(32)
+	,m_Tasks(32)
 {
 	m_NumberOfFrames = 0;
 	m_TimerIndex = TimerManager::GetInstance()->CreateAndStartTimer();
 	m_BenchmarkTime = 3.f;
-	m_TimeStampStack.reserve(16);
-	m_Tasks.reserve(16);
 }
 
 
@@ -25,15 +26,15 @@ Profiler::~Profiler()
 
 ProfilerTaskID Profiler::AddTask(const char* name)
 {
-	for (short i = 0; i < m_Tasks.size(); i++)
+	for (short i = 0; i < m_Tasks.Size(); i++)
 	{
 		if (strcmp(m_Tasks[i].m_Name.c_str(), name) == 0)
 		{
 			return{ -1 };
 		}
 	}
-	m_Tasks.push_back({ name, 0 });
-	return{ static_cast<int>(m_Tasks.size() - 1) };
+	m_Tasks.Add({ name, 0 });
+	return{ static_cast<int>(m_Tasks.Size() - 1) };
 }
 
 bool Profiler::IterateFrame(const float dt)
@@ -47,7 +48,7 @@ void Profiler::BeginTask(ProfilerTaskID id)
 {
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
 	const float start_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds();
-	m_TimeStampStack.push_back({ start_time, id });
+	m_TimeStampStack.Add({ start_time, id });
 }
 void Profiler::EndTask(ProfilerTaskID)
 {
@@ -57,9 +58,9 @@ void Profiler::EndTask(ProfilerTaskID)
 	//	ASSERT(false, "Ended wrong task!");
 	//}
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
-	const float end_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds() - m_TimeStampStack.back().m_ElapsedTime;
-	m_Tasks[m_TimeStampStack.back().m_ID.m_TaskID].m_TotalTime += end_time;
-	m_TimeStampStack.pop_back();
+	const float end_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds() - m_TimeStampStack.GetLast().m_ElapsedTime;
+	m_Tasks[m_TimeStampStack.GetLast().m_ID.m_TaskID].m_TotalTime += end_time;
+	m_TimeStampStack.RemoveLast();
 }
 #include <string> 
 void Profiler::FinishBenchmark()
@@ -86,7 +87,7 @@ void Profiler::FinishBenchmark()
 
 	fout << "--- Total time per task ---" << std::endl;
 	const double total_time = m_Tasks[0].m_TotalTime;
-	for (short i = 1; i < m_Tasks.size(); i++)
+	for (short i = 1; i < m_Tasks.Size(); i++)
 	{
 		fout << "Task \"" << m_Tasks[i].m_Name.c_str() << "\": "
 			<< m_Tasks[i].m_TotalTime
@@ -98,7 +99,7 @@ void Profiler::FinishBenchmark()
 	fout << std::endl;
 	fout << "--- Avarage time per frame ---" << std::endl;
 	const double n_Frames = static_cast<double>(m_NumberOfFrames);
-	for (short i = 1; i < m_Tasks.size(); i++)
+	for (short i = 1; i < m_Tasks.Size(); i++)
 	{
 		fout << "Task \"" << m_Tasks[i].m_Name.c_str() << "\": "
 			<< m_Tasks[i].m_TotalTime / n_Frames

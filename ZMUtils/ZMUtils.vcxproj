@@ -41,7 +41,6 @@
     <ClInclude Include="Math\ZMMatrix44.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Memory\CommonMemoryManagement.h" />
-    <ClInclude Include="Memory\DynamicAllocation.h" />
     <ClInclude Include="Memory\Mallocator.h" />
     <ClInclude Include="Memory\MemoryManager.h" />
     <ClInclude Include="Memory\StackAllocator.h" />
@@ -60,10 +59,10 @@
     <None Include="Math\ZMVectorMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="Math\Line3D.cpp" />
     <ClCompile Include="Memory\Allocator.cpp" />
-    <ClCompile Include="Memory\DynamicAllocation.cpp" />
     <ClCompile Include="Memory\Mallocator.cpp" />
     <ClCompile Include="Memory\MemoryManager.cpp" />
     <ClCompile Include="Memory\StackAllocator.cpp" />
@@ -158,7 +157,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../ZMUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -178,7 +177,7 @@
       <Optimization>MinSpace</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../ZMUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -226,7 +225,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../ZMUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -258,6 +258,7 @@
     <ClCompile Include="ZMRenderer.cpp">
       <Filter>Source\Core\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt" />

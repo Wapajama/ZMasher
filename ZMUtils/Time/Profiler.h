@@ -1,7 +1,8 @@
 #pragma once
-#include <vector>
+#include "DataStructures\GrowArray.h"
 #include <Utility\ZMSingleton.h>
 #include "../GlobalInlcudes/project_defines.h"//TODO: Remove relative paths
+#include <string>
 
 #ifdef BENCHMARK
 
@@ -42,8 +43,8 @@ private:
 		ProfilerTaskID m_ID;
 	};
 
-	std::vector<ProfilerTask> m_Tasks;
-	std::vector<TimeStamp> m_TimeStampStack;
+	GrowArray<ProfilerTask> m_Tasks;
+	GrowArray<TimeStamp> m_TimeStampStack;
 
 	void FinishBenchmark();//output results to file
 

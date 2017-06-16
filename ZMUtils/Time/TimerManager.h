@@ -1,10 +1,8 @@
 #ifndef TIMERMANAGER_H
 #define TIMERMANAGER_H
-
+#include "DataStructures\GrowArray.h"
 #include "Timer.h"
-#include <vector>
 
-using namespace std;
 
 class TimerManager
 {
@@ -22,7 +20,7 @@ private:
 
 	static TimerManager* myInstance;
 
-	vector<Timer>		myTimers;
+	GrowArray<Timer>		myTimers;
 	Timer				myMainTimer;
 };
 

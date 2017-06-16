@@ -12,7 +12,7 @@ TimerManager* TimerManager::GetInstance()
 	return myInstance;
 }
 
-TimerManager::TimerManager(void)
+TimerManager::TimerManager(void):myTimers(16)
 {
 	myMainTimer.Start();
 }
@@ -25,7 +25,7 @@ TimerManager::~TimerManager(void)
 void TimerManager::Update()
 {
 	myMainTimer.Update();
-	for(unsigned int i = 0; i < myTimers.size(); ++i)
+	for(unsigned int i = 0; i < myTimers.Size(); ++i)
 	{
 		myTimers[i].Update();
 	}
@@ -40,7 +40,7 @@ Timer& TimerManager::GetTimer(const int aId)
 {
 	int id = -1;
 
-	for(unsigned int i = 0; i < myTimers.size(); ++i)
+	for(unsigned int i = 0; i < myTimers.Size(); ++i)
 	{
 		if(myTimers[i].GetId() == aId)
 		{
@@ -54,8 +54,8 @@ Timer& TimerManager::GetTimer(const int aId)
 const int TimerManager::CreateTimer()
 {
 	Timer t;
-	t.SetID(myTimers.size());
-	myTimers.push_back(t);
+	t.SetID(myTimers.Size());
+	myTimers.Add(t);
 	
 	return t.GetId();
 }
@@ -64,7 +64,7 @@ const int TimerManager::CreateAndStartTimer()
 {
 	Timer t;
 	t.Start();
-	myTimers.push_back(t);
+	myTimers.Add(t);
 
 	return t.GetId();
 }
