@@ -1,5 +1,5 @@
 #pragma once
-#include <Memory/CommonMemoryManagement.h>
+#include <CommonMemoryManagement.h>
 
 //base class for all allocators
 namespace ZMasher

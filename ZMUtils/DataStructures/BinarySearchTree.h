@@ -1,5 +1,7 @@
 #pragma once
+#include "GrowArray.h"
 #include <Debugging\ZMDebugger.h>
+
 #define TEMPLATE_HEADER template<typename Type, typename Comparator>
 #define TEMPLATE_ARGS <Type, Comparator>
 
@@ -52,28 +54,37 @@ namespace ZMasher
 		Comparator m_Comparator;
 	};
 
-	//Memory Allocation
-	TEMPLATE_HEADER
-	static BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, BSTNode TEMPLATE_ARGS* parent = nullptr, BSTNode TEMPLATE_ARGS* left = nullptr, BSTNode TEMPLATE_ARGS* right = nullptr)
-	{
-		return new BSTNode TEMPLATE_ARGS(value, parent, left, right);//TODO: add allocator
-	}
+	////Memory Allocation
+	//TEMPLATE_HEADER
+	//BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, 
+	//										   BSTNode TEMPLATE_ARGS* parent = nullptr, 
+	//										   BSTNode TEMPLATE_ARGS* left = nullptr, 
+	//										   BSTNode TEMPLATE_ARGS* right = nullptr)
+	//{
+	//	return new BSTNode TEMPLATE_ARGS(value, parent, left, right);//TODO: add allocator
+	//}
 
 	TEMPLATE_HEADER
 	class BinarySearchTree
 	{
 	public:
-		BinarySearchTree();
-		BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node);
+		//TODO: buffer_size might be obsolete
+		BinarySearchTree(int buffer_size = 1024);
+		BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node, int buffer_size = 1024);
 		~BinarySearchTree();
 
 		BSTNode TEMPLATE_ARGS* Insert(const Type& value);
 
-		BSTNode TEMPLATE_ARGS* Delete(BSTNode TEMPLATE_ARGS* node);
-		BSTNode TEMPLATE_ARGS* Delete(const Type& value);
+		void Delete(BSTNode TEMPLATE_ARGS* node);
+		void Delete(const Type& value);
 
 		BSTNode TEMPLATE_ARGS* Find(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Find(const Type& value);
+
+		BSTNode TEMPLATE_ARGS* Max();
+		BSTNode TEMPLATE_ARGS* Min();
+		BSTNode TEMPLATE_ARGS* Max(BSTNode TEMPLATE_ARGS* node);
+		BSTNode TEMPLATE_ARGS* Min(BSTNode TEMPLATE_ARGS* node);
 
 	private:
 		BSTNode TEMPLATE_ARGS* InsertInternal(const Type& value);
@@ -84,22 +95,38 @@ namespace ZMasher
 		void RotateRight(BSTNode TEMPLATE_ARGS* node);
 		void RotateLeft(BSTNode TEMPLATE_ARGS* node);
 
+
 		BSTNode TEMPLATE_ARGS* Splay(BSTNode TEMPLATE_ARGS* node);
 
+
+		BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, 
+											   BSTNode TEMPLATE_ARGS* parent = nullptr, 
+											   BSTNode TEMPLATE_ARGS* left = nullptr, 
+											   BSTNode TEMPLATE_ARGS* right = nullptr);
+
+		void DeallocateNode(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* m_Root;
 		int m_NumberOfNodes;
+		const int m_BufferSize;
+		//GrowArray<BSTNode TEMPLATE_ARGS, int> m_Buffer;
 		Comparator m_Comparer;
 	};
 
 	TEMPLATE_HEADER
-	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree()
+	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree(int buffer_size)
+		: m_BufferSize(buffer_size)
+		//, m_Buffer(buffer_size)
 	{
+		m_NumberOfNodes = 0;
 		m_Root = nullptr;
 	}
 
 	TEMPLATE_HEADER
-	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node)
+	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node, int buffer_size)
+		: m_BufferSize(buffer_size)
+		//, m_Buffer(buffer_size)
 	{
+		m_NumberOfNodes= 0;
 		m_Root = root_node;
 	}
 
@@ -129,10 +156,8 @@ namespace ZMasher
 	//		max_counter = counter;
 	//	}
 	//	ASSERT(node->parent == parent, "nodes parent is wrong!");
-
 	//	Test(node->left, node);
 	//	Test(node->right, node);
-
 	//}
 
 	TEMPLATE_HEADER
@@ -141,55 +166,28 @@ namespace ZMasher
 		++m_NumberOfNodes;
 		if (m_Root == nullptr)
 		{
-			m_Root = AllocateNode TEMPLATE_ARGS(value);
+			m_Root = AllocateNode(value);
 			return m_Root;
 		}
 		return InsertInternal(value);
 	}
 
+
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertInternal(const Type& value)
+	void BinarySearchTree TEMPLATE_ARGS::Delete(BSTNode TEMPLATE_ARGS* node)
 	{
-		BSTNode TEMPLATE_ARGS* current = m_Root;
-		BSTNode TEMPLATE_ARGS* inserted = nullptr;
-		while (true)
-		{
-			if (m_Comparer.LessThan(value, current->value))
-			{
-				if (current->left == nullptr)
-				{
-					inserted = AllocateNode TEMPLATE_ARGS(value);
-					current->left = inserted;
-					inserted->parent = current;
-					break;
-				}
-				current = current->left;
-			}
-			else if (m_Comparer.Equals(value, current->value))
-			{
-				return nullptr;//can't have two of the same value
-			}
-			else
-			{
-				if (current->right == nullptr)
-				{
-					inserted =  AllocateNode TEMPLATE_ARGS(value);
-					current->right = inserted;
-					inserted->parent = current;
-					break;
-				}
-				current = current->right;
-			}
-		}
-		Splay(inserted);
-		return inserted;
+		Splay(node);
+		
+		BSTNode TEMPLATE_ARGS* left_subtree = node->left;
+
+		
+
 	}
 
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Delete(BSTNode TEMPLATE_ARGS* node)
+	void BinarySearchTree TEMPLATE_ARGS::Delete(const Type& value)
 	{
-
-		return nullptr;
+		Delete(Find(value));
 	}
 
 	TEMPLATE_HEADER
@@ -201,6 +199,12 @@ namespace ZMasher
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Find(const Type& value)
 	{
+		//can't find anything if we haven't added anything yet
+		if (!m_Root)
+		{
+			return nullptr;
+		}
+
 		BSTNode TEMPLATE_ARGS* current = m_Root;
 
 		//break means return nullptr
@@ -232,6 +236,86 @@ namespace ZMasher
 		return nullptr;
 	}
 
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Max()
+	{
+		return Max(m_Root);
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Min()
+	{
+		return Min(m_Root);
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Max(BSTNode TEMPLATE_ARGS* node)
+	{
+		if (node == nullptr)
+		{
+			return nullptr;
+		}
+		BSTNode TEMPLATE_ARGS* tmp_node = node;
+		while (tmp_node->right != nullptr)
+		{
+			tmp_node = tmp_node->right;
+		}
+		return tmp_node;
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Min(BSTNode TEMPLATE_ARGS* node)
+	{
+		if (node == nullptr)
+		{
+			return nullptr;
+		}
+		BSTNode TEMPLATE_ARGS* tmp_node = node;
+		while (tmp_node->left != nullptr)
+		{
+			tmp_node = tmp_node->left;
+		}
+		return tmp_node;
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertInternal(const Type& value)
+	{
+		BSTNode TEMPLATE_ARGS* current = m_Root;
+		BSTNode TEMPLATE_ARGS* inserted = nullptr;
+		while (true)
+		{
+			if (m_Comparer.LessThan(value, current->value))
+			{
+				if (current->left == nullptr)
+				{
+					inserted = AllocateNode(value);
+					current->left = inserted;
+					inserted->parent = current;
+					break;
+				}
+				current = current->left;
+			}
+			else if (m_Comparer.Equals(value, current->value))
+			{
+				return nullptr;//can't have two of the same value
+			}
+			else
+			{
+				if (current->right == nullptr)
+				{
+					inserted = AllocateNode(value);
+					current->right = inserted;
+					inserted->parent = current;
+					break;
+				}
+				current = current->right;
+			}
+		}
+		Splay(inserted);
+		return inserted;
+	}
+	
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::Rotate(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent)
 	{
@@ -307,7 +391,10 @@ namespace ZMasher
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Splay(BSTNode TEMPLATE_ARGS* node)
 	{
 		ASSERT(node != nullptr, "node is nullptr!");
-
+		if (node == m_Root)
+		{
+			return node;
+		}
 		BSTNode TEMPLATE_ARGS* current = node;
 		while (true)
 		{
@@ -350,5 +437,22 @@ namespace ZMasher
 		}
 
 		return current;
+	}
+
+	TEMPLATE_HEADER
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::AllocateNode(const Type& value, 
+											   BSTNode TEMPLATE_ARGS* parent, 
+											   BSTNode TEMPLATE_ARGS* left, 
+											   BSTNode TEMPLATE_ARGS* right)
+	{
+		//m_Buffer.Add(BSTNode TEMPLATE_ARGS(value, parent, left, right));
+		//return &m_Buffer.GetLast();
+		return new BSTNode TEMPLATE_ARGS(value, parent, left, right);
+	}
+
+	TEMPLATE_HEADER
+	void BinarySearchTree TEMPLATE_ARGS::DeallocateNode(BSTNode TEMPLATE_ARGS* node)
+	{
+		delete node;
 	}
 }

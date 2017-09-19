@@ -1,9 +1,6 @@
 #pragma once
-#include "Memory\Allocator.h"
+#include <Allocator.h>
 #include <DataStructures\BinarySearchTree.h>
-//#include <stdlib.h>
-////#include <vcruntime_new.h>
-//#include <malloc.h>
 #define MALLOCATOR_TEMPLATE //template<MemSizeType size, MemSizeType alignment = 1>
 //#define MALLOCATOR_DECL //Mallocator<size, alignment>
 #define MALLOCATOR_DECL Mallocator

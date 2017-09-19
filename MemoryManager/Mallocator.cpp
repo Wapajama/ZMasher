@@ -3,7 +3,7 @@
 //#include <vcruntime_new.h>
 #include <malloc.h>
 #include <Debugging\ZMDebugger.h>
-
+#include <iostream>
 namespace ZMasher
 {
 	MALLOCATOR_TEMPLATE
@@ -72,6 +72,7 @@ namespace ZMasher
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::Deallocate(Blk blk)
 	{
+		printf_s("DEMALLOCATE!!!");
 		free(blk.m_Data);
 	}
 	MALLOCATOR_TEMPLATE

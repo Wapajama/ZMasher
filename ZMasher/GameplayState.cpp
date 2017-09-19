@@ -28,7 +28,7 @@ bool GameplayState::Init(const char* args)
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	m_GameObjectManager.Init();
 	const float range = 100;
-	for (int i = 0; i < 250; ++i)
+	for (int i = 0; i < 500; ++i)
 	{
 		transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-range, range), 0, ZMasher::GetRandomFloat(-range, range), 0));
 		if (i%2)

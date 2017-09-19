@@ -2,8 +2,8 @@
 #include <ZMasherMain.h>
 #include "DataStructures\GrowArray.h"
 #include <time.h>
-#include <Memory\MemoryManager.h>
-//#include <Memory\DynamicAllocation.h>
+#include <MemoryManager.h>
+#include <Debugging\ZMDebugger.h>
 
 int WINAPI WinMain(HINSTANCE hInstance,
 				   HINSTANCE hPrevInstance,
@@ -23,6 +23,5 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	{
 	}
 	ZMasherMain::Destroy();
-	
 	return 0;
 }

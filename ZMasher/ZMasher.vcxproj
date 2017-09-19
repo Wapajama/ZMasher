@@ -161,6 +161,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MemoryManager\MemoryManager.vcxproj">
+      <Project>{08087afb-78ab-441b-8a1d-afba2b9c4fb6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
@@ -239,12 +242,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(DXSDK_DIR)Samples\C++\Effects11\Debug;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(DXSDK_DIR)Samples\C++\Effects11\Debug;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -255,7 +258,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(FBXSDK_PATH)\include\;$(DXSDK_DIR)Samples\C++\Effects11\Inc\;$(DXSDK_DIR)Include\;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\release\;$(DXSDK_DIR)Samples\C++\Effects11\Release;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -267,10 +270,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;NEW_OP_OVERRIDE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

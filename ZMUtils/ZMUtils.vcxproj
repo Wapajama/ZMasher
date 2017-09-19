@@ -27,7 +27,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonMemoryManagement.h" />
     <ClInclude Include="DataStructures\BinarySearchTree.h" />
     <ClInclude Include="DataStructures\GrowArray.h" />
     <ClInclude Include="DataStructures\MemoryContainer.h" />
@@ -39,11 +38,6 @@
     <ClInclude Include="Math\Vector2decl.h" />
     <ClInclude Include="Debugging\ZMDebugger.h" />
     <ClInclude Include="Math\ZMMatrix44.h" />
-    <ClInclude Include="Memory\Allocator.h" />
-    <ClInclude Include="Memory\CommonMemoryManagement.h" />
-    <ClInclude Include="Memory\Mallocator.h" />
-    <ClInclude Include="Memory\MemoryManager.h" />
-    <ClInclude Include="Memory\StackAllocator.h" />
     <ClInclude Include="Time\Profiler.h" />
     <ClInclude Include="Time\Ticker.h" />
     <ClInclude Include="Time\Time.h" />
@@ -62,10 +56,6 @@
     <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="Math\Line3D.cpp" />
-    <ClCompile Include="Memory\Allocator.cpp" />
-    <ClCompile Include="Memory\Mallocator.cpp" />
-    <ClCompile Include="Memory\MemoryManager.cpp" />
-    <ClCompile Include="Memory\StackAllocator.cpp" />
     <ClCompile Include="Time\Profiler.cpp" />
     <ClCompile Include="Time\Ticker.cpp" />
     <ClCompile Include="Time\Time.cpp" />
@@ -142,13 +132,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">
-    <IncludePath>$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
+    <IncludePath>../MemoryManager/;$(VC_IncludePath)/GlobalIncludes/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -24,9 +24,6 @@
     <Filter Include="Source Files\Time">
       <UniqueIdentifier>{3cef2166-06d4-42a6-8767-e5649d38dcc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Memory">
-      <UniqueIdentifier>{24fafc2e-0c7a-454a-b670-ae3186666354}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\GrowArray.h">
@@ -86,26 +83,8 @@
     <ClInclude Include="Math\Line3D.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Allocator.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\CommonMemoryManagement.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\MemoryManager.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
     <ClInclude Include="Time\Profiler.h">
       <Filter>Source Files\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonMemoryManagement.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\StackAllocator.h">
-      <Filter>Source Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Mallocator.h">
-      <Filter>Source Files\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,20 +114,8 @@
     <ClCompile Include="Math\Line3D.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Allocator.cpp">
-      <Filter>Source Files\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\MemoryManager.cpp">
-      <Filter>Source Files\Memory</Filter>
-    </ClCompile>
     <ClCompile Include="Time\Profiler.cpp">
       <Filter>Source Files\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\StackAllocator.cpp">
-      <Filter>Source Files\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\Mallocator.cpp">
-      <Filter>Source Files\Memory</Filter>
     </ClCompile>
     <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp">
       <Filter>Source Files</Filter>

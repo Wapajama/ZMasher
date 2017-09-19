@@ -11,7 +11,9 @@
 #include <ZMasher\ZMModelInstanceNode.h>
 #include <ZMasher\ZMModelNode.h>
 #include <tinyxml2.h>
-
+#include <Debugging\ZMDebugger.h>
+#include <MemoryManager.h>
+#include <GlobalInlcudes\project_defines.h>
 #ifdef IOS_REF
 #undef  IOS_REF
 #define IOS_REF (*(pManager->GetIOSettings()))
@@ -20,6 +22,14 @@
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
 {
 	//The first thing to do is to create the FBX Manager which is the object allocator for almost all the classes in the SDK
+#ifdef NEW_OP_OVERRIDE
+	FbxSetMallocHandler(ZMAlloc);
+	FbxSetFreeHandler(ZMFree);
+	FbxSetReallocHandler(ZMRealloc);
+	FbxSetCallocHandler(ZMCalloc);  
+#endif // NEW_OP_OVERRIDE
+
+
 	pManager = FbxManager::Create();
 	if (!pManager)
 	{
@@ -56,13 +66,22 @@ bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 	// Create an importer.
 	FbxImporter* lImporter = FbxImporter::Create(pManager, "");
 
+	if (lImporter == nullptr ||
+		pManager->GetIOSettings() == nullptr)
+	{
+		//ZMDebugger::Instance()->OutputDebugMsg("lImporter IS NULLPTR!!!");
+	}
+	printf_s("\nlImporter ptr: %i", lImporter);
+	printf_s("\npManager ptr: %i", pManager);
+	printf_s("\npManager->GetIOSettings() ptr: %i", pManager->GetIOSettings());
 	// Initialize the importer by providing a filename.
+
 	const bool lImportStatus = lImporter->Initialize(pFilename, -1, pManager->GetIOSettings());
 	lImporter->GetFileVersion(lFileMajor, lFileMinor, lFileRevision);
 
 	if (!lImportStatus)
 	{
-		//note to self: "Unexpected file type" means "general error", it could be exactely anything
+		//note to self: "Unexpected file type" means "general error", it could be exactly anything
 		//even that it is the incorrect path (why they simply don't say that is a mystery to me)
 		FbxString error = lImporter->GetStatus().GetErrorString();
 		FBXSDK_printf("Call to FbxImporter::Initialize() failed.\n");

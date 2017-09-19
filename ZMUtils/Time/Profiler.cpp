@@ -21,7 +21,7 @@ Profiler::Profiler()
 
 Profiler::~Profiler()
 {
-	FinishBenchmark();
+	//FinishBenchmark();
 }
 
 ProfilerTaskID Profiler::AddTask(const char* name)

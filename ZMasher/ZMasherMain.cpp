@@ -30,7 +30,7 @@ public:
 	}
 };
 
-ZMasher::BinarySearchTree<int, IntComparer> test;
+//ZMasher::BinarySearchTree<int, IntComparer> test;
 
 //void BinaryTreeTest()
 //{
@@ -100,11 +100,10 @@ bool ZMasherMain::Init()
 	const bool test = CreateD3D();
 	assert(test);
 
-	void* cam_mem = _mm_malloc(sizeof(Camera), 16);
-	m_Camera = new(cam_mem) Camera(Vector2<int>(m_WinVals.m_Resolution.x,
+	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
 									   m_WinVals.m_Resolution.y));
 
-	std::cout << "camera pointer:" << m_Camera << std::endl;
+	
 	if (m_Camera != nullptr)
 	{
 		m_Camera->SetPosition(Vector3f(0, 0, 10.f));
@@ -130,11 +129,11 @@ bool ZMasherMain::Update()
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
 #ifdef BENCHMARK
-	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
-	if (!benchmark)
-	{
-		return false;
-	}
+	//const bool benchmark = Profiler::Instance()->IterateFrame(dt);
+	//if (!benchmark)
+	//{
+	//	return false;
+	//}
 #endif // BENCHMARK_TEST
 	InputManager::Instance()->Update(dt);
 
