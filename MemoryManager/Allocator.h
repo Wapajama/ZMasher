@@ -25,6 +25,17 @@ namespace ZMasher
 
 	};
 }
+#define BASE_ALLOCATOR_ALL_METHODS bool GoodSize(MemSizeType size);\
+		Blk Allocate(MemSizeType size);\
+		Blk AllocateAll();\
+		Blk AllocateAligned(MemSizeType size, MemSizeType alignment);\
+		Blk AllocateAllAligned(MemSizeType alignment);\
+		bool Expand(Blk& blk, MemSizeType delta);\
+		void Reallocate(Blk& blk, MemSizeType size);\
+		bool Owns(Blk blk);\
+		void Deallocate(Blk blk);\
+		void DeallocateAligned(Blk blk);\
+		void DeallocateAll();
 
 #define BASE_ALLOCATOR_OVERRIDE_ALL bool GoodSize(MemSizeType size)override;\
 		Blk Allocate(MemSizeType size)override;\
@@ -48,10 +59,10 @@ namespace ZMasher
 //Blk Allocator::AllocateAll()
 //{
 //}
-//Blk Allocator::AllocateAligned(MemSizeType size, unsigned alignment)
+//Blk Allocator::AllocateAligned(MemSizeType size, MemSizeType alignment)
 //{
 //}
-//Blk Allocator::AllocateAllAligned(unsigned alignment)
+//Blk Allocator::AllocateAllAligned(MemSizeType alignment)
 //{
 //}
 //bool Allocator::Expand(Blk& blk, MemSizeType delta)
@@ -64,6 +75,9 @@ namespace ZMasher
 //{
 //}
 //void Allocator::Deallocate(Blk blk)
+//{
+//}
+//void Allocator::DeallocateAligned(Blk blk)
 //{
 //}
 //void Allocator::DeallocateAll()

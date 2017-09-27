@@ -8,6 +8,7 @@
 #include <cstring>
 #include <clocale>
 #include <Debugging\ZMDebugger.h>
+#include <Segregator.h>
 
 ZMasher::MemoryManager g_MemoryManager;
 namespace ZMasher
@@ -23,6 +24,9 @@ namespace ZMasher
 		MainMemoryAllocator* data = reinterpret_cast<MainMemoryAllocator*>(this->Malloc(sizeof(MainMemoryAllocator)));
 		m_Allocator = new(data) MainMemoryAllocator();
 		reinterpret_cast<MainMemoryAllocator*>(m_Allocator)->Init();
+
+
+		Segregator<1024, Mallocator, StackAllocator<1024, Mallocator>> test;
 	}
 	MemoryManager::~MemoryManager()
 	{

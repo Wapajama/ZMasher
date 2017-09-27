@@ -211,11 +211,11 @@ namespace ZMasher
 			BlkListNode tmp ={blk_node->value, nullptr};
 			if (m_FreeList->Find(tmp))
 			{
-				BlkListNode* node = m_FreeList->Find(tmp);
-				while(node->next != nullptr)
-				{
-					new 
-				}
+				//BlkListNode* node = m_FreeList->Find(tmp);
+				//while(node->next != nullptr)
+				//{
+				//	new 
+				//}
 			}
 			else
 			{

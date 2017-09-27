@@ -27,9 +27,12 @@
   <ItemGroup>
     <ClInclude Include="Allocator.h" />
     <ClInclude Include="CommonMemoryManagement.h" />
+    <ClInclude Include="FallbackAllocator.h" />
+    <ClInclude Include="FreeBlkList.h" />
     <ClInclude Include="Freelist.h" />
     <ClInclude Include="Mallocator.h" />
     <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="Segregator.h" />
     <ClInclude Include="StackAllocator.h" />
   </ItemGroup>
   <ItemGroup>
