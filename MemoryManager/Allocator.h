@@ -26,28 +26,28 @@ namespace ZMasher
 	};
 }
 #define BASE_ALLOCATOR_ALL_METHODS bool GoodSize(MemSizeType size);\
-		Blk Allocate(MemSizeType size);\
-		Blk AllocateAll();\
-		Blk AllocateAligned(MemSizeType size, MemSizeType alignment);\
-		Blk AllocateAllAligned(MemSizeType alignment);\
-		bool Expand(Blk& blk, MemSizeType delta);\
-		void Reallocate(Blk& blk, MemSizeType size);\
-		bool Owns(Blk blk);\
-		void Deallocate(Blk blk);\
-		void DeallocateAligned(Blk blk);\
-		void DeallocateAll();
+		virtual Blk Allocate(MemSizeType size);\
+		virtual Blk AllocateAll();\
+		virtual Blk AllocateAligned(MemSizeType size, MemSizeType alignment);\
+		virtual Blk AllocateAllAligned(MemSizeType alignment);\
+		virtual bool Expand(Blk& blk, MemSizeType delta);\
+		virtual void Reallocate(Blk& blk, MemSizeType size);\
+		virtual bool Owns(Blk blk);\
+		virtual void Deallocate(Blk blk);\
+		virtual void DeallocateAligned(Blk blk);\
+		virtual void DeallocateAll();
 
 #define BASE_ALLOCATOR_OVERRIDE_ALL bool GoodSize(MemSizeType size)override;\
-		Blk Allocate(MemSizeType size)override;\
-		Blk AllocateAll()override;\
-		Blk AllocateAligned(MemSizeType size, MemSizeType alignment)override;\
-		Blk AllocateAllAligned(MemSizeType alignment)override;\
-		bool Expand(Blk& blk, MemSizeType delta)override;\
-		void Reallocate(Blk& blk, MemSizeType size)override;\
-		bool Owns(Blk blk)override;\
-		void Deallocate(Blk blk)override;\
-		void DeallocateAligned(Blk blk)override;\
-		void DeallocateAll()override;
+		virtual Blk Allocate(MemSizeType size)override;\
+		virtual Blk AllocateAll()override;\
+		virtual Blk AllocateAligned(MemSizeType size, MemSizeType alignment)override;\
+		virtual Blk AllocateAllAligned(MemSizeType alignment)override;\
+		virtual bool Expand(Blk& blk, MemSizeType delta)override;\
+		virtual void Reallocate(Blk& blk, MemSizeType size)override;\
+		virtual bool Owns(Blk blk)override;\
+		virtual void Deallocate(Blk blk)override;\
+		virtual void DeallocateAligned(Blk blk)override;\
+		virtual void DeallocateAll()override;
 
 // ------- COPY PASTABLE FUNCTIONS ------
 //bool Allocator::GoodSize(MemSizeType size)

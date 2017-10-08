@@ -25,6 +25,7 @@ namespace ZMasher
 	Blk MALLOCATOR_DECL::Allocate(MemSizeType a_size)
 	{
 		void* mem_ptr = malloc(a_size);
+		m_Lookup.Add(mem_ptr);
 		return {mem_ptr, a_size};
 	}
 	MALLOCATOR_TEMPLATE
@@ -36,6 +37,7 @@ namespace ZMasher
 	Blk MALLOCATOR_DECL::AllocateAligned(MemSizeType a_size, MemSizeType alignment)
 	{
 		void* mem_ptr = _mm_malloc(a_size, alignment);
+		m_Lookup.Add(mem_ptr);
 		return {mem_ptr, a_size};
 	}
 	MALLOCATOR_TEMPLATE
@@ -52,12 +54,14 @@ namespace ZMasher
 			return false;
 		}
 		blk.m_Data = new_memblk;
+		m_Lookup.Add(new_memblk);
 		return true;
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::Reallocate(Blk& blk, MemSizeType a_size)
 	{
 		void* new_memblk = realloc(blk.m_Data, a_size);
+		m_Lookup.Add(new_memblk);
 		if (new_memblk == nullptr)
 		{
 			return;
@@ -67,12 +71,12 @@ namespace ZMasher
 	MALLOCATOR_TEMPLATE
 	bool MALLOCATOR_DECL::Owns(Blk blk)
 	{
-		return false;//don't know :p
+		return m_Lookup.Find(blk.m_Data) != m_Lookup.found_none;
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::Deallocate(Blk blk)
 	{
-		printf_s("DEMALLOCATE!!!");
+		m_Lookup.RemoveCyclic(m_Lookup.Find(blk.m_Data));
 		free(blk.m_Data);
 	}
 	MALLOCATOR_TEMPLATE
@@ -83,6 +87,7 @@ namespace ZMasher
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::DeallocateAligned(Blk blk)
 	{
+		m_Lookup.RemoveCyclic(m_Lookup.Find(blk.m_Data));
 		_mm_free(blk.m_Data);
 	}
 

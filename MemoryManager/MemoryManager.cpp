@@ -23,7 +23,7 @@ namespace ZMasher
 		//it will enter "Allocate" before we even finished this constructor
 		MainMemoryAllocator* data = reinterpret_cast<MainMemoryAllocator*>(this->Malloc(sizeof(MainMemoryAllocator)));
 		m_Allocator = new(data) MainMemoryAllocator();
-		reinterpret_cast<MainMemoryAllocator*>(m_Allocator)->Init();
+		//reinterpret_cast<MainMemoryAllocator*>(m_Allocator)->Init();
 
 
 		Segregator<1024, Mallocator, StackAllocator<1024, Mallocator>> test;

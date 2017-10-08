@@ -4,13 +4,13 @@
 
 #include <iostream>
 
-#define STACK_ALLOCATOR_TEMPLATE template<MemSizeType size, typename Allocator>
-#define STACK_ALLOCATOR_DECL StackAllocator<size, typename Allocator>
+#define STACK_ALLOCATOR_TEMPLATE template<MemSizeType size, typename BaseAllocator>
+#define STACK_ALLOCATOR_DECL StackAllocator<size, typename BaseAllocator>
 namespace ZMasher
 {
 	STACK_ALLOCATOR_TEMPLATE
 	class StackAllocator :
-		public Allocator
+		public BaseAllocator
 	{
 	public:
 		StackAllocator(MemSizeType alignment = 1);
@@ -25,29 +25,26 @@ namespace ZMasher
 		void MoveToAligned(void* & pointer, MemSizeType size);
 	};
 
-#define MEMSIZETYPE_CAST(var) reinterpret_cast<MemSizeType>(var)
-#define TO_DATA_PTR(var) reinterpret_cast<void*>(var)
 
 	STACK_ALLOCATOR_TEMPLATE
 	STACK_ALLOCATOR_DECL::StackAllocator(MemSizeType a_alignment)
-		:Allocator(a_alignment)
 	{
 		m_CurrentSize = 0;
 
-		if (alignment > 1)
+		if (a_alignment > 1)
 		{
-			m_Data = m_Allocator->AllocateAligned(size, alignment);
+			m_Data = BaseAllocator::AllocateAligned(size, a_alignment);
 		}
 		else
 		{
-			m_Data = m_Allocator->Allocate(size);
+			m_Data = BaseAllocator::Allocate(size);
 		}
 		m_Iterator = m_Data.m_Data;
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	STACK_ALLOCATOR_DECL::~StackAllocator()
 	{
-		m_Allocator->Deallocate(m_Data);
+		BaseAllocator::Deallocate(m_Data);
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	bool STACK_ALLOCATOR_DECL::GoodSize(MemSizeType size)
@@ -60,7 +57,8 @@ namespace ZMasher
 		//out of memory, resort to base allocator
 		if (!GoodSize(size))
 		{
-			return m_Allocator->Allocate(size);//failed to allocate in this allocator, use backup
+			//TODO: put this functionality in Fallbackallocator instead
+			return BaseAllocator::Allocate(size);//failed to allocate in this allocator, use backup
 		}
 		//new stack allocation
 		m_CurrentSize += size;
@@ -107,6 +105,10 @@ namespace ZMasher
 	STACK_ALLOCATOR_TEMPLATE
 	void STACK_ALLOCATOR_DECL::Reallocate(Blk& blk, MemSizeType size)
 	{
+		if (blk.m_Size == size)
+		{
+			return;
+		}
 		//1. Best case: simply expand/shrink the current block
 		//2. Bad case: something else is allocated after current block, reallocate to another 
 		//position in the stackallocator
@@ -118,15 +120,21 @@ namespace ZMasher
 			m_Iterator = TO_DATA_PTR(MEMSIZETYPE_CAST(blk.m_Data) + size);
 			return;
 		}
-		if (Owns(blk))
+		if (size > blk.m_Size)
 		{
-			void* prev_data = blk.m_Data;
-			MemSizeType prev_size = m_BlkLookup->Find(blk)->value.m_Size;
-			blk = Allocate(size);
-			memcpy(blk.m_Data, prev_data, prev_size);
-			return;
+			//false means we simply failed, deallocate and allocate again
+			if(Expand(blk, size - blk.m_Size))
+			{
+				return;
+			}
 		}
-		Allocator::Reallocate(blk, size);
+
+		//if we're lucky, we have overridden the Deallocate and Allocate functions
+		//with better functionality
+		Deallocate(blk);
+		void* temp_data = blk.m_Data;
+		blk = Allocate(size);
+		memcpy(blk.m_Data, temp_data, size);
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	bool STACK_ALLOCATOR_DECL::Owns(Blk blk)
@@ -137,6 +145,11 @@ namespace ZMasher
 	STACK_ALLOCATOR_TEMPLATE
 	void STACK_ALLOCATOR_DECL::Deallocate(Blk blk)
 	{
+		if (!Owns(blk))
+		{
+			return BaseAllocator::Deallocate(blk);
+		}
+
 		if (blk.m_Data == TO_DATA_PTR(MEMSIZETYPE_CAST(m_Iterator) - blk.m_Size)) //means that it was the latest allocation
 		{
 			m_CurrentSize -= blk.m_Size;

@@ -7,6 +7,10 @@
 #endif // MEMORY_DLL_EXPORT
 
 #include <DataStructures\BinarySearchTree.h>
+
+#define MEMSIZETYPE_CAST(var) reinterpret_cast<MemSizeType>(var)
+#define TO_DATA_PTR(var) reinterpret_cast<void*>(var)
+
 typedef int MemSizeType;
 namespace ZMasher
 {
@@ -35,4 +39,7 @@ namespace ZMasher
 
 	};
 }
+
+
+
 #define NULL_BLK {nullptr, 0}

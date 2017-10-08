@@ -5,7 +5,7 @@
 
 namespace ZMasher
 {
-	typedef StackAllocator<1024*1024*32, Mallocator> MainMemoryAllocator;
+	typedef StackAllocator<1024*32, Mallocator> MainMemoryAllocator;
 	class MEMORY_DLL MemoryManager
 	{
 	public:

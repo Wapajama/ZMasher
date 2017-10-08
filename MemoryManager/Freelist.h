@@ -26,7 +26,11 @@ namespace ZMasher
 		{
 			//added as a suffix to the BLK, knowing this we can always extract the blk by simply stepping back to the front of the allocated data
 			FreeListNode* next;
-		}* m_RootNode, m_LastNode;
+			Blk data;
+		};
+		
+		FreeListNode* m_RootNode, * m_LastNode;
+
 		int m_Count;
 		MemSizeType alloc_size;//never change unless it's -1 and it hasn't been initialized yet
 	};
@@ -65,12 +69,14 @@ namespace ZMasher
 	{
 		if (m_RootNode)
 		{
-			Blk blk = (*reinterpret_cast<Blk*>( &(m_RootNode - (sizeof(FreeListNode) + alloc_size)));
+			Blk blk = (*reinterpret_cast<Blk*>( TO_DATA_PTR(MEMSIZETYPE_CAST( m_RootNode - (sizeof(FreeListNode) + alloc_size)))));
 			m_RootNode = m_RootNode->next;
 			++m_Count;
 			return blk;
 		}
-		return BaseAllocator::Allocate(size + sizeof(FreeListNode));//suffix added for linked list
+		Blk blk = BaseAllocator::Allocate(size + sizeof(FreeListNode));//suffix added for linked list
+		blk.m_Size = size;//the suffix should be hidden from the user
+		return blk;
 	}
 	FREELIST_TEMPLATE
 	Blk FREELIST_DECL::AllocateAll()
@@ -78,7 +84,7 @@ namespace ZMasher
 		return {nullptr, 0};
 	}
 	FREELIST_TEMPLATE
-	Blk FREELIST_DECL::AllocateAligned(MemSizeType size, unsigned alignment)
+	Blk FREELIST_DECL::AllocateAligned(MemSizeType size, MemSizeType alignment)
 	{
 		//NOT IMPLEMENTED
 		return Blk();
@@ -89,9 +95,10 @@ namespace ZMasher
 		return Blk();
 	}
 	FREELIST_TEMPLATE
-	bool FREELIST_DECL::Expand(Blk& blk, MemSizeType delta)
+	bool FREELIST_DECL::Expand(Blk&, MemSizeType)
 	{
-		
+		//freelists can't expand
+		return false;
 	}
 	FREELIST_TEMPLATE
 	void FREELIST_DECL::Reallocate(Blk& blk, MemSizeType size)
@@ -105,7 +112,7 @@ namespace ZMasher
 	FREELIST_TEMPLATE
 	void FREELIST_DECL::Deallocate(Blk blk)
 	{
-		if (m_Count < max_alloc)
+		if (m_Count < max_count)
 		{
 			return AddBlk(blk);
 		}
@@ -120,20 +127,24 @@ namespace ZMasher
 		m_Count = 0;
 	}
 	FREELIST_TEMPLATE
+	void FREELIST_DECL::DeallocateAligned(Blk )
+	{
+	}
+	FREELIST_TEMPLATE
 	void FREELIST_DECL::AddBlk(Blk blk)
 	{
 		ASSERT(blk.m_Size <= alloc_size, "Freelist: can't add blk, invalid size");
 		ASSERT(BaseAllocator::Owns(blk), "Freelist: Trying to add memory that isn't owned by its BaseAllocator");
 		if (m_RootNode == nullptr)
 		{
-			m_RootNode = reinterpret_cast<FreeListNode*>(&(blk + alloc_size));//the last space is saved for linked list
+			m_RootNode = reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(blk.m_Data) + alloc_size));//the last space is saved for linked list
 			m_RootNode->next = nullptr;
 			m_LastNode = m_RootNode;
 			return;
 		}
 		FreeListNode* temp = m_LastNode;
 		//temp->next should be nullptr right now
-		temp->next = reinterpret_cast<FreeListNode*>(&(blk + alloc_size));//the last space is saved for linked list
+		temp->next = reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(blk.m_Data) + alloc_size));//the last space is saved for linked list
 		temp->next->next = nullptr;
 		m_LastNode = temp->next;
 	}
