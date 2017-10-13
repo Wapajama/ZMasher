@@ -77,6 +77,10 @@ namespace ZMasher
 	SEGREGATOR_TEMPL
 	void SEGREGATOR_DECL::Deallocate(Blk blk)
 	{
+		if (blk.m_Data == nullptr)
+		{
+			return;
+		}
 		if (blk.m_Size <= threshold &&
 			SmallAllocator::Owns(blk))
 		{

@@ -21,9 +21,11 @@ namespace ZMasher
 	{
 		return true;//in malloc, all sizes are "good" sizes ^^
 	}
+	int MALLOCATOR_DECL::alloc_counter = 0;
 	MALLOCATOR_TEMPLATE
 	Blk MALLOCATOR_DECL::Allocate(MemSizeType a_size)
 	{
+		++alloc_counter;
 		void* mem_ptr = malloc(a_size);
 		m_Lookup.Add(mem_ptr);
 		return {mem_ptr, a_size};
@@ -82,7 +84,11 @@ namespace ZMasher
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::DeallocateAll()
 	{
-		//
+		for (MemSizeType i = 0; i < m_Lookup.Size(); i++)
+		{
+			free(m_Lookup[i]);
+		}
+		m_Lookup.RemoveAll();
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::DeallocateAligned(Blk blk)

@@ -5,6 +5,8 @@
 #define FREELIST_TEMPLATE template<typename BaseAllocator, MemSizeType a_alloc_size, MemSizeType max_count>
 #define FREELIST_DECL FreeList<typename BaseAllocator, a_alloc_size, max_count>
 
+#define GET_NODE(data) reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(data) + alloc_size))
+
 namespace ZMasher
 {
 	FREELIST_TEMPLATE
@@ -65,17 +67,19 @@ namespace ZMasher
 		return size <= alloc_size;
 	}
 	FREELIST_TEMPLATE
-	Blk FREELIST_DECL::Allocate(MemSizeType size)
+	Blk FREELIST_DECL::Allocate(MemSizeType)
 	{
 		if (m_RootNode)
 		{
-			Blk blk = (*reinterpret_cast<Blk*>( TO_DATA_PTR(MEMSIZETYPE_CAST( m_RootNode - (sizeof(FreeListNode) + alloc_size)))));
+			Blk blk = m_RootNode->data;
 			m_RootNode = m_RootNode->next;
-			++m_Count;
+			--m_Count;
 			return blk;
 		}
-		Blk blk = BaseAllocator::Allocate(size + sizeof(FreeListNode));//suffix added for linked list
-		blk.m_Size = size;//the suffix should be hidden from the user
+		Blk blk = BaseAllocator::Allocate(alloc_size + sizeof(FreeListNode));//suffix added for linked list
+		GET_NODE(blk.m_Data)->next = nullptr;
+		GET_NODE(blk.m_Data)->data = NULL_BLK;
+		blk.m_Size = alloc_size;//the suffix should be hidden from the user
 		return blk;
 	}
 	FREELIST_TEMPLATE
@@ -107,6 +111,20 @@ namespace ZMasher
 	FREELIST_TEMPLATE
 	bool FREELIST_DECL::Owns(Blk blk)
 	{
+		// if it exists in this allocator, it means that something
+		// has deallocated it, thus, it's not owned by anything
+		// (while it's technically 'owned' by this allocator, this
+		// allocator is technically not an allocator, and more of 
+		// an allocator helper)
+		FreeListNode* temp_node = m_RootNode;
+		while (temp_node)
+		{
+			if (temp_node->data.m_Data == blk.m_Data)
+			{
+				return false;
+			}
+			temp_node = temp_node->next;
+		}
 		return BaseAllocator::Owns(blk);
 	}
 	FREELIST_TEMPLATE
@@ -116,7 +134,7 @@ namespace ZMasher
 		{
 			return AddBlk(blk);
 		}
-		ASSERT(false, "Too many deallocations!");
+		BaseAllocator::Deallocate(blk);
 	}
 	FREELIST_TEMPLATE
 	void FREELIST_DECL::DeallocateAll()
@@ -133,12 +151,14 @@ namespace ZMasher
 	FREELIST_TEMPLATE
 	void FREELIST_DECL::AddBlk(Blk blk)
 	{
+		++m_Count;
 		ASSERT(blk.m_Size <= alloc_size, "Freelist: can't add blk, invalid size");
 		ASSERT(BaseAllocator::Owns(blk), "Freelist: Trying to add memory that isn't owned by its BaseAllocator");
 		if (m_RootNode == nullptr)
 		{
-			m_RootNode = reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(blk.m_Data) + alloc_size));//the last space is saved for linked list
+			m_RootNode = GET_NODE(blk.m_Data);//the last space is saved for linked list
 			m_RootNode->next = nullptr;
+			m_RootNode->data = blk;
 			m_LastNode = m_RootNode;
 			return;
 		}
@@ -146,6 +166,7 @@ namespace ZMasher
 		//temp->next should be nullptr right now
 		temp->next = reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(blk.m_Data) + alloc_size));//the last space is saved for linked list
 		temp->next->next = nullptr;
+		temp->next->data = blk;
 		m_LastNode = temp->next;
 	}
 }

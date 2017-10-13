@@ -37,9 +37,9 @@ namespace ZMasher
 		~Mallocator();
 
 		BASE_ALLOCATOR_OVERRIDE_ALL;
-
+		static int alloc_counter;
 	private:
-		GrowArray<void*, MemSizeType, 1024> m_Lookup;
+		GrowArray<void*, MemSizeType, 1024> m_Lookup; //TODO: reconsider this
 
 	};
 }

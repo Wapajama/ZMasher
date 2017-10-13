@@ -26,7 +26,7 @@ namespace ZMasher
 		//reinterpret_cast<MainMemoryAllocator*>(m_Allocator)->Init();
 
 
-		Segregator<1024, Mallocator, StackAllocator<1024, Mallocator>> test;
+		//Segregator<1024, Mallocator, StackAllocator<1024, Mallocator>> test;
 	}
 	MemoryManager::~MemoryManager()
 	{

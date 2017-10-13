@@ -22,13 +22,26 @@ namespace ZMasher
 		static_assert(min < max, "MinSize must be smaller than MaxSize");
 		static_assert((max - min + 1) % step == 0, "Incorrect ranges or step size!");
 
-#define BUCKETIZER_N_BUCKETS (max - min) / step
+#define BUCKETIZER_N_BUCKETS ((max - (min+(min%step))) / step) + 1
+#define BUCKETIZER_MIN_SIZE min > step ? min+(min%step) : step
 
 		AllocatorType m_Allocators[BUCKETIZER_N_BUCKETS];
 
+		const MemSizeType m_NoOfBuckets;
+
 		inline const MemSizeType GetAllocatorIndex(const MemSizeType size)
 		{
-			return (size - min)% step;
+			MemSizeType allocator_min_size = BUCKETIZER_MIN_SIZE;
+			for (MemSizeType i = 0; i < BUCKETIZER_N_BUCKETS; i++)
+			{
+				if ((allocator_min_size+step*i) >= size)
+				{
+					MemSizeType temp = allocator_min_size+step*i;
+					return (temp-min)/step;
+				}
+			}
+			//ERROR!!!
+			return (max-min)/step;
 		}
 
 		inline AllocatorType& GetAllocator(const MemSizeType size)
@@ -43,11 +56,14 @@ namespace ZMasher
 
 	BUCKETIZER_TEMPLATE
 	BUCKETIZER_DECL::Bucketizer()
+		: m_NoOfBuckets(BUCKETIZER_N_BUCKETS)
 	{
 		//MDFINAE
+		MemSizeType allocator_min_size = BUCKETIZER_MIN_SIZE;
 		for (char i = 0; i < BUCKETIZER_N_BUCKETS; ++i)
 		{
-			m_Allocators[i].Init(min + step*i);
+			//m_Allocators[i].Init(min + step*i);
+			m_Allocators[i].Init(allocator_min_size + step*i);
 		}
 	}
 	BUCKETIZER_TEMPLATE

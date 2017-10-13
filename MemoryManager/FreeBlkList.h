@@ -25,11 +25,11 @@ namespace ZMasher
 		Blk m_Data;
 		//specifies all vacant memoryblocks. All memoryblocks are blk_size big
 		//true if vacant, false if occupied
-		GrowArray<bool, short, nr_of_blks> m_Blks;
+		GrowArray<bool, MemSizeType, nr_of_blks> m_Blks;
 
 		inline MemSizeType GetIndex(void* data)
 		{
-			 return MEMSIZETYPE_CAST(data) - MEMSIZETYPE_CAST(m_Data.m_Data) / blk_size;
+			 return ((MEMSIZETYPE_CAST(data) - MEMSIZETYPE_CAST(m_Data.m_Data)) / blk_size);
 		}
 
 	};
@@ -38,7 +38,7 @@ namespace ZMasher
 	FREE_BLK_LIST_DECL::FreeBlkList()
 	{
 		m_Data = BaseAllocator::Allocate(m_Size);
-		for (short i = 0; i < nr_of_blks; ++i)
+		for (MemSizeType i = 0; i < nr_of_blks; ++i)
 		{
 			m_Blks.Add(true);
 		}
@@ -108,11 +108,11 @@ namespace ZMasher
 			}
 			if (counter == indeces_needed)
 			{
-				for (MemSizeType o = 0; o < indeces_needed; ++o)
+				for (MemSizeType o = blk_index; o < (blk_index + indeces_needed); ++o)
 				{
 					m_Blks[o] = false; //allocating space
 				}
-				return { (TO_DATA_PTR( MEMSIZETYPE_CAST(m_Data.m_Data) + blk_size*blk_index)), size};
+				return { (TO_DATA_PTR( MEMSIZETYPE_CAST(m_Data.m_Data) + blk_size*blk_index)), blk_size*indeces_needed};
 			}
 		}
 		return NULL_BLK;
@@ -170,9 +170,15 @@ namespace ZMasher
 	FREE_BLK_LIST_TEMPL
 	bool FREE_BLK_LIST_DECL::Owns(Blk blk)
 	{
-		//TODO: this is a poor implementation, fix properly
-		return  MEMSIZETYPE_CAST(blk.m_Data) <  MEMSIZETYPE_CAST(m_Data.m_Data) + blk_size * nr_of_blks &&
-				MEMSIZETYPE_CAST(blk.m_Data) >= MEMSIZETYPE_CAST(m_Data.m_Data);
+		if(	MEMSIZETYPE_CAST(blk.m_Data) <  MEMSIZETYPE_CAST(m_Data.m_Data) + blk_size * nr_of_blks &&
+			MEMSIZETYPE_CAST(blk.m_Data) >= MEMSIZETYPE_CAST(m_Data.m_Data))
+		{
+			if (!m_Blks[GetIndex(blk.m_Data)])
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	FREE_BLK_LIST_TEMPL
 	void FREE_BLK_LIST_DECL::Deallocate(Blk blk)
