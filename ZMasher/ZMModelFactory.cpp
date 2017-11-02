@@ -187,7 +187,7 @@ ZMModelFactory::ZMModelFactory()
 ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_node, ZMModelInstanceNode* instance_node)
 {
 	void* model_mem = _mm_malloc(sizeof(ZMModelInstanceNode), 16);
-	ZMModelInstanceNode* new_node = new(model_mem) ZMModelInstanceNode();
+	ZMModelInstanceNode* new_node = new ZMModelInstanceNode();
 	if (instance_node != nullptr)
 	{
 		instance_node->AddModelInstanceNode(new_node);

@@ -11,6 +11,10 @@
 #define MEMSIZETYPE_CAST(var) reinterpret_cast<MemSizeType>(var)
 #define TO_DATA_PTR(var) reinterpret_cast<void*>(var)
 
+#define min(var1, var2) var1 < var2 ? var1 : var2
+#define max(var1, var2) var1 > var2 ? var1 : var2
+
+
 typedef int MemSizeType;
 namespace ZMasher
 {

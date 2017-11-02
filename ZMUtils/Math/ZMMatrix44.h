@@ -2,10 +2,12 @@
 
 #include <dvec.h>
 #include "ZMVector.h"
+#include <D3D11.h>
+
 
 namespace ZMasher
 {
-	class __declspec(align(16)) Matrix44f
+	class /*__declspec(align(16))*/ Matrix44f
 	{
 	public:
 
@@ -18,23 +20,14 @@ namespace ZMasher
 
 		inline Matrix44f(const Matrix44f& copy)
 		{
-			//printf("testderp %ld %ld %ld\n", 
-			//	   (intptr_t)(&m_Data[0]) & 0xF, 
-			//	   (intptr_t)(&copy.m_Data[0]) & 0xF,
-			//	   (intptr_t)(&m_Data[1]) & 0xF);
-			//printf("testderp %ld %ld %ld\n", 
-			//	   (intptr_t)(this), 
-			//	   (intptr_t)(&copy),
-			//	   (intptr_t)(&m_Data[0]));
-			//
-			//intptr_t test1 = (intptr_t)(&m_Data[0]) & 0xF;
-			//intptr_t test2 = (intptr_t)(&copy.m_Data[0]) & 0xF;
-			//intptr_t test3 = (intptr_t)(&m_Data[1]) & 0xF;
-
-			m_Data[0] = copy.m_Data[0];
-			m_Data[1] = copy.m_Data[1];
-			m_Data[2] = copy.m_Data[2];
-			m_Data[3] = copy.m_Data[3];
+			//m_Data[0] = copy.m_Data[0];
+			//m_Data[1] = copy.m_Data[1];
+			//m_Data[2] = copy.m_Data[2];
+			//m_Data[3] = copy.m_Data[3];
+			m_Vectors[0] = copy.m_Vectors[0];
+			m_Vectors[1] = copy.m_Vectors[1];
+			m_Vectors[2] = copy.m_Vectors[2];
+			m_Vectors[3] = copy.m_Vectors[3];
 		}
 
 		inline Matrix44f(const float arg_1,
@@ -97,10 +90,10 @@ namespace ZMasher
 				  const __m128& z,
 				  const __m128& w)
 		{
-			m_Data[0] = x;
-			m_Data[1] = y;
-			m_Data[2] = z;
-			m_Data[3] = w;
+			//m_Data[0] = x;
+			//m_Data[1] = y;
+			//m_Data[2] = z;
+			//m_Data[3] = w;
 		}
 
 		inline ~Matrix44f() {}
@@ -115,7 +108,7 @@ namespace ZMasher
 				float m31, m32, m33, m34;
 				float m41, m42, m43, m44;
 			};
-			__m128 m_Data[4];//used for SIMD operations
+			//__m128 m_Data[4];//used for SIMD operations
 			Vector4f m_Vectors[4];
 			float m_Elements[4][4];//used for pros B)
 			float m_ElementsSingle[16];
@@ -174,6 +167,8 @@ namespace ZMasher
 		inline static const Matrix44f CreateRotationMatrixZ(const float radians);
 
 		inline static const Matrix44f CreateRotationMatrixAroundAxis(const Vector4f& vector, const float radians);
+
+		//inline void SetXMMatrix(DirectX::XMMATRIX& matrix)const;
 	};
 
 }

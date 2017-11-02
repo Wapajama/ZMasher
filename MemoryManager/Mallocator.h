@@ -1,9 +1,7 @@
 #pragma once
 #include <Allocator.h>
 #include <DataStructures\BinarySearchTree.h>
-#include <DataStructures\GrowArray.h>
-#define MALLOCATOR_TEMPLATE //template<MemSizeType size, MemSizeType alignment = 1>
-//#define MALLOCATOR_DECL //Mallocator<size, alignment>
+#define MALLOCATOR_TEMPLATE 
 #define MALLOCATOR_DECL Mallocator
 
 typedef void* MallocPointer;
@@ -39,7 +37,7 @@ namespace ZMasher
 		BASE_ALLOCATOR_OVERRIDE_ALL;
 		static int alloc_counter;
 	private:
-		GrowArray<void*, MemSizeType, 1024> m_Lookup; //TODO: reconsider this
-
+		//GrowArray<void*, MemSizeType, 1024*4> m_Lookup; //TODO: reconsider this
+		BinarySearchTree<Blk, BlkComparator> m_Lookup;
 	};
 }

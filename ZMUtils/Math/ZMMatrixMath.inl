@@ -1,9 +1,9 @@
 #pragma once
 #include "ZMMatrix44.h"
 #include "mathdefines.h"
-
+#include <D3D11.h>
 //#define ZM_PERMUTE_PS( v, c ) _mm_shuffle_ps( v, v, c )
-#define ZM_MATH_USE_SIMD
+
 namespace ZMasher
 {
 	extern ZM_ALWAYS_INLINE const Vector4f Vector4MulScalar(const Vector4f& operand, const float scalar);
@@ -205,11 +205,16 @@ namespace ZMasher
 	{
 		Matrix44f result;
 
-		result.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
-		result.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
-		result.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
-		result.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
+		//result.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
+		//result.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
+		//result.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
+		//result.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
 		
+		result.m_Vectors[0] = Vector4MulScalar(operand.m_Vectors[0], scalar);
+		result.m_Vectors[1] = Vector4MulScalar(operand.m_Vectors[1], scalar);
+		result.m_Vectors[2] = Vector4MulScalar(operand.m_Vectors[2], scalar);
+		result.m_Vectors[3] = Vector4MulScalar(operand.m_Vectors[3], scalar);
+
 		return result;
 	}
 	
@@ -403,10 +408,15 @@ namespace ZMasher
 
 	ZM_ALWAYS_INLINE void Matrix44MulScalDir(Matrix44f& operand, const float scalar)
 	{
-		operand.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
-		operand.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
-		operand.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
-		operand.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
+		//operand.m_Data[0] = Vector4MulScalar(Vector4f(operand.m_Data[0]), scalar).m_Data;
+		//operand.m_Data[1] = Vector4MulScalar(Vector4f(operand.m_Data[1]), scalar).m_Data;
+		//operand.m_Data[2] = Vector4MulScalar(Vector4f(operand.m_Data[2]), scalar).m_Data;
+		//operand.m_Data[3] = Vector4MulScalar(Vector4f(operand.m_Data[3]), scalar).m_Data;
+
+		operand.m_Vectors[0] = Vector4MulScalar(Vector4f(operand.m_Vectors[0]), scalar);
+		operand.m_Vectors[1] = Vector4MulScalar(Vector4f(operand.m_Vectors[1]), scalar);
+		operand.m_Vectors[2] = Vector4MulScalar(Vector4f(operand.m_Vectors[2]), scalar);
+		operand.m_Vectors[3] = Vector4MulScalar(Vector4f(operand.m_Vectors[3]), scalar);
 	}
 
 	inline Matrix44f Matrix44f::operator+(const Matrix44f& operand)const
@@ -692,4 +702,26 @@ namespace ZMasher
 		return matrix;
 	}
 
+	//inline void Matrix44f::SetXMMatrix(DirectX::XMMATRIX& matrix)const
+	//{
+	//	matrix.r[0].m128_f32[0] = m_Elements[0][0];
+	//	matrix.r[0].m128_f32[1] = m_Elements[0][1];
+	//	matrix.r[0].m128_f32[2] = m_Elements[0][2];
+	//	matrix.r[0].m128_f32[3] = m_Elements[0][3];
+	//							  
+	//	matrix.r[1].m128_f32[0] = m_Elements[1][0];
+	//	matrix.r[1].m128_f32[1] = m_Elements[1][1];
+	//	matrix.r[1].m128_f32[2] = m_Elements[1][2];
+	//	matrix.r[1].m128_f32[3] = m_Elements[1][3];
+	//							  
+	//	matrix.r[2].m128_f32[0] = m_Elements[2][0];
+	//	matrix.r[2].m128_f32[1] = m_Elements[2][1];
+	//	matrix.r[2].m128_f32[2] = m_Elements[2][2];
+	//	matrix.r[2].m128_f32[3] = m_Elements[2][3];
+	//							  
+	//	matrix.r[3].m128_f32[0] = m_Elements[3][0];
+	//	matrix.r[3].m128_f32[1] = m_Elements[3][1];
+	//	matrix.r[3].m128_f32[2] = m_Elements[3][2];
+	//	matrix.r[3].m128_f32[3] = m_Elements[3][3];
+	//}
 }

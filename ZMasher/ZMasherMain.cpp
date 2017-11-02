@@ -129,11 +129,11 @@ bool ZMasherMain::Update()
 	const float dt = static_cast<double>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());//TODO: optimize dis
 
 #ifdef BENCHMARK
-	//const bool benchmark = Profiler::Instance()->IterateFrame(dt);
-	//if (!benchmark)
-	//{
-	//	return false;
-	//}
+	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
+	if (!benchmark)
+	{
+		return false;
+	}
 #endif // BENCHMARK_TEST
 	InputManager::Instance()->Update(dt);
 

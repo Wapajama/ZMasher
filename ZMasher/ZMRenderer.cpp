@@ -9,6 +9,29 @@
 #include "ZMModelNode.h"
 #include <D3D11.h>
 
+void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
+{
+	matrix.r[0].m128_f32[0] = other.m_Elements[0][0];
+	matrix.r[0].m128_f32[1] = other.m_Elements[0][1];
+	matrix.r[0].m128_f32[2] = other.m_Elements[0][2];
+	matrix.r[0].m128_f32[3] = other.m_Elements[0][3];
+							  
+	matrix.r[1].m128_f32[0] = other.m_Elements[1][0];
+	matrix.r[1].m128_f32[1] = other.m_Elements[1][1];
+	matrix.r[1].m128_f32[2] = other.m_Elements[1][2];
+	matrix.r[1].m128_f32[3] = other.m_Elements[1][3];
+							  
+	matrix.r[2].m128_f32[0] = other.m_Elements[2][0];
+	matrix.r[2].m128_f32[1] = other.m_Elements[2][1];
+	matrix.r[2].m128_f32[2] = other.m_Elements[2][2];
+	matrix.r[2].m128_f32[3] = other.m_Elements[2][3];
+							  
+	matrix.r[3].m128_f32[0] = other.m_Elements[3][0];
+	matrix.r[3].m128_f32[1] = other.m_Elements[3][1];
+	matrix.r[3].m128_f32[2] = other.m_Elements[3][2];
+	matrix.r[3].m128_f32[3] = other.m_Elements[3][3];
+}
+
 ZMRenderer::ZMRenderer(void)
 {
 	m_Camera = nullptr;
@@ -97,10 +120,11 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		const ZMasher::Matrix44f current_transform =  model->GetTransform()* parent_orientation;
 
-		modelWorldMatrix.r[0] = current_transform.m_Data[0];
-		modelWorldMatrix.r[1] = current_transform.m_Data[1];
-		modelWorldMatrix.r[2] = current_transform.m_Data[2];
-		modelWorldMatrix.r[3] = current_transform.m_Data[3];
+		//modelWorldMatrix.r[0] = current_transform.m_Data[0];
+		//modelWorldMatrix.r[1] = current_transform.m_Data[1];
+		//modelWorldMatrix.r[2] = current_transform.m_Data[2];
+		//modelWorldMatrix.r[3] = current_transform.m_Data[3];
+		SetXMMatrix(modelWorldMatrix, current_transform);
 
 		DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
@@ -154,10 +178,11 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 	ZMasher::Matrix44f current_transform; 
 	current_transform = m_Skybox->GetTransform();
 
-	modelWorldMatrix.r[0] = current_transform.m_Data[0];
-	modelWorldMatrix.r[1] = current_transform.m_Data[1];
-	modelWorldMatrix.r[2] = current_transform.m_Data[2];
-	modelWorldMatrix.r[3] = current_transform.m_Data[3];
+	//modelWorldMatrix.r[0] = current_transform.m_Data[0];
+	//modelWorldMatrix.r[1] = current_transform.m_Data[1];
+	//modelWorldMatrix.r[2] = current_transform.m_Data[2];
+	//modelWorldMatrix.r[3] = current_transform.m_Data[3];
+	SetXMMatrix(modelWorldMatrix, current_transform);
 
 	if (m_Camera != nullptr)
 	{
@@ -199,10 +224,11 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 	ZMasher::Matrix44f current_transform;
 	current_transform = m_Terrain->GetTransform();
 
-	modelWorldMatrix.r[0] = current_transform.m_Data[0];
-	modelWorldMatrix.r[1] = current_transform.m_Data[1];
-	modelWorldMatrix.r[2] = current_transform.m_Data[2];
-	modelWorldMatrix.r[3] = current_transform.m_Data[3];
+	//modelWorldMatrix.r[0] = current_transform.m_Data[0];
+	//modelWorldMatrix.r[1] = current_transform.m_Data[1];
+	//modelWorldMatrix.r[2] = current_transform.m_Data[2];
+	//modelWorldMatrix.r[3] = current_transform.m_Data[3];
+	SetXMMatrix(modelWorldMatrix, current_transform);
 
 	DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
 	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;

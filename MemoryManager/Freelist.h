@@ -5,7 +5,7 @@
 #define FREELIST_TEMPLATE template<typename BaseAllocator, MemSizeType a_alloc_size, MemSizeType max_count>
 #define FREELIST_DECL FreeList<typename BaseAllocator, a_alloc_size, max_count>
 
-#define GET_NODE(data) reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(data) + alloc_size))
+#define GET_NODE(node_data) reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(node_data) + alloc_size))
 
 namespace ZMasher
 {
@@ -31,7 +31,8 @@ namespace ZMasher
 			Blk data;
 		};
 		
-		FreeListNode* m_RootNode, * m_LastNode;
+		FreeListNode* m_RootNode;
+		FreeListNode* m_LastNode;
 
 		int m_Count;
 		MemSizeType alloc_size;//never change unless it's -1 and it hasn't been initialized yet
@@ -72,14 +73,19 @@ namespace ZMasher
 		if (m_RootNode)
 		{
 			Blk blk = m_RootNode->data;
+			if (m_LastNode == m_RootNode)
+			{
+				m_LastNode = nullptr;
+			}
 			m_RootNode = m_RootNode->next;
 			--m_Count;
+			ASSERT(m_Count <= 1 || m_RootNode != m_LastNode, "Lastnode is pointing at root node!");
 			return blk;
 		}
 		Blk blk = BaseAllocator::Allocate(alloc_size + sizeof(FreeListNode));//suffix added for linked list
-		GET_NODE(blk.m_Data)->next = nullptr;
-		GET_NODE(blk.m_Data)->data = NULL_BLK;
 		blk.m_Size = alloc_size;//the suffix should be hidden from the user
+		GET_NODE(blk.m_Data)->next = nullptr;
+		GET_NODE(blk.m_Data)->data = blk;
 		return blk;
 	}
 	FREELIST_TEMPLATE
@@ -107,6 +113,7 @@ namespace ZMasher
 	FREELIST_TEMPLATE
 	void FREELIST_DECL::Reallocate(Blk& blk, MemSizeType size)
 	{
+		ASSERT(false, "Can't reallocate!");
 	}
 	FREELIST_TEMPLATE
 	bool FREELIST_DECL::Owns(Blk blk)
@@ -152,7 +159,7 @@ namespace ZMasher
 	void FREELIST_DECL::AddBlk(Blk blk)
 	{
 		++m_Count;
-		ASSERT(blk.m_Size <= alloc_size, "Freelist: can't add blk, invalid size");
+		ASSERT(blk.m_Size <= (alloc_size), "Freelist: can't add blk, invalid size");
 		ASSERT(BaseAllocator::Owns(blk), "Freelist: Trying to add memory that isn't owned by its BaseAllocator");
 		if (m_RootNode == nullptr)
 		{
@@ -162,11 +169,11 @@ namespace ZMasher
 			m_LastNode = m_RootNode;
 			return;
 		}
-		FreeListNode* temp = m_LastNode;
-		//temp->next should be nullptr right now
-		temp->next = reinterpret_cast<FreeListNode*>((MEMSIZETYPE_CAST(blk.m_Data) + alloc_size));//the last space is saved for linked list
-		temp->next->next = nullptr;
-		temp->next->data = blk;
-		m_LastNode = temp->next;
+		ASSERT(m_LastNode->next == nullptr, "Freelist: Something has tampered with memory out of bounds!");
+		m_LastNode->next = GET_NODE(blk.m_Data);
+		m_LastNode = m_LastNode->next;
+		m_LastNode->next = nullptr;
+		m_LastNode->data = blk;
+		ASSERT(m_LastNode != m_RootNode, "Freelist: Last pointer is pointing at rootnode!");
 	}
 }

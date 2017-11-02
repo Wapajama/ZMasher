@@ -12,7 +12,7 @@ namespace ZMasher
 
 namespace ZMasher
 {
-	class __declspec(align(16)) Vector4f 
+	class /*__declspec(align(16))*/ Vector4f 
 	{
 	public:
 		inline Vector4f();
@@ -25,7 +25,7 @@ namespace ZMasher
 
 		union
 		{
-			__m128 m_Data;
+			//__m128 m_Data;
 			struct
 			{
 				float x;

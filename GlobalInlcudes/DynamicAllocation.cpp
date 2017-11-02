@@ -2,7 +2,7 @@
 #include <new>
 #include "project_defines.h"
 
-#ifdef NEW_OP_OVERRIDE
+//#ifdef NEW_OP_OVERRIDE
 
 ZMasher::MemoryManager* g_Derp = nullptr;
 
@@ -41,4 +41,4 @@ void* ZMRealloc(void* data, size_t size)
 	return g_MemoryManager.Reallocate(data, size);
 }
 
-#endif // NEW_OP_OVERRIDE
+//#endif // NEW_OP_OVERRIDE

@@ -61,7 +61,7 @@ public:
 
 private:
 	ZMasher::BinarySearchTree<TransformIndexPair, TransformComparer> m_LookupSet;
-	GrowArray<TransformComponent, short, 1024, 16> m_Transforms;
+	GrowArray<TransformComponent, short, 1024> m_Transforms;
 	ProfilerTaskID m_GetTransformTimeStamp;
 };
 

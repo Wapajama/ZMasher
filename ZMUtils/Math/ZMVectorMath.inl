@@ -268,7 +268,7 @@ namespace ZMasher
 
 	inline Vector4f::Vector4f(const __m128& data)
 	{
-		m_Data = data;
+		//m_Data = data;
 	}
 
 	inline Vector4f::Vector4f(float* arrayPtr)

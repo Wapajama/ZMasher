@@ -8,6 +8,7 @@ namespace ZMasher
 {
 	MALLOCATOR_TEMPLATE
 	MALLOCATOR_DECL::Mallocator()
+		: m_Lookup(true)
 	{
 	}
 
@@ -27,7 +28,8 @@ namespace ZMasher
 	{
 		++alloc_counter;
 		void* mem_ptr = malloc(a_size);
-		m_Lookup.Add(mem_ptr);
+		//m_Lookup.Add(mem_ptr);
+		m_Lookup.Insert({mem_ptr, a_size});
 		return {mem_ptr, a_size};
 	}
 	MALLOCATOR_TEMPLATE
@@ -39,7 +41,7 @@ namespace ZMasher
 	Blk MALLOCATOR_DECL::AllocateAligned(MemSizeType a_size, MemSizeType alignment)
 	{
 		void* mem_ptr = _mm_malloc(a_size, alignment);
-		m_Lookup.Add(mem_ptr);
+		m_Lookup.Insert({mem_ptr, a_size});
 		return {mem_ptr, a_size};
 	}
 	MALLOCATOR_TEMPLATE
@@ -56,14 +58,18 @@ namespace ZMasher
 			return false;
 		}
 		blk.m_Data = new_memblk;
-		m_Lookup.Add(new_memblk);
+		m_Lookup.Insert(blk);
 		return true;
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::Reallocate(Blk& blk, MemSizeType a_size)
 	{
+		if (blk.m_Size = a_size)
+		{
+			return;
+		}
 		void* new_memblk = realloc(blk.m_Data, a_size);
-		m_Lookup.Add(new_memblk);
+		m_Lookup.Insert(blk);
 		if (new_memblk == nullptr)
 		{
 			return;
@@ -73,28 +79,34 @@ namespace ZMasher
 	MALLOCATOR_TEMPLATE
 	bool MALLOCATOR_DECL::Owns(Blk blk)
 	{
-		return m_Lookup.Find(blk.m_Data) != m_Lookup.found_none;
+		return m_Lookup.Find(blk) != nullptr;
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::Deallocate(Blk blk)
 	{
-		m_Lookup.RemoveCyclic(m_Lookup.Find(blk.m_Data));
-		free(blk.m_Data);
+		if (m_Lookup.Find(blk) != nullptr)
+		{
+			m_Lookup.Delete(blk);
+			free(blk.m_Data);
+		}
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::DeallocateAll()
 	{
-		for (MemSizeType i = 0; i < m_Lookup.Size(); i++)
+		while (m_Lookup.Max() != nullptr)
 		{
-			free(m_Lookup[i]);
+			free(m_Lookup.Max());
+			m_Lookup.Delete(m_Lookup.Max());
 		}
-		m_Lookup.RemoveAll();
 	}
 	MALLOCATOR_TEMPLATE
 	void MALLOCATOR_DECL::DeallocateAligned(Blk blk)
 	{
-		m_Lookup.RemoveCyclic(m_Lookup.Find(blk.m_Data));
-		_mm_free(blk.m_Data);
+		while (m_Lookup.Max() != nullptr)
+		{
+			_mm_free(m_Lookup.Max());
+			m_Lookup.Delete(m_Lookup.Max());
+		}
 	}
 
 }

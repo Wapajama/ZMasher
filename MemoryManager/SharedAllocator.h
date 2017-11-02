@@ -1,70 +1,92 @@
 #pragma once
 #include <Allocator.h>
 
+#define SHARED_ALLOCATOR_TEMPL template<void** shared_allocator>
+#define SHARED_ALLOCATOR_DECL SharedAllocator<shared_allocator>
+
 namespace ZMasher
 {
+	class Allocator;
+	SHARED_ALLOCATOR_TEMPL
 	class SharedAllocator
 		: public Allocator
 	{
 	public:
-		SharedAllocator(Allocator* allocator);
+		SharedAllocator();
 		~SharedAllocator();
 
 		BASE_ALLOCATOR_OVERRIDE_ALL
 	private:
-		Allocator* m_Allocator;
+		inline Allocator* GetAllocator() { return *m_Allocator;}
+		Allocator** m_Allocator;
 	};
-
-	SharedAllocator::SharedAllocator(Allocator* allocator)
-		: m_Allocator(allocator)
+	SHARED_ALLOCATOR_TEMPL
+	SHARED_ALLOCATOR_DECL::SharedAllocator()
+		: m_Allocator(reinterpret_cast<Allocator**>(shared_allocator))
 	{
-		ASSERT(m_Allocator != nullptr, "SharedAllocator: Allocator can't be nullptr!");
+		ASSERT(GetAllocator() != nullptr, "SharedAllocator: Allocator can't be nullptr!");
 	}
-	SharedAllocator::~SharedAllocator()
+	SHARED_ALLOCATOR_TEMPL
+	SHARED_ALLOCATOR_DECL::~SharedAllocator()
 	{
 	}
-	bool SharedAllocator::GoodSize(MemSizeType size)
+	SHARED_ALLOCATOR_TEMPL
+	bool SHARED_ALLOCATOR_DECL::GoodSize(MemSizeType size)
 	{
-		return m_Allocator->GoodSize(size);
+		return GetAllocator()->GoodSize(size);
 	}
-	Blk SharedAllocator::Allocate(MemSizeType size)
+	SHARED_ALLOCATOR_TEMPL
+	Blk SHARED_ALLOCATOR_DECL::Allocate(MemSizeType size)
 	{
-		return m_Allocator->Allocate(size);
+		return GetAllocator()->Allocate(size);
 	}
-	Blk SharedAllocator::AllocateAll()
+	SHARED_ALLOCATOR_TEMPL
+	Blk SHARED_ALLOCATOR_DECL::AllocateAll()
 	{
-		return m_Allocator->AllocateAll();
+		return GetAllocator()->AllocateAll();
 	}
-	Blk SharedAllocator::AllocateAligned(MemSizeType size, MemSizeType alignment)
+	SHARED_ALLOCATOR_TEMPL
+	Blk SHARED_ALLOCATOR_DECL::AllocateAligned(MemSizeType size, MemSizeType alignment)
 	{
 		return AllocateAligned(size, alignment);
 	}
-	Blk SharedAllocator::AllocateAllAligned(MemSizeType alignment)
+	SHARED_ALLOCATOR_TEMPL
+	Blk SHARED_ALLOCATOR_DECL::AllocateAllAligned(MemSizeType alignment)
 	{
-		return m_Allocator->AllocateAllAligned(alignment);
+		return GetAllocator()->AllocateAllAligned(alignment);
 	}
-	bool SharedAllocator::Expand(Blk& blk, MemSizeType delta)
+	SHARED_ALLOCATOR_TEMPL
+	bool SHARED_ALLOCATOR_DECL::Expand(Blk& blk, MemSizeType delta)
 	{
-		return m_Allocator->Expand(blk, delta);
+		return GetAllocator()->Expand(blk, delta);
 	}
-	void SharedAllocator::Reallocate(Blk& blk, MemSizeType size)
+	SHARED_ALLOCATOR_TEMPL
+	void SHARED_ALLOCATOR_DECL::Reallocate(Blk& blk, MemSizeType size)
 	{
-		return m_Allocator->Reallocate(blk, size);
+		if (blk.m_Size == size)
+		{
+			return;
+		}
+		return GetAllocator()->Reallocate(blk, size);
 	}
-	bool SharedAllocator::Owns(Blk blk)
+	SHARED_ALLOCATOR_TEMPL
+	bool SHARED_ALLOCATOR_DECL::Owns(Blk blk)
 	{
-		return m_Allocator->Owns(blk);
+		return GetAllocator()->Owns(blk);
 	}
-	void SharedAllocator::Deallocate(Blk blk)
+	SHARED_ALLOCATOR_TEMPL
+	void SHARED_ALLOCATOR_DECL::Deallocate(Blk blk)
 	{
-		return m_Allocator->Deallocate(blk);
+		return GetAllocator()->Deallocate(blk);
 	}
-	void SharedAllocator::DeallocateAligned(Blk blk)
+	SHARED_ALLOCATOR_TEMPL
+	void SHARED_ALLOCATOR_DECL::DeallocateAligned(Blk blk)
 	{
-		return m_Allocator->DeallocateAligned(blk);
+		return GetAllocator()->DeallocateAligned(blk);
 	}
-	void SharedAllocator::DeallocateAll()
+	SHARED_ALLOCATOR_TEMPL
+	void SHARED_ALLOCATOR_DECL::DeallocateAll()
 	{
-		return m_Allocator->DeallocateAll();
+		return GetAllocator()->DeallocateAll();
 	}
 }

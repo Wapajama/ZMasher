@@ -3,6 +3,8 @@
 #define SEGREGATOR_TEMPL template<int threshold, class SmallAllocator, class LargeAllocator>
 #define SEGREGATOR_DECL Segregator<threshold, SmallAllocator, LargeAllocator>
 
+#define SEG_OP <
+
 namespace ZMasher
 {
 	SEGREGATOR_TEMPL
@@ -16,7 +18,7 @@ namespace ZMasher
 
 	};
 
-#define CALL_RIGHT_PARENT(Function) if (size <= threshold)\
+#define CALL_RIGHT_PARENT(Function) if (size SEG_OP threshold)\
 		{\
 		 return SmallAllocator:: Function ;\
 		}\
@@ -50,7 +52,7 @@ namespace ZMasher
 	SEGREGATOR_TEMPL
 	bool SEGREGATOR_DECL::Expand(Blk& blk, MemSizeType delta)
 	{
-		if (blk.m_Size <= threshold)
+		if (blk.m_Size SEG_OP threshold)
 		{
 			return SmallAllocator::Expand(blk, delta);
 		}
@@ -59,7 +61,11 @@ namespace ZMasher
 	SEGREGATOR_TEMPL
 	void SEGREGATOR_DECL::Reallocate(Blk& blk, MemSizeType size)
 	{
-		if (blk.m_Size <= threshold)
+		if (blk.m_Size == size)
+		{
+			return;
+		}
+		if (blk.m_Size SEG_OP threshold)
 		{
 			return SmallAllocator::Reallocate(blk, size);
 		}
@@ -68,7 +74,7 @@ namespace ZMasher
 	SEGREGATOR_TEMPL
 	bool SEGREGATOR_DECL::Owns(Blk blk)
 	{
-		if (blk.m_Size <= threshold)
+		if (blk.m_Size SEG_OP threshold)
 		{
 			return SmallAllocator::Owns(blk);
 		}
@@ -81,7 +87,7 @@ namespace ZMasher
 		{
 			return;
 		}
-		if (blk.m_Size <= threshold &&
+		if (blk.m_Size SEG_OP threshold &&
 			SmallAllocator::Owns(blk))
 		{
 			return SmallAllocator::Deallocate(blk);
@@ -94,7 +100,7 @@ namespace ZMasher
 	SEGREGATOR_TEMPL
 	void SEGREGATOR_DECL::DeallocateAligned(Blk blk)
 	{
-		if (blk.m_Size <= threshold &&
+		if (blk.m_Size SEG_OP threshold &&
 			SmallAllocator::Owns(blk))
 		{
 			return SmallAllocator::Deallocate(blk);

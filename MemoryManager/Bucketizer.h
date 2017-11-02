@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Allocator.h>
+
 #define BUCKETIZER_TEMPLATE template <typename AllocatorType, MemSizeType min, MemSizeType max, MemSizeType step>
 #define BUCKETIZER_DECL Bucketizer<AllocatorType, min, max, step>
 
@@ -20,10 +21,10 @@ namespace ZMasher
 	private:
 
 		static_assert(min < max, "MinSize must be smaller than MaxSize");
-		static_assert((max - min + 1) % step == 0, "Incorrect ranges or step size!");
+		//static_assert((max - min + 1) % step == 0, "Incorrect ranges or step size!");
 
-#define BUCKETIZER_N_BUCKETS ((max - (min+(min%step))) / step) + 1
-#define BUCKETIZER_MIN_SIZE min > step ? min+(min%step) : step
+#define BUCKETIZER_N_BUCKETS ((max - (min-(min%step))) / step) + 1
+#define BUCKETIZER_MIN_SIZE min > step ? min-(min%step) : step
 
 		AllocatorType m_Allocators[BUCKETIZER_N_BUCKETS];
 
@@ -37,16 +38,16 @@ namespace ZMasher
 				if ((allocator_min_size+step*i) >= size)
 				{
 					MemSizeType temp = allocator_min_size+step*i;
-					return (temp-min)/step;
+					return (temp-allocator_min_size)/step;
 				}
 			}
 			//ERROR!!!
-			return (max-min)/step;
+			return (max-allocator_min_size)/step;
 		}
 
 		inline AllocatorType& GetAllocator(const MemSizeType size)
 		{
-			if (!GoodSize(size))
+			if (!BUCKETIZER_DECL::GoodSize(size))
 			{
 				ASSERT(false, "Bucketizer: invalid size!");
 			}
@@ -62,7 +63,6 @@ namespace ZMasher
 		MemSizeType allocator_min_size = BUCKETIZER_MIN_SIZE;
 		for (char i = 0; i < BUCKETIZER_N_BUCKETS; ++i)
 		{
-			//m_Allocators[i].Init(min + step*i);
 			m_Allocators[i].Init(allocator_min_size + step*i);
 		}
 	}
@@ -77,8 +77,7 @@ namespace ZMasher
 	BUCKETIZER_TEMPLATE
 	bool BUCKETIZER_DECL::GoodSize(MemSizeType size)
 	{
-		return	size >= min && 
-				size <= max;
+		return	size <= max;
 	}
 	BUCKETIZER_TEMPLATE
 	Blk BUCKETIZER_DECL::Allocate(MemSizeType size)
@@ -114,19 +113,39 @@ namespace ZMasher
 	BUCKETIZER_TEMPLATE
 	void BUCKETIZER_DECL::Reallocate(Blk& blk, MemSizeType size)
 	{
-		if (GoodSize(size))
+		if (blk.m_Size == size)
 		{
-			GetAllocator(blk.m_Size).Deallocate(blk);
-			blk = GetAllocator(GetAllocatorIndex(size)).Allocate(size);
+			return;
+		}
+		Blk tmp_blk = NULL_BLK;
+		if (BUCKETIZER_DECL::GoodSize(size))
+		{
+			tmp_blk = GetAllocator(size).Allocate(size);
 		}
 		else
 		{
-			ASSERT(false, "Bucketizer: Can't reallocate!");
+			tmp_blk = Allocate(size);
 		}
+		if (tmp_blk.m_Data)
+		{
+			char dbgMsg[128];
+			sprintf_s(dbgMsg, "\nB4 Bucketizer reallocate memcpy, size: %i", size);
+			//OutputDebugStringA(dbgMsg);
+			memcpy(tmp_blk.m_Data, blk.m_Data, min(size, blk.m_Size));
+			GetAllocator(blk.m_Size).Deallocate(blk);
+			sprintf_s(dbgMsg, "\nAF Bucketizer reallocate memcpy" );
+			//OutputDebugStringA(dbgMsg);
+			blk = tmp_blk;
+		}
+		ASSERT(tmp_blk.m_Data, "Bucketizer, Cant realloc!");
 	}
 	BUCKETIZER_TEMPLATE
 	bool BUCKETIZER_DECL::Owns(Blk blk)
 	{
+		if (!BUCKETIZER_DECL::GoodSize(blk.m_Size))
+		{
+			return false;
+		}
 		return GetAllocator(blk.m_Size).Owns(blk);
 	}
 	BUCKETIZER_TEMPLATE

@@ -2,13 +2,13 @@
 
 #define ZERO_MEMORY(var) ZeroMemory(&var, sizeof(decltype(var)))
 
-
 namespace ZMasher
 {
 	float GetRadians(float degrees);
 	float GetDegrees(float radians);
 	float GetRandomFloat(float min, float max);
 	int GetRandomInt(int min, int max);
+
 }
 
 

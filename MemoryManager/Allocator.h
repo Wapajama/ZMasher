@@ -1,10 +1,10 @@
 #pragma once
 #include <CommonMemoryManagement.h>
-
+#include <Windows.h>
 //base class for all allocators
 namespace ZMasher
 {
-	class Allocator
+	class MEMORY_DLL Allocator
 	{
 	public:
 		Allocator(MemSizeType alignment = 1);

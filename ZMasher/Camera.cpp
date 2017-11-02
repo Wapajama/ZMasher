@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "ZMasherUtilities.h"
-
+#include <iostream>
 using namespace ZMasher;
 
 Camera::Camera(const ZMasher::Vector2<int>& window_size): m_XRotation(0), m_YRotation(0)
@@ -48,18 +48,57 @@ void Camera::UpdateProjMatrix()
 
 void Camera::GetOrientation(DirectX::XMMATRIX& matrix)
 {
-	matrix.r[0] = m_Orientation.m_Data[0];
-	matrix.r[1] = m_Orientation.m_Data[1];
-	matrix.r[2] = m_Orientation.m_Data[2];
-	matrix.r[3] = m_Orientation.m_Data[3];
+	//matrix.r[0] = m_Orientation.m_Data[0];
+	//matrix.r[1] = m_Orientation.m_Data[1];
+	//matrix.r[2] = m_Orientation.m_Data[2];
+	//matrix.r[3] = m_Orientation.m_Data[3];
+	matrix.r[0].m128_f32[0] = m_Orientation.m_Elements[0][0];
+	matrix.r[0].m128_f32[1] = m_Orientation.m_Elements[0][1];
+	matrix.r[0].m128_f32[2] = m_Orientation.m_Elements[0][2];
+	matrix.r[0].m128_f32[3] = m_Orientation.m_Elements[0][3];
+
+	matrix.r[1].m128_f32[0] = m_Orientation.m_Elements[1][0];
+	matrix.r[1].m128_f32[1] = m_Orientation.m_Elements[1][1];
+	matrix.r[1].m128_f32[2] = m_Orientation.m_Elements[1][2];
+	matrix.r[1].m128_f32[3] = m_Orientation.m_Elements[1][3];
+
+	matrix.r[2].m128_f32[0] = m_Orientation.m_Elements[2][0];
+	matrix.r[2].m128_f32[1] = m_Orientation.m_Elements[2][1];
+	matrix.r[2].m128_f32[2] = m_Orientation.m_Elements[2][2];
+	matrix.r[2].m128_f32[3] = m_Orientation.m_Elements[2][3];
+
+	matrix.r[3].m128_f32[0] = m_Orientation.m_Elements[3][0];
+	matrix.r[3].m128_f32[1] = m_Orientation.m_Elements[3][1];
+	matrix.r[3].m128_f32[2] = m_Orientation.m_Elements[3][2];
+	matrix.r[3].m128_f32[3] = m_Orientation.m_Elements[3][3];
 }
 
 void Camera::GetProjectionMatrix(DirectX::XMMATRIX& matrix)
 {
-	matrix.r[0] = m_ProjectionMatrix.m_Data[0];
-	matrix.r[1] = m_ProjectionMatrix.m_Data[1];
-	matrix.r[2] = m_ProjectionMatrix.m_Data[2];
-	matrix.r[3] = m_ProjectionMatrix.m_Data[3];
+	//matrix.r[0] = m_ProjectionMatrix.m_Data[0];
+	//matrix.r[1] = m_ProjectionMatrix.m_Data[1];
+	//matrix.r[2] = m_ProjectionMatrix.m_Data[2];
+	//matrix.r[3] = m_ProjectionMatrix.m_Data[3];
+
+	matrix.r[0].m128_f32[0] = m_ProjectionMatrix.m_Elements[0][0];
+	matrix.r[0].m128_f32[1] = m_ProjectionMatrix.m_Elements[0][1];
+	matrix.r[0].m128_f32[2] = m_ProjectionMatrix.m_Elements[0][2];
+	matrix.r[0].m128_f32[3] = m_ProjectionMatrix.m_Elements[0][3];
+							  
+	matrix.r[1].m128_f32[0] = m_ProjectionMatrix.m_Elements[1][0];
+	matrix.r[1].m128_f32[1] = m_ProjectionMatrix.m_Elements[1][1];
+	matrix.r[1].m128_f32[2] = m_ProjectionMatrix.m_Elements[1][2];
+	matrix.r[1].m128_f32[3] = m_ProjectionMatrix.m_Elements[1][3];
+							  
+	matrix.r[2].m128_f32[0] = m_ProjectionMatrix.m_Elements[2][0];
+	matrix.r[2].m128_f32[1] = m_ProjectionMatrix.m_Elements[2][1];
+	matrix.r[2].m128_f32[2] = m_ProjectionMatrix.m_Elements[2][2];
+	matrix.r[2].m128_f32[3] = m_ProjectionMatrix.m_Elements[2][3];
+							  
+	matrix.r[3].m128_f32[0] = m_ProjectionMatrix.m_Elements[3][0];
+	matrix.r[3].m128_f32[1] = m_ProjectionMatrix.m_Elements[3][1];
+	matrix.r[3].m128_f32[2] = m_ProjectionMatrix.m_Elements[3][2];
+	matrix.r[3].m128_f32[3] = m_ProjectionMatrix.m_Elements[3][3];
 }
 
 Vector3f Camera::GetPosition()
@@ -97,11 +136,15 @@ void Camera::GetWorldOrientationaTest(ZMasher::Matrix44f& matrix)const
 	//		(intptr_t)(&m_Orientation),
 	//		(intptr_t)(&matrix.m_Data[1]));
 
-	matrix.m_Data[0] = m_Orientation.m_Data[0];
-	matrix.m_Data[1] = m_Orientation.m_Data[1];
-	matrix.m_Data[2] = m_Orientation.m_Data[2];
-	matrix.m_Data[3] = m_Orientation.m_Data[3];
+	//matrix.m_Data[0] = m_Orientation.m_Data[0];
+	//matrix.m_Data[1] = m_Orientation.m_Data[1];
+	//matrix.m_Data[2] = m_Orientation.m_Data[2];
+	//matrix.m_Data[3] = m_Orientation.m_Data[3];
 
+	matrix = m_Orientation;
+
+
+	//printf("testderp AFTER\n");
 }
 
 void Camera::RotateX(const float radians)

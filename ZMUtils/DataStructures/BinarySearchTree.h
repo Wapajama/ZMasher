@@ -1,6 +1,8 @@
 #pragma once
 #include "GrowArray.h"
 #include <Debugging\ZMDebugger.h>
+#include <stdlib.h>
+#include <iostream>
 
 #define TEMPLATE_HEADER template<typename Type, typename Comparator>
 #define TEMPLATE_ARGS <Type, Comparator>
@@ -54,21 +56,12 @@ namespace ZMasher
 		Comparator m_Comparator;
 	};
 
-	////Memory Allocation
-	//TEMPLATE_HEADER
-	//BSTNode TEMPLATE_ARGS* AllocateNode(const Type& value, 
-	//										   BSTNode TEMPLATE_ARGS* parent = nullptr, 
-	//										   BSTNode TEMPLATE_ARGS* left = nullptr, 
-	//										   BSTNode TEMPLATE_ARGS* right = nullptr)
-	//{
-	//	return new BSTNode TEMPLATE_ARGS(value, parent, left, right);//TODO: add allocator
-	//}
-
+	//left is less, right is more, equal is invalid
 	TEMPLATE_HEADER
 	class BinarySearchTree
 	{
 	public:
-		BinarySearchTree();
+		BinarySearchTree(const bool use_malloc = false);
 		BinarySearchTree(BSTNode TEMPLATE_ARGS* root_node);
 		~BinarySearchTree();
 
@@ -85,8 +78,12 @@ namespace ZMasher
 		BSTNode TEMPLATE_ARGS* Max(BSTNode TEMPLATE_ARGS* node);
 		BSTNode TEMPLATE_ARGS* Min(BSTNode TEMPLATE_ARGS* node);
 
+		int Count();
+
 	private:
-		BSTNode TEMPLATE_ARGS* InsertInternal(const Type& value);
+		void CountInternal(BSTNode TEMPLATE_ARGS* node, int& count);
+
+		BSTNode TEMPLATE_ARGS* InsertInternal(const Type& value, BSTNode TEMPLATE_ARGS* node = nullptr);
 
 		void Test(BSTNode TEMPLATE_ARGS* node, BSTNode TEMPLATE_ARGS* parent);
 
@@ -107,10 +104,12 @@ namespace ZMasher
 		BSTNode TEMPLATE_ARGS* m_Root;
 		int m_NumberOfNodes;
 		Comparator m_Comparer;
+		const bool m_UseMalloc;
 	};
 
 	TEMPLATE_HEADER
-	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree()
+	BinarySearchTree TEMPLATE_ARGS::BinarySearchTree(const bool use_malloc)
+		:m_UseMalloc(use_malloc)
 	{
 		m_NumberOfNodes = 0;
 		m_Root = nullptr;
@@ -153,37 +152,113 @@ namespace ZMasher
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Insert(const Type& value)
 	{
-		++m_NumberOfNodes;
 		if (m_Root == nullptr)
 		{
 			m_Root = AllocateNode(value);
+
+			++m_NumberOfNodes;
+			//const int cnt = Count();
+			//ASSERT(cnt == m_NumberOfNodes, "Tree error!");
 			return m_Root;
 		}
-		return InsertInternal(value);
+		BSTNode TEMPLATE_ARGS* node = InsertInternal(value);
+		if (node != nullptr)
+		{
+			++m_NumberOfNodes;
+			//const int cnt = Count();
+			//ASSERT(cnt == m_NumberOfNodes, "Tree error!");
+		}
+		return node;
 	}
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::Delete(BSTNode TEMPLATE_ARGS* node)
 	{
 		Splay(node);
-		
+	
+
 		BSTNode TEMPLATE_ARGS* left_subtree = node->left;
 		BSTNode TEMPLATE_ARGS* right_subtree = node->right;
-
-		DeallocateNode(node);
-		
-		m_Root = Min(Max(left_subtree));
-		
-		if (m_Root->parent)
+		if (node->left)
 		{
-			m_Root->parent->left = nullptr;
-			m_Root->parent->right = nullptr;
+			node->left->parent = nullptr;
+		}
+		if (node->right)
+		{
+			node->right->parent = nullptr;
 		}
 
+		if (node->parent && node->parent->left == node)
+		{
+			node->parent->left = nullptr;
+		}
+		else if(node->parent)
+		{
+			node->parent->right = nullptr;
+		}
+
+		DeallocateNode(node);
+		if (left_subtree)
+		{
+			m_Root = Max(left_subtree);
+			if (m_Root->left && m_Root->parent)
+			{
+				m_Root->parent->right = m_Root->left;
+				m_Root->parent->right->parent = m_Root->parent;
+			}
+			else if(m_Root->parent)
+			{
+				m_Root->parent->right = nullptr;
+			}
+		}
+		else if(right_subtree)
+		{
+			m_Root = Min(right_subtree);
+			if (m_Root->right && m_Root->parent)
+			{
+				m_Root->parent->left = m_Root->right;
+				m_Root->parent->left->parent = m_Root->parent;
+			}
+			else if(m_Root->parent)
+			{
+				m_Root->parent->left = nullptr;
+			}
+		}
+		else
+		{
+			//We splayed it up, and it has no children, remove
+			m_Root = nullptr;
+			this->m_NumberOfNodes = 0;
+			return;
+		}
+
+		//if (m_Root->parent && m_Root->left)
+		//{
+		//	m_Root->parent->left = nullptr;
+		//	m_Root->parent->right = nullptr;
+		//}
+
 		m_Root->parent = nullptr;
-		m_Root->left = left_subtree;
-		left_subtree->parent = m_Root;
-		m_Root->right = right_subtree;
-		right_subtree->parent = m_Root;
+
+		if (m_Root != left_subtree &&
+			left_subtree != nullptr)
+		{
+			m_Root->left = left_subtree;
+			left_subtree->parent = m_Root;
+		}
+		//ASSERT(m_Root != m_Root->parent, "Tree error!");
+		//ASSERT(m_Root != m_Root->parent, "Tree error!");
+		if (m_Root != right_subtree &&
+			right_subtree != nullptr)
+		{
+			m_Root->right = right_subtree;
+			right_subtree->parent = m_Root;
+		}
+		//ASSERT(m_Root != m_Root->parent, "Tree error!");
+		//ASSERT(m_Root != m_Root->parent, "Tree error!");
+
+		//--m_NumberOfNodes;
+		//const int cnt = Count();
+		//ASSERT(cnt == m_NumberOfNodes, "Tree error!");
 	}
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::Delete(const Type& value)
@@ -245,6 +320,45 @@ namespace ZMasher
 		return Min(m_Root);
 	}
 	TEMPLATE_HEADER
+	int BinarySearchTree TEMPLATE_ARGS::Count()
+	{
+		int count =0;
+		CountInternal(m_Root, count);
+		return count;
+	}
+
+	
+	TEMPLATE_HEADER
+	void BinarySearchTree TEMPLATE_ARGS::CountInternal(BSTNode TEMPLATE_ARGS* node, int& count)
+	{
+		//static GrowArray<BSTNode TEMPLATE_ARGS*> loc_nodes(1000);
+		if (count == 0)
+		{
+			//loc_nodes.RemoveAll();
+		}
+		if (node)
+		{
+			++count;
+			//ASSERT(loc_nodes.found_none == loc_nodes.Find(node), "Tree error!");
+			//loc_nodes.Add(node);
+			//ASSERT(node != node->parent, "Tree error!");
+			//ASSERT(node != node->left, "Tree error!");
+			//ASSERT(node != node->right, "Tree error!");
+			if (node->left)
+			{
+				//ASSERT(m_Comparer.LessThan(node->left->value, node->value), "Tree error!");
+			}
+			if (node->right)
+			{
+				//ASSERT(!m_Comparer.LessThan(node->right->value, node->value), "Tree error!");
+			}
+			//ASSERT(node != node->right, "Tree error!");
+
+			CountInternal(node->left, count);
+			CountInternal(node->right, count);
+		}
+	}
+	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Max(BSTNode TEMPLATE_ARGS* node)
 	{
 		if (node == nullptr)
@@ -273,17 +387,20 @@ namespace ZMasher
 		return tmp_node;
 	}
 	TEMPLATE_HEADER
-	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertInternal(const Type& value)
+	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::InsertInternal(const Type& value, BSTNode TEMPLATE_ARGS* node)
 	{
 		BSTNode TEMPLATE_ARGS* current = m_Root;
-		BSTNode TEMPLATE_ARGS* inserted = nullptr;
+		BSTNode TEMPLATE_ARGS* inserted = node;
 		while (true)
 		{
 			if (m_Comparer.LessThan(value, current->value))
 			{
 				if (current->left == nullptr)
 				{
-					inserted = AllocateNode(value);
+					if (inserted == nullptr)
+					{
+						inserted = AllocateNode(value);
+					}
 					current->left = inserted;
 					inserted->parent = current;
 					break;
@@ -298,7 +415,10 @@ namespace ZMasher
 			{
 				if (current->right == nullptr)
 				{
-					inserted = AllocateNode(value);
+					if (inserted == nullptr)
+					{
+						inserted = AllocateNode(value);
+					}
 					current->right = inserted;
 					inserted->parent = current;
 					break;
@@ -434,13 +554,23 @@ namespace ZMasher
 											   BSTNode TEMPLATE_ARGS* left, 
 											   BSTNode TEMPLATE_ARGS* right)
 	{
-		//m_Buffer.Add(BSTNode TEMPLATE_ARGS(value, parent, left, right));
-		//return &m_Buffer.GetLast();
+		if (m_UseMalloc)
+		{
+			void* node = malloc(sizeof(BSTNode TEMPLATE_ARGS));
+			return new(node) BSTNode TEMPLATE_ARGS(value, parent, left, right);
+		}
 		return new BSTNode TEMPLATE_ARGS(value, parent, left, right);
 	}
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::DeallocateNode(BSTNode TEMPLATE_ARGS* node)
 	{
-		delete node;
+		if (m_UseMalloc)
+		{
+			free(node);
+		}
+		else
+		{
+			delete node;
+		}
 	}
 }

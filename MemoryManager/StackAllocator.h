@@ -4,8 +4,9 @@
 
 #include <iostream>
 
-#define STACK_ALLOCATOR_TEMPLATE template<MemSizeType size, typename BaseAllocator>
-#define STACK_ALLOCATOR_DECL StackAllocator<size, typename BaseAllocator>
+
+#define STACK_ALLOCATOR_TEMPLATE template<MemSizeType a_size, typename BaseAllocator>
+#define STACK_ALLOCATOR_DECL StackAllocator<a_size, BaseAllocator>
 namespace ZMasher
 {
 	STACK_ALLOCATOR_TEMPLATE
@@ -33,11 +34,11 @@ namespace ZMasher
 
 		if (a_alignment > 1)
 		{
-			m_Data = BaseAllocator::AllocateAligned(size, a_alignment);
+			m_Data = BaseAllocator::AllocateAligned(a_size, a_alignment);
 		}
 		else
 		{
-			m_Data = BaseAllocator::Allocate(size);
+			m_Data = BaseAllocator::Allocate(a_size);
 		}
 		m_Iterator = m_Data.m_Data;
 	}
@@ -49,13 +50,14 @@ namespace ZMasher
 	STACK_ALLOCATOR_TEMPLATE
 	bool STACK_ALLOCATOR_DECL::GoodSize(MemSizeType size)
 	{
-		return (size + MEMSIZETYPE_CAST(m_Iterator) < MEMSIZETYPE_CAST(m_Data.m_Data) + m_Data.m_Size);
+		return (MEMSIZETYPE_CAST(m_Iterator) + size <=
+				MEMSIZETYPE_CAST(m_Data.m_Data) + m_Data.m_Size);
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	Blk STACK_ALLOCATOR_DECL::Allocate(MemSizeType size)
 	{
 		//out of memory, resort to base allocator
-		if (!GoodSize(size))
+		if (!this->STACK_ALLOCATOR_DECL::GoodSize(size))
 		{
 			//TODO: put this functionality in Fallbackallocator instead
 			return BaseAllocator::Allocate(size);//failed to allocate in this allocator, use backup
@@ -74,20 +76,20 @@ namespace ZMasher
 	STACK_ALLOCATOR_TEMPLATE
 	Blk STACK_ALLOCATOR_DECL::AllocateAll()
 	{
-		Blk blk = Allocate((MEMSIZETYPE_CAST(m_Data.m_Data) + (m_Data.m_Size)) - MEMSIZETYPE_CAST(m_Iterator));
+		Blk blk = this->STACK_ALLOCATOR_DECL::Allocate((MEMSIZETYPE_CAST(m_Data.m_Data) + (m_Data.m_Size)) - MEMSIZETYPE_CAST(m_Iterator));
 		return blk;
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	Blk STACK_ALLOCATOR_DECL::AllocateAligned(MemSizeType size, MemSizeType alignment)
 	{
 		MoveToAligned(m_Iterator, alignment);
-		return Allocate(size);
+		return this->STACK_ALLOCATOR_DECL::Allocate(size);
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	Blk STACK_ALLOCATOR_DECL::AllocateAllAligned(MemSizeType alignment)
 	{
 		MoveToAligned(m_Iterator, alignment);
-		return AllocateAll();
+		return this->STACK_ALLOCATOR_DECL::AllocateAll();
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	bool STACK_ALLOCATOR_DECL::Expand(Blk& blk, MemSizeType delta)
@@ -123,7 +125,7 @@ namespace ZMasher
 		if (size > blk.m_Size)
 		{
 			//false means we simply failed, deallocate and allocate again
-			if(Expand(blk, size - blk.m_Size))
+			if(this->STACK_ALLOCATOR_DECL::Expand(blk, size - blk.m_Size))
 			{
 				return;
 			}
@@ -131,21 +133,32 @@ namespace ZMasher
 
 		//if we're lucky, we have overridden the Deallocate and Allocate functions
 		//with better functionality
-		Deallocate(blk);
+
 		void* temp_data = blk.m_Data;
-		blk = Allocate(size);
-		memcpy(blk.m_Data, temp_data, size);
+		blk = this->STACK_ALLOCATOR_DECL::Allocate(size);
+		if (blk.m_Data)
+		{
+			OutputDebugStringA("\nStackollator reallocate memcpy");
+			memcpy(blk.m_Data, temp_data, size);
+		}
+		this->STACK_ALLOCATOR_DECL::Deallocate(blk);
+		ASSERT(blk.m_Data, "Stackollator, Can't reallocate!");
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	bool STACK_ALLOCATOR_DECL::Owns(Blk blk)
 	{
-		return MEMSIZETYPE_CAST(m_Data.m_Data) <= MEMSIZETYPE_CAST(blk.m_Data) &&
-			MEMSIZETYPE_CAST(m_Data.m_Data) + m_Data.m_Size > MEMSIZETYPE_CAST(blk.m_Data) + blk.m_Size;
+		const bool eq_larger_than_data = (MEMSIZETYPE_CAST(blk.m_Data) >= MEMSIZETYPE_CAST(m_Data.m_Data));
+		const bool eq_less_than_iterator = ((MEMSIZETYPE_CAST(blk.m_Data) + blk.m_Size) <= 
+			MEMSIZETYPE_CAST(m_Data.m_Data) + (MEMSIZETYPE_CAST(m_Iterator)));
+				 
+
+		return	eq_larger_than_data &&
+				eq_less_than_iterator;
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	void STACK_ALLOCATOR_DECL::Deallocate(Blk blk)
 	{
-		if (!Owns(blk))
+		if (!this->STACK_ALLOCATOR_DECL::Owns(blk))
 		{
 			return BaseAllocator::Deallocate(blk);
 		}
@@ -166,7 +179,7 @@ namespace ZMasher
 	void STACK_ALLOCATOR_DECL::DeallocateAligned(Blk blk)
 	{
 		//NOT IMPLEMENTED
-		Deallocate(blk);
+		this->STACK_ALLOCATOR_DECL::Deallocate(blk);
 	}
 	STACK_ALLOCATOR_TEMPLATE
 	void STACK_ALLOCATOR_DECL::MoveToAligned(void* & pointer, MemSizeType size)
