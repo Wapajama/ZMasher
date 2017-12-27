@@ -5,27 +5,29 @@
 #include <Debugging\ZMDebugger.h>
 #include <chrono>
 #include <ctime>
+#include <string> 
 
-
-#ifdef BENCHMARK
 
 Profiler::Profiler()
 	:m_TimeStampStack(32)
 	,m_Tasks(32)
 {
+#ifdef BENCHMARK
 	m_NumberOfFrames = 0;
 	m_TimerIndex = TimerManager::GetInstance()->CreateAndStartTimer();
 	m_BenchmarkTime = 3.f;
+#endif // BENCHMARK
 }
-
-
 Profiler::~Profiler()
 {
-	//FinishBenchmark();
+#ifdef BENCHMARK
+	FinishBenchmark();
+#endif // BENCHMARK
 }
 
 ProfilerTaskID Profiler::AddTask(const char* name)
 {
+#ifdef BENCHMARK
 	for (short i = 0; i < m_Tasks.Size(); i++)
 	{
 		if (strcmp(m_Tasks[i].m_Name.c_str(), name) == 0)
@@ -35,36 +37,43 @@ ProfilerTaskID Profiler::AddTask(const char* name)
 	}
 	m_Tasks.Add({ name, 0 });
 	return{ static_cast<int>(m_Tasks.Size() - 1) };
+#endif // BENCHMARK
+	return {-1};
 }
 
 bool Profiler::IterateFrame(const float dt)
 {
+#ifdef BENCHMARK
 	++m_NumberOfFrames;
 	m_BenchmarkTime -= dt;
 	return m_BenchmarkTime >= 0;
+#else
+	return false;
+#endif // BENCHMARK
 }
 
 void Profiler::BeginTask(ProfilerTaskID id)
 {
+#ifdef BENCHMARK
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
 	const float start_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds();
 	m_TimeStampStack.Add({ start_time, id });
+#endif // BENCHMARK
+
 }
 void Profiler::EndTask(ProfilerTaskID)
 {
-	//short index = -1;
-	//if (m_TimeStampStack.back().m_ID.m_TaskID != id.m_TaskID)
-	//{
-	//	ASSERT(false, "Ended wrong task!");
-	//}
+#ifdef BENCHMARK
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
 	const float end_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds() - m_TimeStampStack.GetLast().m_ElapsedTime;
 	m_Tasks[m_TimeStampStack.GetLast().m_ID.m_TaskID].m_TotalTime += end_time;
 	m_TimeStampStack.RemoveLast();
+#endif // BENCHMARK
+
 }
-#include <string> 
 void Profiler::FinishBenchmark()
 {
+#ifdef BENCHMARK
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
 	std::string file_name = "BenchmarkResult" +
@@ -83,7 +92,6 @@ void Profiler::FinishBenchmark()
 	fout << "----- Benchmark Results -------" << std::endl;
 
 	fout << std::endl;
-
 
 	fout << "--- Total time per task ---" << std::endl;
 	const double total_time = m_Tasks[0].m_TotalTime;
@@ -118,7 +126,7 @@ void Profiler::FinishBenchmark()
 		<< std::endl;
 
 	fout << "Avarage FPS: "
-		<< 1.f / (total_time / n_Frames) 
+		<< 1.f / (total_time / n_Frames)
 		<< " FPS"
 		<< std::endl;
 
@@ -127,6 +135,6 @@ void Profiler::FinishBenchmark()
 	fout.flush();
 
 	fout.close();
-}
-
 #endif // BENCHMARK
+
+}

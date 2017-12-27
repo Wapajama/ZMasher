@@ -16,7 +16,9 @@ void GameObjectManager::Update(const float dt)
 {
 	UpdateAllComponentManagers();//removes dead components,TODO: name change?
 
+#ifdef BENCHMARK
 	m_BulletSystem.Simulate(dt);
+
 	Profiler::Instance()->BeginTask(m_CollisionTimeStamp);
 	m_CollisionSystem.Simulate(dt);
 	Profiler::Instance()->EndTask(m_CollisionTimeStamp);
@@ -28,6 +30,16 @@ void GameObjectManager::Update(const float dt)
 	Profiler::Instance()->BeginTask(m_MeshCompManagerTimeStamp);
 	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
 	Profiler::Instance()->EndTask(m_MeshCompManagerTimeStamp);
+#else 
+	m_BulletSystem.Simulate(dt);
+
+	m_CollisionSystem.Simulate(dt);
+
+	m_AISystem.Simulate(dt);
+
+	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
+#endif // BENCHMARK
+
 }
 
 bool GameObjectManager::Init()

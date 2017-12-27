@@ -51,7 +51,10 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 		m_Dt-=dt_cap;
 	}
 	
+#ifdef BENCHMARK
 	Profiler::Instance()->BeginTask(m_ModelsTimeStamp);
+#endif // BENCHMARK
+
 	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
 	{
 		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
@@ -65,13 +68,19 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
+#ifdef BENCHMARK
 	Profiler::Instance()->EndTask(m_ModelsTimeStamp);
+#endif // BENCHMARK
+
 
 }
 
 void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 {
+#ifdef BENCHMARK
 	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
+#endif // BENCHMARK
+
 
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());

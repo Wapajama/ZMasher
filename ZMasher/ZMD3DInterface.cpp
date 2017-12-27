@@ -334,7 +334,7 @@ void ZMD3DInterface::EndScene()
 bool ZMD3DInterface::Render()
 {
 	const int vsync = m_VSync ? 1 : 0;
-	m_SwapChain->Present(vsync,0);
+	m_SwapChain->Present(0,0);
 	return true;
 }
 

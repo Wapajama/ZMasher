@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\GlobalInlcudes\project_defines.h" />
     <ClInclude Include="AIComponentManager.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseShader.h" />

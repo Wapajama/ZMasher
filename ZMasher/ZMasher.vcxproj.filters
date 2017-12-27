@@ -160,6 +160,7 @@
     <ClInclude Include="ZMVertexTypes.h">
       <Filter>Source\Core\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\GlobalInlcudes\project_defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMasherMain.cpp">

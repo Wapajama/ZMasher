@@ -154,7 +154,10 @@ bool ZMasherMain::Update()
 	//reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
 	if (!m_GameState->Update(dt))
 	{
+#ifdef BENCHMARK
 		Profiler::Instance()->EndTask(m_LogicFrame);
+#endif // BENCHMARK
+
 		return false;
 	}
 #ifdef BENCHMARK
@@ -257,9 +260,14 @@ void ZMasherMain::Render(const float dt)
 	m_D3DInterface.BeginScene();
 	m_Renderer.Render(m_D3DInterface, dt);
 	
+#ifdef BENCHMARK
 	Profiler::Instance()->BeginTask(m_RenderInternalFrame);
 	m_D3DInterface.EndScene();
 	Profiler::Instance()->EndTask(m_RenderInternalFrame);
+#else
+	m_D3DInterface.EndScene();
+#endif // BENCHMARK
+
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)

@@ -4,7 +4,7 @@
 #include "../GlobalInlcudes/project_defines.h"//TODO: Remove relative paths
 #include <string>
 
-#ifdef BENCHMARK
+
 
 struct ProfilerTaskID
 {
@@ -51,5 +51,3 @@ private:
 	int m_NumberOfFrames;
 };
 
-
-#endif // BENCHMARK
