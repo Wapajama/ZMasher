@@ -7,6 +7,7 @@
 #include "ZMasherUtilities.h"
 #include "ZMModelFactory.h"
 #include "ZMModelNode.h"
+
 #include <D3D11.h>
 
 void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
@@ -80,7 +81,6 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 #ifdef BENCHMARK
 	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
 #endif // BENCHMARK
-
 
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());

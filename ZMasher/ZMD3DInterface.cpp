@@ -19,6 +19,8 @@
 
 ZMD3DInterface::ZMD3DInterface()
 {
+#ifdef ZMASHER_DX12
+#elif defined ZMASHER_DX11
 	m_SwapChain = nullptr;
 	m_Device = nullptr;
 	m_Context = nullptr;
@@ -29,6 +31,8 @@ ZMD3DInterface::ZMD3DInterface()
 	m_RasterizerState = nullptr;
 	m_Numerator = 0;
 	m_Denominator = 0;
+#endif // ZMASHER_DX12
+
 }
 
 ZMD3DInterface::~ZMD3DInterface()
