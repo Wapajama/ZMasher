@@ -41,4 +41,13 @@ void* ZMRealloc(void* data, size_t size)
 	return g_MemoryManager.Reallocate(data, size);
 }
 
+//void* __declspec(selectany) operator new(size_t s, CDataBlockStore &pAllocator);
+//{
+//    D3DXASSERT( s <= 0xffffffff );
+//    return pAllocator.Allocate( (UINT)s );
+//}
+//
+//void __declspec(selectany) operator delete(void* p, CDataBlockStore &pAllocator);
+//{
+//}
 //#endif // NEW_OP_OVERRIDE

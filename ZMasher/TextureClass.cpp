@@ -1,6 +1,8 @@
 #include "TextureClass.h"
-#include <D3DX11.h>
+#include <D3D11.h>
 #include <string>
+#include <DirectXTK/inc/DDSTextureLoader.h>
+
 TextureClass::TextureClass(void)
 {
 	m_Texture = nullptr;
@@ -17,7 +19,8 @@ bool TextureClass::Init(ID3D11Device* device, const char* fileName)
 	std::string filename_small = fileName;
 	std::wstring filename_wide(filename_small.begin(), filename_small.end());
 
-	hr = D3DX11CreateShaderResourceViewFromFile(device, filename_wide.c_str(), NULL, NULL, &m_Texture, NULL);
+	hr = DirectX::CreateDDSTextureFromFile(device, filename_wide.c_str(), NULL, &m_Texture);
+	//hr = D3DX11CreateShaderResourceViewFromFile(device, filename_wide.c_str(), NULL, NULL, &m_Texture, NULL);
 	if (FAILED(hr))
 	{
 		return false;

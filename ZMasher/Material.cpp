@@ -1,5 +1,5 @@
 #include "Material.h"
-#include <d3dx11effect.h>
+#include <FX11\inc\d3dx11effect.h>
 
 #define UCHAR_CAST(value)static_cast<unsigned char>(value)
 

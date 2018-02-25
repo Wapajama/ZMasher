@@ -1,5 +1,6 @@
 #include "TextureContainer.h"
-#include <D3DX11.h>
+#include <D3D11.h>
+#include <DirectXTK/inc/DDSTextureLoader.h>
 
 TextureContainer::TextureContainer()
 	: m_Device(nullptr)
@@ -31,7 +32,9 @@ Texture* TextureContainer::LoadTexture(const char* file_path)
 	std::string filename_small = file_path;
 	std::wstring filename_wide(filename_small.begin(), filename_small.end());
 	ID3D11ShaderResourceView* resource_view = NULL;
-	hr = D3DX11CreateShaderResourceViewFromFile(m_Device, filename_wide.c_str(), NULL, NULL, &resource_view, NULL);
+	hr = DirectX::CreateDDSTextureFromFile(m_Device, filename_wide.c_str(), NULL, &resource_view);
+
+	//hr = D3DX11CreateShaderResourceViewFromFile(m_Device, filename_wide.c_str(), NULL, NULL, &resource_view, NULL);
 	if (FAILED(hr))
 	{
 		ASSERT(false, "Couldn't load texture!");

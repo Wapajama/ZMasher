@@ -11,6 +11,8 @@ class ID3DX11Effect;
 class ID3D10Blob;
 class ID3DX11EffectTechnique;
 
+
+
 static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_t* shaderFilename);
 
 #define RETURNF_IF_FAILED(result) if (FAILED(result))\

@@ -13,7 +13,7 @@
 #include "ZMVertexTypes.h"
 #include "ZMAPIStructs.h"
 #include <DirectXMath.h>
-#include <Windows.h>
+//#include <Windows.h>
 /*
 	TO DO: refactor this class to one with better name
 	and more thought-through purpose? 

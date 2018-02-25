@@ -100,7 +100,7 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 	const bool succeded_flatTerrain = m_TerrainShader->Create(L"FlatTerrain.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
 	ASSERT(succeded_flatTerrain, "shader failed to init!");
 
-	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain("../data/maps/grass.jpg");
+	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain("../data/maps/grass.dds");
 
 }
 

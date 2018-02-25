@@ -1,9 +1,10 @@
 #include "BaseShader.h"
-#include <D3DX11.h>
-#include <d3dx11effect.h>
+#include <D3D11.h>
 #include "ZMVertexTypes.h"
 #include <fstream>
 #include <Windows.h>
+#include "D3Dcompiler.h"
+#include <FX11\inc\d3dx11effect.h>
 
 static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_t* shaderFilename)
 {
@@ -39,9 +40,6 @@ static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_
 	return;
 }
 
-
-
-
 BaseShader::BaseShader()
 {
 	m_Effect = nullptr;
@@ -49,11 +47,9 @@ BaseShader::BaseShader()
 	m_MatrixBuffer = nullptr;
 }
 
-
 BaseShader::~BaseShader()
 {
 }
-
 
 
 bool BaseShader::Apply(ID3D11DeviceContext* context)
@@ -105,11 +101,11 @@ bool BaseShader::Create(wchar_t* source_file, ID3D11Device* device)
 {
 	HRESULT infoResult = S_OK;
 
-	ID3D10Blob* errorMessage = nullptr;
+	ID3DBlob* errorMessage = nullptr;
 
-	unsigned int dwShaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
+	unsigned int dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined(DEBUG) | defined(_DEBUG)
-	dwShaderFlags |= D3D10_SHADER_DEBUG;
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
 #endif
 
 	D3D11_BUFFER_DESC matrixBufferDesc;
@@ -118,29 +114,15 @@ bool BaseShader::Create(wchar_t* source_file, ID3D11Device* device)
 	//fix some sort of PathManager to replace hardcoded L"../ZMasher/"
 	const std::wstring effect = L"../ZMasher/" + std::wstring(source_file);
 
-	infoResult = (D3DX11CompileFromFile(effect.c_str(), 0, 0, 0,
-										"fx_5_0",
-										dwShaderFlags,
-										0, 0,
-										&shaderBuffer,
-										&errorMessage,
-										0));
+	infoResult = D3DX11CompileEffectFromFile(effect.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, 0, 0, device, &m_Effect, &errorMessage);
+
 	if (errorMessage)
 	{
-		OutputShaderErrorMessage(errorMessage, 0, L"LOL");
+		//OutputShaderErrorMessage(errorMessage, 0, L"Shader failed to compile");
 	}
-	RETURNF_IF_FAILED(infoResult);
-
-	infoResult = D3DX11CreateEffectFromMemory(shaderBuffer->GetBufferPointer(),
-											  shaderBuffer->GetBufferSize(),
-											  NULL,
-											  device,
-											  &m_Effect);
 
 	RETURNF_IF_FAILED(infoResult);
-
-	shaderBuffer->Release();
-	m_Technique = m_Effect->GetTechniqueByIndex(0);//dangerous, unorthodox, change to a more sustainable solution
+	m_Technique = m_Effect->GetTechniqueByIndex(0);//TODO: dangerous, unorthodox, change to a more sustainable solution
 	D3DX11_PASS_DESC passDesc;
 	infoResult = m_Technique->GetPassByIndex(0)->GetDesc(&passDesc);
 	auto numElements = sizeof(g_PosNormUv) / sizeof(g_PosNormUv[0]);
