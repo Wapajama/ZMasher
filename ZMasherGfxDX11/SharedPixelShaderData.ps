@@ -1,0 +1,15 @@
+
+Texture2D albedoTexture;
+Texture2D normalTexture;
+Texture2D ambientOcclusionTexture;
+Texture2D roughnessTexture;
+Texture2D substanceTexture;
+
+SamplerState samAnisotropic
+{
+	Filter = ANISOTROPIC;
+	MaxAnisotropy = 4;
+
+	AddressU = WRAP;
+	AddressV = WRAP;
+};
