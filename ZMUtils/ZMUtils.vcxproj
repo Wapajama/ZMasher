@@ -51,6 +51,7 @@
     <ClInclude Include="Time\Time.h" />
     <ClInclude Include="Time\Timer.h" />
     <ClInclude Include="Time\TimerManager.h" />
+    <ClInclude Include="Utility\ZMasherUtilities.h" />
     <ClInclude Include="Utility\ZMSingleton.h" />
     <ClInclude Include="Math\ZMVector.h" />
     <ClInclude Include="Math\ZMVector3.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
     <ClCompile Include="Time\TimerManager.cpp" />
+    <ClCompile Include="Utility\ZMasherUtilities.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0F507CA4-0F6B-4EDF-966E-BDCE07F791A1}</ProjectGuid>

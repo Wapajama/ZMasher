@@ -30,61 +30,30 @@
     <ClInclude Include="..\GlobalInlcudes\project_defines.h" />
     <ClInclude Include="AIComponentManager.h" />
     <ClInclude Include="AISystem.h" />
-    <ClInclude Include="BaseShader.h" />
     <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="DebugNameComponentManager.h" />
-    <ClInclude Include="dllHeader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="MaterialFactory.h" />
     <ClInclude Include="MeshComponentManager.h" />
-    <ClInclude Include="ModelShader.h" />
     <ClInclude Include="MovementSystem.h" />
-    <FxCompile Include="FlatTerrain.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="PBRShader.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-      <FileType>CppHeader</FileType>
-    </FxCompile>
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="TextureContainer.h" />
-    <ClInclude Include="TextureTypeEnums.h" />
     <ClInclude Include="TransformComponentManager.h" />
-    <ClInclude Include="ZMAPIStructs.h" />
     <ClInclude Include="ZMasherMain.h" />
-    <ClInclude Include="ZMasherUtilities.h" />
-    <ClInclude Include="ZMD3DInterface.h" />
-    <ClInclude Include="ZMModel.h" />
-    <ClInclude Include="ZMModelFactory.h" />
-    <ClInclude Include="ZMModelInstanceNode.h" />
-    <ClInclude Include="ZMModelNode.h" />
-    <ClInclude Include="ZMRenderer.h" />
-    <ClInclude Include="ZMVertexTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
     <ClCompile Include="AIComponentManager.cpp" />
     <ClCompile Include="AISystem.cpp" />
-    <ClCompile Include="BaseShader.cpp" />
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
@@ -93,65 +62,10 @@
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MaterialFactory.cpp" />
     <ClCompile Include="MeshComponentManager.cpp" />
-    <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="MovementSystem.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureClass.cpp" />
-    <ClCompile Include="TextureContainer.cpp" />
     <ClCompile Include="TransformComponentManager.cpp" />
     <ClCompile Include="ZMasherMain.cpp" />
-    <ClCompile Include="ZMasherUtilities.cpp" />
-    <ClCompile Include="ZMD3DInterface.cpp" />
-    <ClCompile Include="ZMModel.cpp" />
-    <ClCompile Include="ZMModelFactory.cpp" />
-    <ClCompile Include="ZMModelInstanceNode.cpp" />
-    <ClCompile Include="ZMModelNode.cpp" />
-    <ClCompile Include="ZMRenderer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="color.vs">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">Vertex</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="SharedPixelShaderData.ps">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="SharedVertexShaderData.vs">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="texture.ps">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="texture.vs">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="color.ps">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Skybox.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="texture.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">5.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="planninglog.txt">
@@ -173,6 +87,9 @@
     </ProjectReference>
     <ProjectReference Include="..\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ZMasherGfxDX11\ZMasherGfxDX11.vcxproj">
+      <Project>{22ded705-1d54-4f76-a3d6-8ac3c52d1153}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ZMUtils\ZMUtils.vcxproj">
       <Project>{0f507ca4-0f6b-4edf-966e-bdce07f791a1}</Project>
@@ -230,21 +147,27 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ZMasherGfxProp.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -86,6 +86,9 @@
     <ClInclude Include="Time\Profiler.h">
       <Filter>Source Files\Time</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\ZMasherUtilities.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Math\ZMMatrixMath.inl">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\ZMasherUtilities.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

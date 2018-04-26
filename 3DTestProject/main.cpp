@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include <ZMasherMain.h>
+#include <ZMasher\ZMasherMain.h>
 #include "DataStructures\GrowArray.h"
 #include <time.h>
 #include <MemoryManager.h>

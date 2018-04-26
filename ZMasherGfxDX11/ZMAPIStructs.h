@@ -1,9 +1,9 @@
 #pragma once
 #include <Windows.h>
-#include "dllHeader.h"
+#include <ZMasherGfxDX11\dllHeader.h>
 #include <Math/ZMVector.h>
 
-struct ZMASHER_DLL ZMWinApiCointainer
+struct ZMWinApiCointainer
 {
 	HWND m_WindowHandle;
 	WNDCLASSEX m_ExtWindowClass;
@@ -18,7 +18,7 @@ struct ZMASHER_DLL ZMWinApiCointainer
 	bool m_Fullscreen;
 };
 
-struct ZMASHER_DLL ZMViewPort
+struct ZMViewPort
 {
 
 };

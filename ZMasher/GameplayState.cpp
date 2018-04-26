@@ -1,9 +1,9 @@
 #include "GameplayState.h"
-#include <ZMasher\ZMModelFactory.h>
+#include <ZMasherGfxDX11\ZMModelFactory.h>
 #include <ZMasher\InputManager.h>
 #include <ZMasher\Camera.h>
 #include <Math\ZMVector3.h>
-#include "ZMasherUtilities.h"
+#include <ZMUtils\Utility\ZMasherUtilities.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <DataStructures\BinarySearchTree.h>

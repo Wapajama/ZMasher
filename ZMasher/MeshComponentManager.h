@@ -1,6 +1,6 @@
 #pragma once
 #include "ComponentManager.h"
-#include <ZMasher\ZMModelInstanceNode.h>
+#include <ZMasherGfxDX11\ZMModelInstanceNode.h>
 #include <ZMasher\GameObject.h>
 
 struct ModelComponent

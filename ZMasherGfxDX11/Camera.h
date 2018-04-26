@@ -3,8 +3,8 @@
 #include <Math/ZMVector.h>
 #include <Math/ZMMatrix44.h>
 #include <Math/Vector2decl.h>
-
-class __declspec(align(16)) Camera
+#include <ZMasherGfxDX11\dllHeader.h>
+class ZMASHER_GFX_DX11_DLL Camera
 {
 public:
 	Camera(const ZMasher::Vector2<int>& window_size);

@@ -12,7 +12,7 @@
 #include "D3Dcompiler.h"
 #include <FX11\inc\d3dx11effect.h>
 
-static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_t* shaderFilename)
+static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const wchar_t* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -39,9 +39,10 @@ static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_
 	// Release the error message.
 	errorMessage->Release();
 	errorMessage = 0;
-
+	std::wstring wmsg = std::wstring(shaderFilename);
+	std::string msg = std::string(wmsg.begin(), wmsg.end());
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
+	MessageBox(hwnd, "Error compiling shader.  Check shader-error.txt for message.", msg.c_str(), MB_OK);
 
 	return;
 }
@@ -103,7 +104,7 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	return true;
 }
 
-bool BaseShader::Create(wchar_t* source_file, ID3D11Device* device)
+bool BaseShader::Create(const wchar_t* source_file, ID3D11Device* device)
 {
 	HRESULT infoResult = S_OK;
 
@@ -118,13 +119,13 @@ bool BaseShader::Create(wchar_t* source_file, ID3D11Device* device)
 	ID3DBlob* shaderBuffer = nullptr;
 
 	//fix some sort of PathManager to replace hardcoded L"../ZMasher/"
-	const std::wstring effect = L"../ZMasher/" + std::wstring(source_file);
+	const std::wstring effect = L"../Shaders/" + std::wstring(source_file);
 
 	infoResult = D3DX11CompileEffectFromFile(effect.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, 0, 0, device, &m_Effect, &errorMessage);
 
 	if (errorMessage)
 	{
-		//OutputShaderErrorMessage(errorMessage, 0, L"Shader failed to compile");
+		OutputShaderErrorMessage(errorMessage, 0, L"Shader failed to compile");
 	}
 
 	RETURNF_IF_FAILED(infoResult);

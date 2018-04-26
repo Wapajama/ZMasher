@@ -8,8 +8,8 @@
 #include <vector>
 #include <ZMUtils\Math\ZMVector4.h>
 #include <ZMUtils\DataStructures\GrowArray.h>
-#include <ZMasher\ZMModelInstanceNode.h>
-#include <ZMasher\ZMModelNode.h>
+#include <ZMasherGfxDX11\ZMModelInstanceNode.h>
+#include <ZMasherGfxDX11\ZMModelNode.h>
 #include <tinyxml2.h>
 #include <Debugging\ZMDebugger.h>
 #include <MemoryManager.h>

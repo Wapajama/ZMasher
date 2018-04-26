@@ -1,16 +1,17 @@
 #pragma once
 #include <vector> // TODO: create an in-house data structure for managing models
-#include "ZMModel.h"
-#include "ZMModelInstanceNode.h"
+#include <ZMasherGfxDX11\ZMModel.h>
+#include <ZMasherGfxDX11\ZMModelInstanceNode.h>
 #include <Math\ZMMatrix44.h>
 #include <Time/Profiler.h>
+#include <ZMasherGfxDX11\dllHeader.h>
 
 class Camera;
 class ZMD3DInterface;
 class TextureShaderClass;
 class BaseShader;
 
-class ZMRenderer
+class ZMASHER_GFX_DX11_DLL ZMRenderer
 {
 public:
 	ZMRenderer(void);
@@ -55,7 +56,7 @@ private:
 	float m_Dt;
 };
 
-__forceinline void ZMRenderer::SetCamera(Camera* camera)
+inline void ZMRenderer::SetCamera(Camera* camera)
 {
 	m_Camera = camera;
 }

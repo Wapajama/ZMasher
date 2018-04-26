@@ -1,10 +1,10 @@
 #pragma once
-#include "dllHeader.h"
-#include "ZMD3DInterface.h"
-#include "ZMAPIStructs.h"
+#include <ZMasher\dllHeader.h>
+#include <ZMasherGfxDX11/ZMD3DInterface.h>
+#include <ZMasherGfxDX11/ZMAPIStructs.h>
 #include "Camera.h"
-#include "ZMModel.h"
-#include "ZMRenderer.h"
+#include <ZMasherGfxDX11/ZMModel.h>
+#include <ZMasherGfxDX11/ZMRenderer.h>
 #include <Time/Profiler.h>
 
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"

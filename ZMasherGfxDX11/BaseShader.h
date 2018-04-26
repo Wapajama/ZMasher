@@ -50,7 +50,7 @@ public:
 	bool SetShaderVars(ID3D11DeviceContext*context,
 					   const MatrixBufferType& constant_buffer);
 
-	virtual bool Create(wchar_t* source_file, ID3D11Device* device);
+	virtual bool Create(const wchar_t* source_file, ID3D11Device* device);
 
 	inline ID3DX11Effect* GetDX11Effect();
 	inline ID3DX11EffectTechnique* GetDX11Technique();

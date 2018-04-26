@@ -31,7 +31,7 @@ bool ModelShader::Apply(ID3D11DeviceContext* context)
 	return BaseShader::Apply(context);
 }
 
-bool ModelShader::Create(wchar_t* source_file, ID3D11Device* device)
+bool ModelShader::Create(const wchar_t* source_file, ID3D11Device* device)
 {
 	HRESULT infoResult = BaseShader::Create(source_file, device);
 

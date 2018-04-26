@@ -13,6 +13,7 @@
 #include "ZMVertexTypes.h"
 #include "ZMAPIStructs.h"
 #include <DirectXMath.h>
+#include <ZMasherGfxDX11\dllHeader.h>
 //#include <Windows.h>
 /*
 	TO DO: refactor this class to one with better name
@@ -21,7 +22,7 @@
 	NOTE: this here class is virtually copied from a tutorial
 */
 
-class ZMD3DInterface
+class ZMASHER_GFX_DX11_DLL ZMD3DInterface
 {
 	typedef const ZMWinApiCointainer& ZMInitArgs;
 public:

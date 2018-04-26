@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DataStructures\GrowArray.h>
-#include <ZMasher\Texture.h>
+#include <ZMasherGfxDX11\Texture.h>
 #include <string>
 class ID3D11Device;
 class TextureContainer

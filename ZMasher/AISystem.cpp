@@ -4,7 +4,7 @@
 #include <ZMasher/CollisionComponentManager.h>
 #include <ZMasher/TransformComponentManager.h>
 #include <ZMasher/GameObjectManager.h>
-#include <ZMasher\ZMasherUtilities.h>
+#include <ZMUtils\Utility\ZMasherUtilities.h>
 
 AISystem::AISystem(AIComponentManager* ai,
 		CollisionComponentManager* collision,

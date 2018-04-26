@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include "ZMasherUtilities.h"
+#include <ZMUtils\Utility\ZMasherUtilities.h>
 #include <iostream>
 using namespace ZMasher;
 

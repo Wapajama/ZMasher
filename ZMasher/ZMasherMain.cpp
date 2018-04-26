@@ -10,7 +10,7 @@
 #include <fstream>
 
 #include <DataStructures\BinarySearchTree.h>
-#include <ZMasher/ZMasherUtilities.h>
+#include <ZMUtils\Utility\ZMasherUtilities.h>
 
 class IntComparer
 	:public ZMasher::BSTComparator<int>

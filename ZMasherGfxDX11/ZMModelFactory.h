@@ -5,8 +5,9 @@
 #include <DataStructures\GrowArray.h>
 #include <fbxsdk.h>
 #include <DataStructures\MemoryContainer.h>
-#include <ZMasher\TextureContainer.h>
-#include <ZMasher\Material.h>
+#include <ZMasherGfxDX11\TextureContainer.h>
+#include <ZMasherGfxDX11\Material.h>
+#include <ZMasherGfxDX11\dllHeader.h>
 
 class ZMModelInstance;
 class ZMModel;
@@ -19,7 +20,7 @@ namespace std
 	typedef ifstream;
 }
 
-class ZMModelFactory: public ZMSingleton<ZMModelFactory>
+class ZMASHER_GFX_DX11_DLL ZMModelFactory: public ZMSingleton<ZMModelFactory>
 {
 	friend class ZMRenderer;//TODO: REMOVE
 public:

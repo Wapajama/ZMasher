@@ -3,8 +3,7 @@
 #include "ZMD3DInterface.h"
 
 #include "ModelShader.h"
-#include "ZMasherMain.h"
-#include "ZMasherUtilities.h"
+#include <ZMUtils\Utility\ZMasherUtilities.h>
 #include "ZMModelFactory.h"
 #include "ZMModelNode.h"
 
@@ -87,17 +86,17 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
 
 	m_Shader = new ModelShader();
 
-	const bool succeded = m_Shader->Create(L"PBRShader.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	const bool succeded = m_Shader->Create(L"PBRShader.fx", d3dinterface.GetDevice());
 	ASSERT(succeded, "shader failed to init!");
 
 	m_SkyboxShader = new ModelShader();
-	const bool succeded_skybox = m_SkyboxShader->Create(L"Skybox.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	const bool succeded_skybox = m_SkyboxShader->Create(L"Skybox.fx", d3dinterface.GetDevice());
 	ASSERT(succeded_skybox, "shader failed to init!");
 
 	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox("../data/cubemaps/Skybox001.dds");
 
 	m_TerrainShader = new ModelShader();
-	const bool succeded_flatTerrain = m_TerrainShader->Create(L"FlatTerrain.fx", ZMasherMain::Instance()->GetD3DInterface()->GetDevice());
+	const bool succeded_flatTerrain = m_TerrainShader->Create(L"FlatTerrain.fx", d3dinterface.GetDevice());
 	ASSERT(succeded_flatTerrain, "shader failed to init!");
 
 	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain("../data/maps/grass.dds");

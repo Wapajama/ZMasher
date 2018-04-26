@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ZMasher\TextureTypeEnums.h>
+#include <ZMasherGfxDX11/TextureTypeEnums.h>
 #include <DataStructures\GrowArray.h>
 
 class ID3D11ShaderResourceView;
