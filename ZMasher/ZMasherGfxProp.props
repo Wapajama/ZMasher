@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;..\ZMasherGfxDX11\;..\ZMasher\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MemoryManager\;..\ZMasherGfxDX12\;..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;..\ZMasherGfxDX11\;..\ZMasher\</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

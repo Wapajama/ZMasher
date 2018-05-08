@@ -120,11 +120,11 @@
     <ClCompile Include="Time\Profiler.cpp">
       <Filter>Source Files\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\ZMasherUtilities.cpp">
       <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

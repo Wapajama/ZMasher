@@ -1,7 +1,7 @@
 #pragma once
 #include "DataStructures\GrowArray.h"
 #include <Utility\ZMSingleton.h>
-#include "../GlobalInlcudes/project_defines.h"//TODO: Remove relative paths
+#include "../GlobalIncludes/project_defines.h"//TODO: Remove relative paths
 #include <string>
 
 

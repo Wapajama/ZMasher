@@ -27,7 +27,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\GlobalInlcudes\project_defines.h" />
     <ClInclude Include="AIComponentManager.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseSystem.h" />
@@ -48,7 +47,6 @@
     <ClInclude Include="ZMasherMain.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
     <ClCompile Include="AIComponentManager.cpp" />
     <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="BaseSystem.cpp" />

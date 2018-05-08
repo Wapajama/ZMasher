@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
+    <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>

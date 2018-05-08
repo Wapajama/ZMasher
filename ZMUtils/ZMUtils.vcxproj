@@ -62,7 +62,7 @@
     <None Include="Math\ZMVectorMath.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
+    <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="Math\Line3D.cpp" />
     <ClCompile Include="Time\Profiler.cpp" />

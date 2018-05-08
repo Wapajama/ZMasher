@@ -13,7 +13,7 @@
 #include <tinyxml2.h>
 #include <Debugging\ZMDebugger.h>
 #include <MemoryManager.h>
-#include <GlobalIncludes\project_defines.h>
+#include <GlobalInlcudes\project_defines.h>
 #ifdef IOS_REF
 #undef  IOS_REF
 #define IOS_REF (*(pManager->GetIOSettings()))

@@ -76,7 +76,6 @@
     <ClInclude Include="AIComponentManager.h">
       <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\GlobalInlcudes\project_defines.h" />
     <ClInclude Include="ZMasherMain.h">
       <Filter>Source\Core</Filter>
     </ClInclude>
@@ -130,7 +129,6 @@
     <ClCompile Include="AIComponentManager.cpp">
       <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
     <ClCompile Include="ZMasherMain.cpp">
       <Filter>Source\Core</Filter>
     </ClCompile>

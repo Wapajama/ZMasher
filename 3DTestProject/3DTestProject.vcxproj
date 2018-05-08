@@ -227,7 +227,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalInlcudes\DynamicAllocation.cpp" />
+    <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
