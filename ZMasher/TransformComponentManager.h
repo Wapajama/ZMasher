@@ -59,6 +59,10 @@ public:
 	ZMasher::Matrix44f* GetTransform(GameObject game_object);//brute force atm, be sure to optimize
 	TransformComponent* GetTransformComp(GameObject game_object);
 
+protected:
+
+	void PostRemoveDeadComponents(GameObject) override;
+
 private:
 	ZMasher::BinarySearchTree<TransformIndexPair, TransformComparer> m_LookupSet;
 	GrowArray<TransformComponent, short, 1024> m_Transforms;

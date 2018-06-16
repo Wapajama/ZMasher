@@ -12,7 +12,15 @@ MeshComponentManager::~MeshComponentManager()
 
 bool MeshComponentManager::AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node)
 {
-	m_ModelComponents.Add(ModelComponent(game_object, instance_node));
+	const int free_index = PopFreeIndex();
+	if (free_index == m_FreeIndexes.found_none)
+	{
+		m_ModelComponents.Add(ModelComponent(game_object, instance_node));
+	}
+	else
+	{
+		m_ModelComponents[free_index] = ModelComponent(game_object, instance_node);
+	}
 	return true;
 }
 
@@ -33,7 +41,16 @@ bool MeshComponentManager::Update(TransformComponentManager* transform_manager)
 	for (short i = 0; i < m_ModelComponents.Size(); i++)
 	{
 		TransformComponent* transform_comp = transform_manager->GetTransformComp(m_ModelComponents[i].m_GameObject);
-
+		if (transform_comp == nullptr)
+		{
+			GAME_OBJECT_TOGGLE_ALIVE_GO(m_ModelComponents[i].m_GameObject);
+			continue;
+		}
+		if (m_ModelComponents[i].m_GameObject == NULL_GAME_OBJECT ||
+			!GAME_OBJECT_IS_ALIVE( m_ModelComponents[i].m_GameObject))
+		{
+			continue;
+		}
 		if (!GAME_OBJECT_IS_ALIVE(m_ModelComponents[i].m_GameObject))
 		{
 			GAME_OBJECT_TOGGLE_ALIVE_GO((*transform_comp).m_GameObject);

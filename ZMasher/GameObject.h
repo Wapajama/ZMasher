@@ -24,5 +24,12 @@ struct GameObject
 		}
 		return first.m_ID == second.m_ID;
 	}
+	bool operator!=(const GameObject game_object)const
+	{
+		return (!((*this) == game_object));
+	}
 
 };
+
+constexpr GameObject g_NullGameObject = { 0 };
+#define NULL_GAME_OBJECT g_NullGameObject

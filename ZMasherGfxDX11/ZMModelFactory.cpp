@@ -359,19 +359,34 @@ ZMModelNode* ZMModelFactory::ProcessMeshHierarchy(FbxNode* inNode, const std::st
 	{
 		std::string model_path_str = model_xml_path + std::string("_");
 		Texture* temp_texture = m_TextureContainer.GetTexture((model_path_str + ALBEDO_SUFF + "." + TEXTURE_FILETYPE).c_str());
-		model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
+		if (temp_texture)
+		{
+			model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
+		}
 
 		temp_texture = m_TextureContainer.GetTexture((model_path_str + NORMAL_SUFF + "." + TEXTURE_FILETYPE).c_str());
-		model->GetMaterial()->AddTexture(eTextureType::NORMAL, temp_texture->GetResourceView());
+		if (temp_texture)
+		{
+			model->GetMaterial()->AddTexture(eTextureType::NORMAL, temp_texture->GetResourceView());
+		}
 
 		temp_texture = m_TextureContainer.GetTexture((model_path_str + ROUGHNESS_SUFF + "." + TEXTURE_FILETYPE).c_str());
-		model->GetMaterial()->AddTexture(eTextureType::ROUGHNESS, temp_texture->GetResourceView());
+		if (temp_texture)
+		{
+			model->GetMaterial()->AddTexture(eTextureType::ROUGHNESS, temp_texture->GetResourceView());
+		}
 
 		temp_texture = m_TextureContainer.GetTexture((model_path_str + AO_SUFF + "." + TEXTURE_FILETYPE).c_str());
-		model->GetMaterial()->AddTexture(eTextureType::AMBIENT_OCCLUSION, temp_texture->GetResourceView());
+		if (temp_texture)
+		{
+			model->GetMaterial()->AddTexture(eTextureType::AMBIENT_OCCLUSION, temp_texture->GetResourceView());
+		}
 
 		temp_texture = m_TextureContainer.GetTexture((model_path_str + SUBSTANCE_SUFF + "." + TEXTURE_FILETYPE).c_str());
-		model->GetMaterial()->AddTexture(eTextureType::SUBSTANCE, temp_texture->GetResourceView());
+		if (temp_texture)
+		{
+			model->GetMaterial()->AddTexture(eTextureType::SUBSTANCE, temp_texture->GetResourceView());
+		}
 	}
 
 	ZMModelNode* model_node = new ZMModelNode(model);//TODO: don't do new here

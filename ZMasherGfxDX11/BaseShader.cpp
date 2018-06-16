@@ -123,7 +123,7 @@ bool BaseShader::Create(const wchar_t* source_file, ID3D11Device* device)
 
 	infoResult = D3DX11CompileEffectFromFile(effect.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, 0, 0, device, &m_Effect, &errorMessage);
 
-	if (errorMessage)
+	if (FAILED(infoResult) && errorMessage)
 	{
 		OutputShaderErrorMessage(errorMessage, 0, L"Shader failed to compile");
 	}

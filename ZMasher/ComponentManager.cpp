@@ -2,7 +2,7 @@
 
 
 
-ComponentManager::ComponentManager()
+ComponentManager::ComponentManager() : m_FreeIndexes(1024)
 {
 }
 

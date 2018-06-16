@@ -81,15 +81,20 @@ bool GameplayState::Update(const float dt)
 	{
 		MoveDown();
 	}
+
+#define GUN_COOLDOWN 0.01
+
 	m_SpeedModifier = prev_modifier;
 	static float lazy_timer = 0.f;
 	lazy_timer -= dt;
-	if (InputManager::Instance()->IsMouseDown(DIK_LMOUSE) &&
-		lazy_timer <= 0.f)
+	if ((InputManager::Instance()->IsMouseDown(DIK_LMOUSE) &&
+		lazy_timer <= 0.f))
 	{
-		//SPAWN BULLET FROM PLAYER
-		lazy_timer = 1.01;
-		//ShootBullet();
+		while(lazy_timer < GUN_COOLDOWN)
+		{
+			ShootBullet();
+			lazy_timer += GUN_COOLDOWN;
+		}
 	}
 	MouseRotation(dt);
 
@@ -139,7 +144,9 @@ void GameplayState::MoveDown()
 void GameplayState::ShootBullet()
 {
 	GameObject bullet = m_GameObjectManager.CreateGameObject();
-	m_GameObjectManager.TransformManager()->AddComponent(bullet, m_Camera->GetWorldOrientation());
+	ZMasher::Matrix44f bulletTransform = m_Camera->GetWorldOrientation();
+	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + m_Camera->GetWorldOrientation().GetVectorForward() * 20);
+	m_GameObjectManager.TransformManager()->AddComponent(bullet, bulletTransform);
 	m_GameObjectManager.MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance("../data/sphere.model"));
 	m_GameObjectManager.BulletCompManager()->AddComponent(bullet, 10.f, 1337, 3);
 	m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, 10);

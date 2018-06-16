@@ -5,7 +5,7 @@ GameObjectManager::GameObjectManager()
 	, m_CollisionSystem(&m_CollisionCompManager, &m_TransformManager)
 	, m_AISystem(&m_AICompManager, &m_CollisionCompManager, &m_TransformManager)
 {
-	m_CurrentID = 0;
+	m_CurrentID = NULL_GAME_OBJECT.m_ID + 1;
 }
 
 GameObjectManager::~GameObjectManager()
@@ -74,9 +74,7 @@ GameObject GameObjectManager::CreateGameObject()
 {
 	GameObject new_game_object;
 	new_game_object.m_ID = m_CurrentID;
-
-	//last bit is the "alive" bit
-	new_game_object.m_ID = new_game_object.m_ID | (1 << 31);
+	GAME_OBJECT_TOGGLE_ALIVE_GO(new_game_object);
 
 	++m_CurrentID;
 	return new_game_object;

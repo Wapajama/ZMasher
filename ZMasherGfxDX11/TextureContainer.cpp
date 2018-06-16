@@ -37,7 +37,7 @@ Texture* TextureContainer::LoadTexture(const char* file_path)
 	//hr = D3DX11CreateShaderResourceViewFromFile(m_Device, filename_wide.c_str(), NULL, NULL, &resource_view, NULL);
 	if (FAILED(hr))
 	{
-		ASSERT(false, "Couldn't load texture!");
+		//ASSERT(false, "Couldn't load texture!");
 		return nullptr;
 	}
 	texture_pair.m_Texture.SetResourceView(resource_view);

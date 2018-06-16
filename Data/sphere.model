@@ -1,4 +1,3 @@
 <modelroot name = "First">
-	<albedoTexture filepath = "../data/red.png"/>
-	<model filepath = "../data/sphere.FBX"/>
+	<model filepath = "../data/sphere"/>
 </modelroot>
