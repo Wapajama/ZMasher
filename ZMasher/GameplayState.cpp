@@ -14,21 +14,30 @@ GameplayState::GameplayState(Camera* camera)
 	m_RotationY(0),
 	m_SpeedModifier(1.f)
 {
+
 }
 
 GameplayState::~GameplayState()
 {
 }
 
-bool GameplayState::Init(const char* args)
+void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
 {
+	g_GameObjectManager->Destroy(args.a->m_GameObject);
+	g_GameObjectManager->Destroy(args.b->m_GameObject);
+	return; 
+};
+
+bool GameplayState::Init(const char* args)
+{	
+	g_GameObjectManager = &m_GameObjectManager;
 	m_Camera->SetPosition(ZMasher::Vector3f(100, 40, -100));
 
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	m_GameObjectManager.Init();
 	const float range = 100;
-	for (int i = 0; i < 500; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-range, range), 0, ZMasher::GetRandomFloat(-range, range), 0));
 		if (i%2)
@@ -39,7 +48,7 @@ bool GameplayState::Init(const char* args)
 		m_GameObjects.Add(new_object);
 		m_GameObjectManager.TransformManager()->AddComponent(new_object, transform);
 		m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../data/dragonfly01/dragonfly01.model"));
-		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
+		m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10, g_TestCallBack);
 		m_GameObjectManager.AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 		
 		m_GameObjectManager.AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(100, 1, transform.GetTranslation().z));
@@ -148,11 +157,11 @@ void GameplayState::ShootBullet()
 	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + m_Camera->GetWorldOrientation().GetVectorForward() * 20);
 	m_GameObjectManager.TransformManager()->AddComponent(bullet, bulletTransform);
 	m_GameObjectManager.MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance("../data/sphere.model"));
-	m_GameObjectManager.BulletCompManager()->AddComponent(bullet, 10.f, 1337, 3);
-	m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, 10);
+	m_GameObjectManager.BulletCompManager()->AddComponent(bullet, 30.f, 1337, 1);
+	m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, 10, g_TestCallBack, (m_Camera->GetWorldOrientation().GetVectorForward()).ToVector3f() * 300.f);
 }
 
-const float global_rotation_speed = 0.2f;
+const float global_rotation_speed = 1.f;
 
 void GameplayState::MouseRotation(const float dt)
 {
@@ -167,7 +176,7 @@ void GameplayState::MouseRotation(const float dt)
 
 	cam_orientation.SetTranslation(ZMasher::Vector4f(0, 0, 0, cam_trans.w));
 
-	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y*dt);
+	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*dt*diff_pos.y);
 
 	cam_orientation.SetTranslation(cam_trans);
 

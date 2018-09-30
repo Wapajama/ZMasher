@@ -8,7 +8,7 @@ class TimerManager
 {
 public:
 	static TimerManager* GetInstance();
-
+	static void Create(TimerManager* instance);
 	const Timer&	GetMainTimer		() const;
 	const int		CreateTimer			();
 	const int		CreateAndStartTimer	();

@@ -284,6 +284,8 @@ namespace ZMasher
 	{
 	}
 
+	inline Vector3f Vector4f::ToVector3f()const { return Vector3f(x, y, z); }
+
 	inline const Vector4f Vector4f::Lerp(const Vector4f& operand, const float percentage)const
 	{
 		return ZMasher::Lerp(*this, operand, percentage);

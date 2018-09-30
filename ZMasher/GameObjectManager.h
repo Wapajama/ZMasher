@@ -56,7 +56,7 @@ private:
 	ProfilerTaskID m_CollisionTimeStamp;
 	ProfilerTaskID m_AITimeStamp;
 	ProfilerTaskID m_MeshCompManagerTimeStamp;
+	ProfilerTaskID m_BulletsTimeStamp;
 #endif // BENCHMARK
-
 
 };

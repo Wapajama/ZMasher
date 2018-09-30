@@ -28,10 +28,7 @@ void Timer::Start()
 
 void Timer::Pause()
 {
-//	if(myIsPausable == true)
-//	{
 		myIsActive = false;
-//	}
 }
 
 void Timer::Update()
@@ -46,11 +43,6 @@ void Timer::Update()
 		myOldEnd = myEnd;
 	}
 }
-
-//void Timer::PrivateUpdate()
-//{
-//	
-//}
 
 Time Timer::TimeSinceStart() const
 {

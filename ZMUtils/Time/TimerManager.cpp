@@ -12,11 +12,20 @@ TimerManager* TimerManager::GetInstance()
 	return myInstance;
 }
 
+void TimerManager::Create(TimerManager* instance)
+{
+	if (instance)
+	{
+		myInstance = instance;
+		return;
+	}
+	myInstance = new TimerManager();
+}
+
 TimerManager::TimerManager(void):myTimers(16)
 {
 	myMainTimer.Start();
 }
-
 
 TimerManager::~TimerManager(void)
 {
@@ -40,15 +49,16 @@ Timer& TimerManager::GetTimer(const int aId)
 {
 	int id = -1;
 
-	for(unsigned int i = 0; i < myTimers.Size(); ++i)
+	for(int i = 0; i < myTimers.Size(); ++i)
 	{
 		if(myTimers[i].GetId() == aId)
 		{
 			id = static_cast<int>(i);
+			return myTimers[id];
 		}
 	}
-
-	return myTimers[id];
+	ASSERT(false, "Couldn't find timer with specified id");
+	return myTimers[-1];
 }
 
 const int TimerManager::CreateTimer()

@@ -20,15 +20,12 @@ void AIComponentManager::AddComponent(GameObject game_object, eAIType type,
 
 AIComponent* AIComponentManager::GetComponent(GameObject game_object)
 {
-	//for (short i = 0; i < m_AIComponents.Size(); ++i)
-	//{
-	//	if (m_AIComponents[i].m_GameObject == game_object)
-	//	{
-	//		return &m_AIComponents[i];
-	//	}
-	//}
-	//return nullptr;
-	return &m_AIComponents[m_LookupSet.Find({game_object, -1})->value.index];
+	ZMasher::BSTNode<AIIndexPair,AIComparer>* ai = m_LookupSet.Find({ game_object, -1 });
+	if (ai)
+	{
+		return &m_AIComponents[ai->value.index];
+	}
+	return nullptr;
 }
 
 const AIType* AIComponentManager::GetAIType(eAIType type)
@@ -59,4 +56,28 @@ bool AIComponentManager::Update()
 {
 	RemoveDeadComponents(m_AIComponents);
 	return true;
+}
+
+void AIComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
+{
+	if (directly)
+	{
+		for (int i = 0; i < m_AIComponents.Size(); i++)
+		{
+			if (m_AIComponents[i].m_GameObject == object)
+			{
+				m_AIComponents.RemoveCyclic(i);
+				break;
+			}
+		}
+		return;
+	}
+	AIComponent* ai = GetComponent(object);
+	if (ai)
+	{
+		if (GAME_OBJECT_IS_ALIVE(ai->m_GameObject))
+		{
+			GAME_OBJECT_TOGGLE_ALIVE_GO(ai->m_GameObject);
+		}
+	}
 }

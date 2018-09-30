@@ -71,8 +71,9 @@ public:
 
 	AIComponent* GetComponent(GameObject game_object);
 	const AIType* GetAIType(eAIType type);
-	bool Init();
-	bool Update();
+	bool Init()override;
+	bool Update()override;
+	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 
 private:
 

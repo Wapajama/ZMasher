@@ -817,12 +817,12 @@ bool ZMD3DInterface::InitSwapChain(ZMInitArgs args, DXGI_SWAP_CHAIN_DESC& swap_c
 	*/
 	if (m_VSync == true)
 	{
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Numerator;
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = m_Denominator;
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 30;
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 1;
 	}
 	else
 	{
-		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 0;
+		swap_chain_desc.BufferDesc.RefreshRate.Numerator = 30;
 		swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
 	}
 

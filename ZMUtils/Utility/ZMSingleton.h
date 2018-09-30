@@ -3,13 +3,13 @@
 extern void CrashProgram(const char* msg = nullptr);
 
 template<typename SingleTonClass>
-class ZMSingleton
+class  ZMSingleton
 {
 public:
 	static SingleTonClass* Instance();
 
 	static void Release();
-	static void Create();
+	static void Create(SingleTonClass* singleton = nullptr);
 
 protected:
 	ZMSingleton();
@@ -36,8 +36,14 @@ void ZMSingleton<SingleTonClass>::Release()
 }
 
 template<typename SingleTonClass>
-void ZMSingleton<SingleTonClass>::Create()
+void ZMSingleton<SingleTonClass>::Create(SingleTonClass* singleton)
 {
+	if (singleton)
+	{
+		m_Instance = singleton;
+		return;
+	}
+
 	m_Instance = new SingleTonClass();
 	if (m_Instance->Init() == false)
 	{

@@ -40,3 +40,15 @@ bool BulletComponentManager::Update()
 	RemoveDeadComponents(m_Bullets);
 	return true;
 }
+
+void BulletComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
+{
+	for (int i = 0; i < m_Bullets.Size(); i++)
+	{
+		if (m_Bullets[i].m_GameObject==object)
+		{
+			m_Bullets.RemoveCyclic(i);
+			break;
+		}
+	}
+}

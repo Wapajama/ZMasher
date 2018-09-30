@@ -59,7 +59,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 	{
 		if (ZMModelFactory::Instance()->m_ModelInstances[i]->IsMarkedForDelete())
 		{
-			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass niggaz aint gon and hidin some danglin pointers in da hood yao -.-
+			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass n****z aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
 	RenderSkybox(d3dinterface);
@@ -71,12 +71,13 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 #ifdef BENCHMARK
 	Profiler::Instance()->EndTask(m_ModelsTimeStamp);
 #endif // BENCHMARK
-
-
 }
 
-void ZMRenderer::Init(ZMD3DInterface& d3dinterface)
+void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance)
 {
+	Profiler::Create(profiler);
+	TimerManager::Create(instance);
+
 #ifdef BENCHMARK
 	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
 #endif // BENCHMARK

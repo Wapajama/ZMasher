@@ -10,6 +10,7 @@ public:
 	virtual bool Init()=0;
 	virtual void Destroy(){};
 	virtual bool Update() = 0;
+	virtual void RemoveComponentWithGameObject(GameObject object, bool directly = false) = 0;
 
 protected:
 

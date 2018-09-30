@@ -3,6 +3,7 @@
 #include <ZMasherGfxDX11\ZMModel.h>
 #include <ZMasherGfxDX11\ZMModelInstanceNode.h>
 #include <Math\ZMMatrix44.h>
+#include <Time/TimerManager.h>
 #include <Time/Profiler.h>
 #include <ZMasherGfxDX11\dllHeader.h>
 
@@ -19,7 +20,7 @@ public:
 
 	void Render(ZMD3DInterface& d3dinterface, const float dt);
 
-	void Init(ZMD3DInterface& d3dinterface);
+	void Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance);
 
 	void RenderGrid(ZMD3DInterface& d3dinterface);
 

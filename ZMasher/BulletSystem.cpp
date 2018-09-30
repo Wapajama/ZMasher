@@ -26,15 +26,15 @@ bool BulletSystem::Simulate(const float dt)
 		}
 	 	ZMasher::Matrix44f* trans = m_TransformCompManager->GetTransform(bullet.m_GameObject);
 		//ASSERT(trans != nullptr, "BulletSystem::Simulate(const float dt), trans is nullptr!");
-		if (trans)
-		{
-			trans->SetTranslation(trans->GetTranslation() + trans->GetVectorForward()*bullet.m_Speed);
+		//if (trans)
+		//{
+			//trans->SetTranslation(trans->GetTranslation() + trans->GetVectorForward()*bullet.m_Speed);
 			bullet.m_LifeTime -= dt;
-		}
-		else
-		{
-			bullet.m_LifeTime = -1;
-		}
+		//}
+		//else
+		//{
+		//	bullet.m_LifeTime = -1;
+		//}
 		if (bullet.m_LifeTime <= 0.f)
 		{
 			GAME_OBJECT_TOGGLE_ALIVE_GO(bullet.m_GameObject);

@@ -10,6 +10,28 @@ MeshComponentManager::~MeshComponentManager()
 {
 }
 
+void MeshComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
+{
+	ModelComponent* mesh = nullptr;
+	for (int i = 0; i < m_ModelComponents.Size(); i++)
+	{
+		if (m_ModelComponents[i].m_GameObject == object)
+		{
+			mesh = &m_ModelComponents[i];
+			break;
+		}
+	}
+
+	if (!mesh)
+	{
+		return;
+	}
+	if (GAME_OBJECT_IS_ALIVE(mesh->m_GameObject))
+	{
+		GAME_OBJECT_TOGGLE_ALIVE_GO(mesh->m_GameObject);
+	}
+}
+
 bool MeshComponentManager::AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node)
 {
 	const int free_index = PopFreeIndex();

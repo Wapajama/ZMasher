@@ -109,7 +109,7 @@ bool ZMasherMain::Init()
 		m_Camera->SetPosition(Vector3f(0, 0, 10.f));
 	}
 
-	m_Renderer.Init(m_D3DInterface);
+	m_Renderer.Init(m_D3DInterface, Profiler::Instance(), TimerManager::GetInstance());
 	m_Renderer.SetCamera(m_Camera);
 	m_GameState = new GameplayState(m_Camera);
 	m_GameState->Init(nullptr);

@@ -23,6 +23,8 @@ namespace ZMasher
 		inline explicit Vector4f(float* arrayPtr);
 		inline ~Vector4f();
 
+		inline Vector3f ToVector3f()const;
+
 		union
 		{
 			//__m128 m_Data;

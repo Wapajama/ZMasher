@@ -20,6 +20,19 @@ bool TransformComponentManager::Update()
 	return true;
 }
 
+void TransformComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
+{
+	TransformComponent* trans = this->GetTransformComp(object);
+	if (!trans)
+	{
+		return;
+	}
+	if (GAME_OBJECT_IS_ALIVE(trans->m_GameObject))
+	{
+		GAME_OBJECT_TOGGLE_ALIVE_GO(trans->m_GameObject);
+	}
+}
+
 bool TransformComponentManager::AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform)
 {
 	ASSERT(GAME_OBJECT_IS_ALIVE(game_object), "Can't add dead game objects!");

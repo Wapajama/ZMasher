@@ -17,7 +17,9 @@ void GameObjectManager::Update(const float dt)
 	UpdateAllComponentManagers();//removes dead components,TODO: name change?
 
 #ifdef BENCHMARK
+	//Profiler::Instance()->BeginTask(m_BulletsTimeStamp);
 	m_BulletSystem.Simulate(dt);
+	//Profiler::Instance()->EndTask(m_BulletsTimeStamp);
 
 	Profiler::Instance()->BeginTask(m_CollisionTimeStamp);
 	m_CollisionSystem.Simulate(dt);
@@ -48,6 +50,7 @@ bool GameObjectManager::Init()
 	m_AITimeStamp = Profiler::Instance()->AddTask("AISystem");
 	m_CollisionTimeStamp = Profiler::Instance()->AddTask("CollisionSystem");
 	m_MeshCompManagerTimeStamp = Profiler::Instance()->AddTask("MeshComponentManager");
+	//m_BulletsTimeStamp = Profiler::Instance()->AddTask("BulletSystem");
 #endif // BENCHMARK
 
 	m_AISystem.Init(nullptr);
@@ -91,5 +94,8 @@ void GameObjectManager::UpdateAllComponentManagers()
 void GameObjectManager::Destroy(GameObject& game_Object)
 {
 	//go through all componentmanagers and remove the gameobject
-	ASSERT(false, "not yet implemented!");
+	for (int i = 0; i < m_ComponentManagers.Size(); i++)
+	{
+		m_ComponentManagers[i]->RemoveComponentWithGameObject(game_Object);
+	}
 }

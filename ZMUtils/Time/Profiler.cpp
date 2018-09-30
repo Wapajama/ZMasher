@@ -15,7 +15,7 @@ Profiler::Profiler()
 #ifdef BENCHMARK
 	m_NumberOfFrames = 0;
 	m_TimerIndex = TimerManager::GetInstance()->CreateAndStartTimer();
-	m_BenchmarkTime = 3.f;
+	m_BenchmarkTime = 999999.f;
 #endif // BENCHMARK
 }
 Profiler::~Profiler()

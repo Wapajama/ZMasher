@@ -33,7 +33,7 @@ public:
 	bool Init()override;
 	void Destroy()override;
 	bool Update()override;
-
+	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 private:
 	GrowArray<BulletComponent> m_Bullets;
 };

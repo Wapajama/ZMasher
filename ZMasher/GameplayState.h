@@ -6,6 +6,8 @@
 #include <Math\ZMMatrix44.h>
 class Camera;
 
+static GameObjectManager* g_GameObjectManager = nullptr;
+
 class GameplayState :
 	public GameState
 {
@@ -20,7 +22,6 @@ private:
 	//lazy implementation
 	ZMasher::Vector2i m_PrevMousePos;
 	ZMasher::Vector2i m_MousePos;
-
 
 	void MouseRotation(const float dt);
 

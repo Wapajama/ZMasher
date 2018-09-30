@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Time/Profiler.h>
 class CollisionComponentManager;
 class TransformComponentManager;
 
@@ -18,5 +18,6 @@ private:
 
 	CollisionComponentManager* m_CollisionCompManager;
 	TransformComponentManager* m_TransformCompManager;
+	ProfilerTaskID m_SingleCollisionTimeStamp;
 };
 
