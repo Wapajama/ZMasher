@@ -33,7 +33,7 @@ void GameObjectManager::Update(const float dt)
 	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
 	Profiler::Instance()->EndTask(m_MeshCompManagerTimeStamp);
 #else 
-	m_BulletSystem.Simulate(dt);
+	m_BulletSystem.Simulate(dt,this);
 
 	m_CollisionSystem.Simulate(dt);
 

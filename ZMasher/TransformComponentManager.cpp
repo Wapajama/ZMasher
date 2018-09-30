@@ -27,10 +27,7 @@ void TransformComponentManager::RemoveComponentWithGameObject(GameObject object,
 	{
 		return;
 	}
-	if (GAME_OBJECT_IS_ALIVE(trans->m_GameObject))
-	{
-		GAME_OBJECT_TOGGLE_ALIVE_GO(trans->m_GameObject);
-	}
+	GAME_OBJECT_KILL(trans->m_GameObject);
 }
 
 bool TransformComponentManager::AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform)
@@ -40,11 +37,11 @@ bool TransformComponentManager::AddComponent(GameObject game_object, const ZMash
 	const int free_index = PopFreeIndex();
 	if (free_index == m_FreeIndexes.found_none)
 	{
-		m_Transforms.Add(TransformComponent(game_object, transform));
+		m_Transforms.Add({ game_object, transform });
 	}
 	else
 	{
-		m_Transforms[free_index] = TransformComponent(game_object, transform);
+		m_Transforms[free_index] = {game_object, transform};
 	}
 	m_LookupSet.Insert({game_object, free_index != m_FreeIndexes.found_none ? free_index : m_Transforms.Size()-1});
 	return true;
@@ -72,10 +69,7 @@ TransformComponent* TransformComponentManager::GetTransformComp(GameObject game_
 void TransformComponentManager::PostRemoveDeadComponents(GameObject game_object)
 {
 	// it was added as alive, so set the index to alive again to be able to find it
-	if (!GAME_OBJECT_IS_ALIVE(game_object))
-	{
-		GAME_OBJECT_TOGGLE_ALIVE_GO(game_object);
-	}
+	GAME_OBJECT_SET_ALIVE(game_object);
 	m_LookupSet.Delete({ game_object, -1 });
 }
 

@@ -75,6 +75,8 @@ public:
 	bool Update()override;
 	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 
+	short GetNumberOfAIs();
+
 private:
 
 	void HardcodedAITypes();

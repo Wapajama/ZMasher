@@ -33,6 +33,7 @@ private:
 	void MoveDown();
 
 	void ShootBullet();
+	void SpawnEnemy();
 
 	GameObjectManager m_GameObjectManager;
 	GrowArray<GameObject> m_GameObjects;

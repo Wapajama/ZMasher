@@ -18,6 +18,7 @@ void MeshComponentManager::RemoveComponentWithGameObject(GameObject object, bool
 		if (m_ModelComponents[i].m_GameObject == object)
 		{
 			mesh = &m_ModelComponents[i];
+			mesh->m_InstanceNode->MarkForDelete();
 			break;
 		}
 	}
@@ -65,22 +66,25 @@ bool MeshComponentManager::Update(TransformComponentManager* transform_manager)
 		TransformComponent* transform_comp = transform_manager->GetTransformComp(m_ModelComponents[i].m_GameObject);
 		if (transform_comp == nullptr)
 		{
-			GAME_OBJECT_TOGGLE_ALIVE_GO(m_ModelComponents[i].m_GameObject);
+			GAME_OBJECT_KILL(m_ModelComponents[i].m_GameObject);
+			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
 			continue;
 		}
 		if (m_ModelComponents[i].m_GameObject == NULL_GAME_OBJECT ||
 			!GAME_OBJECT_IS_ALIVE( m_ModelComponents[i].m_GameObject))
 		{
+			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
 			continue;
 		}
 		if (!GAME_OBJECT_IS_ALIVE(m_ModelComponents[i].m_GameObject))
 		{
-			GAME_OBJECT_TOGGLE_ALIVE_GO((*transform_comp).m_GameObject);
+			GAME_OBJECT_KILL((*transform_comp).m_GameObject);
+			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
 		}
 		if (transform_comp != nullptr &&
 			!GAME_OBJECT_IS_ALIVE((*transform_comp).m_GameObject))
 		{
-			GAME_OBJECT_TOGGLE_ALIVE_GO(m_ModelComponents[i].m_GameObject);
+			GAME_OBJECT_KILL(m_ModelComponents[i].m_GameObject);
 			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
 		}
 #ifdef _DEBUG

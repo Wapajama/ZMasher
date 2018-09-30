@@ -29,34 +29,30 @@ bool CollisionSystem::Simulate(const float dt)
 	//TODO: Optimize this, might be a major task
 	for (int i = 0; i < m_CollisionCompManager->m_Spheres.Size(); ++i)
 	{
+		SphereCollisionComponent& sphereA = m_CollisionCompManager->m_Spheres[i];
+		const GameObject object_a = sphereA.m_GameObject;
+		if (!GAME_OBJECT_IS_ALIVE(object_a))
+		{
+			continue;
+		}
 		Profiler::Instance()->BeginTask(m_SingleCollisionTimeStamp);
 		for (int j = i; j < m_CollisionCompManager->m_Spheres.Size(); ++j)
 		{
-			SphereCollisionComponent& sphereA = m_CollisionCompManager->m_Spheres[i];
 			SphereCollisionComponent& sphereB = m_CollisionCompManager->m_Spheres[j];
-			const GameObject object_a = sphereA.m_GameObject;
 			const GameObject object_b = sphereB.m_GameObject;
+			if (!GAME_OBJECT_IS_ALIVE(object_b))
+			{
+				continue;
+			}
 			ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(object_a);
 			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
 			if (transformA &&
 				transformB &&
-				GAME_OBJECT_IS_ALIVE(object_a) &&
-				GAME_OBJECT_IS_ALIVE(object_b) &&
 				SphereVsSphereTest(sphereA,
 								   sphereB,
 								   transformA->GetTranslation(),
 								   transformB->GetTranslation()))
 			{
-				//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[i].m_GameObject,
-				//																m_CollisionCompManager->m_Spheres[j].m_GameObject));
-				//m_CollisionCompManager->m_Collisions.Add(CollisionInfoComponent(m_CollisionCompManager->m_Spheres[j].m_GameObject,
-				//																m_CollisionCompManager->m_Spheres[i].m_GameObject));
-				
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[i].m_GameObject);
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionCompManager->m_Spheres[j].m_GameObject);
-
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_a)->m_GameObject);
-				//GAME_OBJECT_TOGGLE_ALIVE_GO(m_TransformCompManager->GetTransformComp(object_b)->m_GameObject);
 				(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, nullptr, nullptr });
 				if (!GAME_OBJECT_IS_ALIVE(sphereA.m_GameObject))
 				{
@@ -99,6 +95,10 @@ bool CollisionSystem::SimulatePhysics(const float dt)
 	for (short i = 0; i < m_CollisionCompManager->m_Momentums.Size(); i++)
 	{
 		GameObject game_object = m_CollisionCompManager->m_Momentums[i].m_GameObject;
+		if (!GAME_OBJECT_IS_ALIVE(game_object))//means that it's not removed, but waiting to be used by a new object
+		{
+			continue;
+		}
 		ZMasher::Matrix44f* transform = m_TransformCompManager->GetTransform(game_object);
 		if (transform == nullptr)
 		{

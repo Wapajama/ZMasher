@@ -29,38 +29,33 @@ bool AISystem::Init(void*)
 bool AISystem::Simulate(const float dt)
 {
 	//first try, everyone seeks 0,0,0
-	
 	for (short i = 0; i < m_AIMngr->m_AIComponents.Size(); i++)
 	{
 		const GameObject game_object = m_AIMngr->m_AIComponents[i].m_GameObject;
+		if (!GAME_OBJECT_IS_ALIVE(game_object))
+		{
+			continue;
+		}
 		TransformComponent* transform_comp = m_TransformMngr->GetTransformComp(game_object);
 		if (transform_comp == nullptr)
 		{
-			//Profiler::Instance()->EndTask(m_AIInternalTimeStamp);
 			continue;
 		}
 		AIComponent* ai_comp = m_AIMngr->GetComponent(game_object);
-
+		if (!ai_comp)
+		{
+			continue;
+		}
 		const ZMasher::Vector3f position = ZMasher::Vector3f(transform_comp->m_Transform.GetTranslation());
 		const float length_to_target = (ai_comp->m_TargetPos - position).Length();
 		const AIType* ai_type = m_AIMngr->GetAIType(m_AIMngr->m_AIComponents[i].m_Type);
 
 		if (length_to_target < ai_type->m_ArrivedDist)
 		{
-			//if(GAME_OBJECT_IS_ALIVE(transform_comp->m_GameObject))
-			//{
-			//	GAME_OBJECT_TOGGLE_ALIVE_GO(transform_comp->m_GameObject);
-			//	GAME_OBJECT_TOGGLE_ALIVE_GO(m_AIMngr->GetComponent(game_object)->m_GameObject);
-			//	GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionMngr->GetMomentumComponent(game_object)->m_GameObject);
-			//	GAME_OBJECT_TOGGLE_ALIVE_GO(m_CollisionMngr->GetSphereCollisionComponent(game_object)->m_GameObject);
-			//}
 			transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f( -100, position.y, ZMasher::GetRandomFloat(-100, 100), transform_comp->m_Transform.GetTranslation().w));
 			ai_comp->m_TargetPos.z = transform_comp->m_Transform.GetTranslation().z;
 			continue;
 		}
-		
-
-		
 		SteeringArgs steer_args{ai_comp, ai_type, ai_comp->m_TargetPos - position}; 
 
 		FaceDirection(transform_comp->m_Transform, steer_args.m_ToTarget);

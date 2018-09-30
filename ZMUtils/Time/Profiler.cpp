@@ -15,7 +15,7 @@ Profiler::Profiler()
 #ifdef BENCHMARK
 	m_NumberOfFrames = 0;
 	m_TimerIndex = TimerManager::GetInstance()->CreateAndStartTimer();
-	m_BenchmarkTime = 999999.f;
+	m_BenchmarkTime = 5.f;
 #endif // BENCHMARK
 }
 Profiler::~Profiler()
@@ -76,7 +76,12 @@ void Profiler::FinishBenchmark()
 #ifdef BENCHMARK
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
+#ifdef _DEBUG
+	std::string file_name = "BenchmarkResultDEBUG" +
+#else
 	std::string file_name = "BenchmarkResult" +
+#endif // _DEBUG
+
 		std::to_string(1900 + ltm->tm_year) +
 		std::to_string(1 + ltm->tm_mon) +
 		std::to_string(ltm->tm_mday) +
@@ -89,7 +94,11 @@ void Profiler::FinishBenchmark()
 	fout.open(file_name);//save history? 
 	const char* time_unit = "s";
 	//overall time
+#ifdef _DEBUG
+	fout << "----- Benchmark Results DEBUG -------" << std::endl;
+#else
 	fout << "----- Benchmark Results -------" << std::endl;
+#endif // DEBUG
 
 	fout << std::endl;
 

@@ -17,11 +17,11 @@ bool BulletComponentManager::AddComponent(const GameObject game_object, const fl
 
 	if (free_index == m_FreeIndexes.found_none)
 	{
-		m_Bullets.Add(BulletComponent(game_object, speed, damage, life_time));
+		m_Bullets.Add({ game_object, speed, damage, life_time });
 	}
 	else
 	{
-		m_Bullets[free_index] = BulletComponent(game_object, speed, damage, life_time);
+		m_Bullets[free_index] = { game_object, speed, damage, life_time };
 	}
 	return true;
 }
@@ -47,7 +47,8 @@ void BulletComponentManager::RemoveComponentWithGameObject(GameObject object, bo
 	{
 		if (m_Bullets[i].m_GameObject==object)
 		{
-			m_Bullets.RemoveCyclic(i);
+			//GAME_OBJECT_IS_ALIVE(m_Bullets[i].m_GameObject) ? GAME_OBJECT_TOGGLE_ALIVE_GO(m_Bullets[i].m_GameObject) : 0;
+			GAME_OBJECT_KILL(m_Bullets[i].m_GameObject);
 			break;
 		}
 	}

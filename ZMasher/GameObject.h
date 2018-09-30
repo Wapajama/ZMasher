@@ -2,6 +2,8 @@
 const int GAME_OBJECT_ALIVE_BIT = (1 << 31);
 #define GAME_OBJECT_IS_ALIVE(game_object_id) static_cast<bool>(game_object_id.m_ID & GAME_OBJECT_ALIVE_BIT)
 #define GAME_OBJECT_TOGGLE_ALIVE_GO(go) go.m_ID = go.m_ID ^ GAME_OBJECT_ALIVE_BIT
+#define GAME_OBJECT_KILL(go) GAME_OBJECT_IS_ALIVE(go)? GAME_OBJECT_TOGGLE_ALIVE_GO(go) : 0
+#define GAME_OBJECT_SET_ALIVE(go) GAME_OBJECT_IS_ALIVE(go)? 0: GAME_OBJECT_TOGGLE_ALIVE_GO(go)
 typedef unsigned int ID_TYPE;
 #define NUMBER_OF_GAME_OBJECTS 1024
 

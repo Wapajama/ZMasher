@@ -81,16 +81,6 @@ public:
 	}
 };
 
-struct CollisionInfoComponent
-{
-	CollisionInfoComponent(GameObject object, GameObject collide_object) :
-		m_Object(object),
-		m_CollideObject(collide_object){}
-	CollisionInfoComponent() {}
-	GameObject m_Object;
-	GameObject m_CollideObject;
-};
-
 class CollisionComponentManager :
 	public ComponentManager
 {
@@ -116,7 +106,6 @@ private:
 
 	GrowArray<SphereCollisionComponent, short, 512> m_Spheres;
 	GrowArray<MomentumComponent, short, 512> m_Momentums;
-	GrowArray<CollisionInfoComponent, short, 512> m_Collisions;
 
 	ZMasher::BinarySearchTree<SphereIndexPair, SphereComparer> m_LookupSet;
 

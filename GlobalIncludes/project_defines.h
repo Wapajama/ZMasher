@@ -1,6 +1,6 @@
 #pragma once
 
-#define BENCHMARK
+//#define BENCHMARK
 
 //#define ZMASHER_DX12
 

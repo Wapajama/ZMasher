@@ -14,7 +14,16 @@ AIComponentManager::~AIComponentManager()
 void AIComponentManager::AddComponent(GameObject game_object, eAIType type, 
 					const ZMasher::Vector3f& target_pos)
 {
-	m_AIComponents.Add({game_object, type, target_pos});
+	const int free_index = PopFreeIndex();
+
+	if (free_index == m_FreeIndexes.found_none)
+	{
+		m_AIComponents.Add({ game_object, type, target_pos });
+	}
+	else
+	{
+		m_AIComponents[free_index] = { game_object, type, target_pos };
+	}
 	m_LookupSet.Insert({game_object, m_AIComponents.Size()-1});
 }
 
@@ -58,6 +67,20 @@ bool AIComponentManager::Update()
 	return true;
 }
 
+short AIComponentManager::GetNumberOfAIs()
+{
+	short n_ais = 0;
+	for (short i = 0; i < m_AIComponents.Size(); i++)
+	{
+		if (GAME_OBJECT_IS_ALIVE(m_AIComponents[i].m_GameObject))
+		{
+			++n_ais;
+		}
+	}
+
+	return n_ais;
+}
+
 void AIComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
 {
 	if (directly)
@@ -66,7 +89,8 @@ void AIComponentManager::RemoveComponentWithGameObject(GameObject object, bool d
 		{
 			if (m_AIComponents[i].m_GameObject == object)
 			{
-				m_AIComponents.RemoveCyclic(i);
+				//m_AIComponents.RemoveCyclic(i);
+				GAME_OBJECT_KILL(m_AIComponents[i].m_GameObject);
 				break;
 			}
 		}
@@ -75,9 +99,6 @@ void AIComponentManager::RemoveComponentWithGameObject(GameObject object, bool d
 	AIComponent* ai = GetComponent(object);
 	if (ai)
 	{
-		if (GAME_OBJECT_IS_ALIVE(ai->m_GameObject))
-		{
-			GAME_OBJECT_TOGGLE_ALIVE_GO(ai->m_GameObject);
-		}
+		GAME_OBJECT_KILL(ai->m_GameObject);
 	}
 }

@@ -18,8 +18,17 @@ void CollisionComponentManager::AddComponent(	const CollisionType filter,
 												CollisionCallBack callback,
 												const ZMasher::Vector3f& speed)
 {
-	m_Spheres.Add(SphereCollisionComponent(filter, radius, game_object, callback));
-	m_Momentums.Add(MomentumComponent(game_object, weight, speed));
+	const int free_index = PopFreeIndex();
+	if (free_index == m_FreeIndexes.found_none)
+	{
+		m_Spheres.Add(SphereCollisionComponent(filter, radius, game_object, callback));
+		m_Momentums.Add(MomentumComponent(game_object, weight, speed));
+	}
+	else
+	{
+		m_Spheres[free_index] = SphereCollisionComponent(filter, radius, game_object, callback);
+		m_Momentums[free_index] = MomentumComponent(game_object, weight, speed);
+	}
 	m_LookupSet.Insert({game_object, m_Spheres.Size()-1});
 }
 
@@ -33,14 +42,8 @@ void CollisionComponentManager::RemoveComponentWithGameObject(GameObject object,
 		return;
 	}
 	ASSERT(mom != nullptr, "collision pair only has a collisioncomponent!");
-	if (GAME_OBJECT_IS_ALIVE(sphere->m_GameObject))
-	{
-		GAME_OBJECT_TOGGLE_ALIVE_GO(sphere->m_GameObject);
-	}
-	if (GAME_OBJECT_IS_ALIVE(mom->m_GameObject))
-	{
-		GAME_OBJECT_TOGGLE_ALIVE_GO(mom->m_GameObject);
-	}
+	GAME_OBJECT_KILL(sphere->m_GameObject);
+	GAME_OBJECT_KILL(mom->m_GameObject);
 }
 
 bool CollisionComponentManager::Init()
@@ -57,16 +60,25 @@ bool CollisionComponentManager::Update()
 { 
 	ComponentManager::RemoveDeadComponents(m_Spheres);
 	ComponentManager::RemoveDeadComponents(m_Momentums);
-	m_Collisions.RemoveAll();//should have been read since last time
 	return true;
 }
 
 MomentumComponent* CollisionComponentManager::GetMomentumComponent(GameObject game_object)
 {
-	return &m_Momentums[m_LookupSet.Find({game_object, -1})->value.index];
+	auto comp = m_LookupSet.Find({ game_object, -1 });
+	if (comp)
+	{
+		return &m_Momentums[comp->value.index];
+	}
+	return nullptr;
 }
 
 SphereCollisionComponent* CollisionComponentManager::GetSphereCollisionComponent(GameObject game_object)
 {
-	return &m_Spheres[m_LookupSet.Find({game_object, -1})->value.index];
+	auto comp = m_LookupSet.Find({ game_object, -1 });
+	if (comp)
+	{
+		return &m_Spheres[comp->value.index];
+	}
+	return nullptr;
 }
