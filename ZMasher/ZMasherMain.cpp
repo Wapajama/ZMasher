@@ -126,7 +126,7 @@ bool ZMasherMain::Update()
 	}
 	TimerManager::GetInstance()->Update();
 
-	const float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.1);//TODO: optimize dis
+	const float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.064);//TODO: optimize dis
 
 #ifdef BENCHMARK
 	const bool benchmark = Profiler::Instance()->IterateFrame(dt);

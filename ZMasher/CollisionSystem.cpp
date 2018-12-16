@@ -1,10 +1,14 @@
 #include "CollisionSystem.h"
-#include <ZMasher\CollisionComponentManager.h>
+#include <ZMasher\SphereCollisionComponentManager.h>
+#include <ZMasher\MomentumComponentManager.h>
 #include <ZMasher\TransformComponentManager.h>
+#include <ZMasher\GameObjectManager.h>
 
-CollisionSystem::CollisionSystem(CollisionComponentManager* collision_comp_manager,
-								 TransformComponentManager* transform_comp_manager)
-	: m_CollisionCompManager(collision_comp_manager)
+CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collision_comp_manager,
+	MomentumComponentManager* momentum_comp_manager,
+	TransformComponentManager* transform_comp_manager)
+	: m_SphereCollisionCompManager(sphere_collision_comp_manager)
+	, m_MomentumCompManager(momentum_comp_manager)
 	, m_TransformCompManager(transform_comp_manager)
 {
 	m_SingleCollisionTimeStamp = Profiler::Instance()->AddTask("SingleCollision");
@@ -27,20 +31,20 @@ bool CollisionSystem::Simulate(const float dt)
 {
 	//BRUTEFOOOOOOOOOOOOOOOOOOOORCE
 	//TODO: Optimize this, might be a major task
-	for (int i = 0; i < m_CollisionCompManager->m_Spheres.Size(); ++i)
+	for (int i = 0; i < m_SphereCollisionCompManager->m_Components.Size(); ++i)
 	{
-		SphereCollisionComponent& sphereA = m_CollisionCompManager->m_Spheres[i];
+		SphereCollisionComponent& sphereA = m_SphereCollisionCompManager->m_Components[i];
 		const GameObject object_a = sphereA.m_GameObject;
-		if (!GAME_OBJECT_IS_ALIVE(object_a))
+		if (!GameObjectManager::Instance()->Alive(object_a))
 		{
 			continue;
 		}
 		Profiler::Instance()->BeginTask(m_SingleCollisionTimeStamp);
-		for (int j = i; j < m_CollisionCompManager->m_Spheres.Size(); ++j)
+		for (int j = i; j < m_SphereCollisionCompManager->m_Components.Size(); ++j)
 		{
-			SphereCollisionComponent& sphereB = m_CollisionCompManager->m_Spheres[j];
+			SphereCollisionComponent& sphereB = m_SphereCollisionCompManager->m_Components[j];
 			const GameObject object_b = sphereB.m_GameObject;
-			if (!GAME_OBJECT_IS_ALIVE(object_b))
+			if (!GameObjectManager::Instance()->Alive(object_b))
 			{
 				continue;
 			}
@@ -54,32 +58,34 @@ bool CollisionSystem::Simulate(const float dt)
 								   transformB->GetTranslation()))
 			{
 				(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, nullptr, nullptr });
-				if (!GAME_OBJECT_IS_ALIVE(sphereA.m_GameObject))
+				// If the object died, make sure to clean up the components
+				if (!GameObjectManager::Instance()->Alive(sphereA.m_GameObject))
 				{
-					TransformComponent* trans = m_TransformCompManager->GetTransformComp(object_a);
-					MomentumComponent* mom = & m_CollisionCompManager->m_Momentums[i];
+					TransformComponent* trans = m_TransformCompManager->GetComponent(object_a);
+					MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
 			
-					if (GAME_OBJECT_IS_ALIVE(trans->m_GameObject))
+					if (trans)
 					{
-						GAME_OBJECT_TOGGLE_ALIVE_GO(trans->m_GameObject);
+						GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);
 					}
-					if (GAME_OBJECT_IS_ALIVE(mom->m_GameObject))
+					if (mom)
 					{
-						GAME_OBJECT_TOGGLE_ALIVE_GO(mom->m_GameObject);
+						GameObjectManager::Instance()->Destroy(mom->m_GameObject, false);
 					}
+					
 				}
-				if (!GAME_OBJECT_IS_ALIVE(sphereB.m_GameObject))
+				if (!GameObjectManager::Instance()->Alive(sphereB.m_GameObject))
 				{
-					TransformComponent* trans = m_TransformCompManager->GetTransformComp(object_b);
-					MomentumComponent* mom = &m_CollisionCompManager->m_Momentums[j];
+					TransformComponent* trans = m_TransformCompManager->GetComponent(object_b);
+					MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
 
-					if (GAME_OBJECT_IS_ALIVE(trans->m_GameObject))
+					if (trans)
 					{
-						GAME_OBJECT_TOGGLE_ALIVE_GO(trans->m_GameObject);
+						GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);
 					}
-					if (GAME_OBJECT_IS_ALIVE(mom->m_GameObject))
+					if (mom)
 					{
-						GAME_OBJECT_TOGGLE_ALIVE_GO(mom->m_GameObject);
+						GameObjectManager::Instance()->Destroy(mom->m_GameObject, false);
 					}
 				}
 			}
@@ -92,10 +98,10 @@ bool CollisionSystem::Simulate(const float dt)
 bool CollisionSystem::SimulatePhysics(const float dt)
 {
 	const float frame_time = dt;
-	for (short i = 0; i < m_CollisionCompManager->m_Momentums.Size(); i++)
+	for (short i = 0; i < m_MomentumCompManager->m_Components.Size(); i++)
 	{
-		GameObject game_object = m_CollisionCompManager->m_Momentums[i].m_GameObject;
-		if (!GAME_OBJECT_IS_ALIVE(game_object))//means that it's not removed, but waiting to be used by a new object
+		GameObject game_object = m_MomentumCompManager->m_Components[i].m_GameObject;
+		if (!GameObjectManager::Instance()->Alive(game_object))//means that it's not removed, but waiting to be used by a new object
 		{
 			continue;
 		}
@@ -106,7 +112,7 @@ bool CollisionSystem::SimulatePhysics(const float dt)
 		}
 		transform->SetTranslation(
 			transform->GetTranslation() + 
-			ZMasher::Vector4f(m_CollisionCompManager->m_Momentums[i].m_Speed*frame_time));
+			ZMasher::Vector4f(m_MomentumCompManager->m_Components[i].m_Speed*frame_time));
 	}
 	return true;
 }

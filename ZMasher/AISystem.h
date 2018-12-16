@@ -7,9 +7,10 @@ class AISystem
 	:public BaseSystem
 {
 public:
-	AISystem(class AIComponentManager* ai,
-			 class CollisionComponentManager* collision,
-			 class TransformComponentManager* transform);
+	AISystem(	class AIComponentManager* ai,
+				class SphereCollisionComponentManager* sphere_collision,
+				class MomentumComponentManager* momentum,
+				class TransformComponentManager* transform);
 	~AISystem();
 
 	bool Init(void* arguments)override;
@@ -36,7 +37,8 @@ private:
 	void ClampMaxSpeed(ZMasher::Vector3f& steering, const class AIType* type);
 
 	AIComponentManager* m_AIMngr;
-	CollisionComponentManager* m_CollisionMngr;
+	SphereCollisionComponentManager* m_SphereCollisionMngr;
+	MomentumComponentManager* m_MomentumMngr;
 	TransformComponentManager* m_TransformMngr;
 	
 };

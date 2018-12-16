@@ -5,42 +5,46 @@
 #include "BulletSystem.h"
 #include "AIComponentManager.h"
 #include <ZMasher\GameObject.h>
-#include <ZMasher\CollisionComponentManager.h>
+#include <ZMasher\SphereCollisionComponentManager.h>
+#include <ZMasher\MomentumComponentManager.h>
 #include <ZMasher\CollisionSystem.h>
 #include <ZMasher\AISystem.h>
 #include <Time/Profiler.h>
+#include <Utility\ZMSingleton.h>
 
 //Dataoriented entitysystem
 class GameObjectManager
+	: public ZMSingleton<GameObjectManager>
 {
 public:
-	GameObjectManager();
-	~GameObjectManager();
-
 	void Update(const float dt);
 	bool Init();
 	void Destroy();
 
 	GameObject CreateGameObject();
-
-	void Destroy(GameObject& game_Object);
+	bool Alive(GameObject game_object);
+	void Destroy(GameObject game_object, bool remove_everywhere = true);
 
 	inline MeshComponentManager* MeshCompManager() { return &m_MeshManager; }
 	inline TransformComponentManager* TransformManager() { return &m_TransformManager; }
 	inline BulletComponentManager* BulletCompManager() {return &m_BulletCompManager;}
-	inline CollisionComponentManager* CollisionCompManager() {return &m_CollisionCompManager;}
+	inline SphereCollisionComponentManager* SphereCollisionCompManager() {return &m_SphereCollisionCompManager;}
+	inline MomentumComponentManager* MomentumCompManager() { return &m_MomentumComponentManager; }
 	inline AIComponentManager* AICompManager() {return &m_AICompManager;}
 
+protected:
+
 private:
+	GameObjectManager();
+	~GameObjectManager();
+	friend class ZMSingleton<GameObjectManager>;
 
 	void UpdateAllComponentManagers();
 
-	GrowArray <ComponentManager*> m_ComponentManagers;
+	GrowArray <IComponentManager*> m_ComponentManagers;
 
-	ID_TYPE m_CurrentID;
-
-	//TODO: GameObjectManager is getting blobbed because of all the componentmanagers and systems, extract to another class
-	GameObject m_GameObjects[NUMBER_OF_GAME_OBJECTS];
+	//ID__TYPE m_CurrentID;
+	GrowArray<GO_ID_TYPE> m_FreeIndexes;
 
 	MeshComponentManager m_MeshManager;
 	TransformComponentManager m_TransformManager;
@@ -48,15 +52,21 @@ private:
 	AIComponentManager m_AICompManager;
 
 	BulletSystem m_BulletSystem;
+	SphereCollisionComponentManager m_SphereCollisionCompManager;
+	MomentumComponentManager m_MomentumComponentManager;
 	CollisionSystem m_CollisionSystem;
-	CollisionComponentManager m_CollisionCompManager;
 	AISystem m_AISystem;
 
+	// TODO: GameObjectManager is getting blobbed because of all the componentmanagers and systems, extract to another class
+	// Will increase the size of the array by one, representing the game object
+	// the value of the element will indicate its generation
+	GrowArray<GO_GEN_TYPE, int> m_GameObjects;
 #ifdef BENCHMARK
 	ProfilerTaskID m_CollisionTimeStamp;
 	ProfilerTaskID m_AITimeStamp;
 	ProfilerTaskID m_MeshCompManagerTimeStamp;
 	ProfilerTaskID m_BulletsTimeStamp;
+	friend class Profiler;
 #endif // BENCHMARK
 
 };

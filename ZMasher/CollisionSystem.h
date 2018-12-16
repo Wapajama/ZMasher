@@ -1,12 +1,14 @@
 #pragma once
 #include <Time/Profiler.h>
-class CollisionComponentManager;
+class SphereCollisionComponentManager;
+class MomentumComponentManager;
 class TransformComponentManager;
 
 class CollisionSystem
 {
 public:
-	CollisionSystem(CollisionComponentManager* collision_comp_manager,
+	CollisionSystem(SphereCollisionComponentManager* sphere_collision_comp_manager,
+					MomentumComponentManager* momentum_comp_manager,
 					TransformComponentManager* transform_comp_manager);
 	~CollisionSystem();
 
@@ -16,7 +18,8 @@ private:
 
 	bool SimulatePhysics(const float dt);
 
-	CollisionComponentManager* m_CollisionCompManager;
+	SphereCollisionComponentManager* m_SphereCollisionCompManager;
+	MomentumComponentManager* m_MomentumCompManager;
 	TransformComponentManager* m_TransformCompManager;
 	ProfilerTaskID m_SingleCollisionTimeStamp;
 };

@@ -1,5 +1,6 @@
 #include "MeshComponentManager.h"
 #include <ZMasher\TransformComponentManager.h>
+#include <ZMasher\GameObjectManager.h>
 
 MeshComponentManager::MeshComponentManager()
 {
@@ -10,87 +11,76 @@ MeshComponentManager::~MeshComponentManager()
 {
 }
 
-void MeshComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
-{
-	ModelComponent* mesh = nullptr;
-	for (int i = 0; i < m_ModelComponents.Size(); i++)
-	{
-		if (m_ModelComponents[i].m_GameObject == object)
-		{
-			mesh = &m_ModelComponents[i];
-			mesh->m_InstanceNode->MarkForDelete();
-			break;
-		}
-	}
-
-	if (!mesh)
-	{
-		return;
-	}
-	if (GAME_OBJECT_IS_ALIVE(mesh->m_GameObject))
-	{
-		GAME_OBJECT_TOGGLE_ALIVE_GO(mesh->m_GameObject);
-	}
-}
+//void MeshComponentManager::RemoveComponentWithGameObjectInternal(GameObject object)
+//{
+//	ModelComponent* mesh = nullptr;
+//	int index = -1;
+//	for (int i = 0; i < m_Components.Size(); i++)
+//	{
+//		if (m_Components[i].m_GameObject == object)
+//		{
+//			mesh = &m_ModelComponents[i];
+//			mesh->m_InstanceNode->MarkForDelete();
+//			index = i;
+//			break;
+//		}
+//	}
+//
+//	if (!mesh)
+//	{
+//		return;
+//	}
+//	GameObjectManager::Instance()->Destroy(mesh->m_GameObject, false);
+//	m_ModelComponents.RemoveCyclic(index);
+//}
 
 bool MeshComponentManager::AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node)
 {
-	const int free_index = PopFreeIndex();
-	if (free_index == m_FreeIndexes.found_none)
-	{
-		m_ModelComponents.Add(ModelComponent(game_object, instance_node));
-	}
-	else
-	{
-		m_ModelComponents[free_index] = ModelComponent(game_object, instance_node);
-	}
+	ComponentManager::AddComponent(ModelComponent(game_object, instance_node), game_object);
 	return true;
 }
 
 bool MeshComponentManager::Init()
 {
-
 	return true;
 }
 
 bool MeshComponentManager::Update()
 {
-	RemoveDeadComponents(m_ModelComponents);
-	return true;
+	return ComponentManager::Update();
 }
 
 bool MeshComponentManager::Update(TransformComponentManager* transform_manager)
 {
-	for (short i = 0; i < m_ModelComponents.Size(); i++)
+	for (short i = 0; i < m_Components.Size(); i++)
 	{
-		TransformComponent* transform_comp = transform_manager->GetTransformComp(m_ModelComponents[i].m_GameObject);
+		TransformComponent* transform_comp = transform_manager->GetComponent(m_Components[i].m_GameObject);
 		if (transform_comp == nullptr)
 		{
-			GAME_OBJECT_KILL(m_ModelComponents[i].m_GameObject);
-			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
+			GameObjectManager::Instance()->Destroy(m_Components[i].m_GameObject);
+			m_Components[i].m_InstanceNode->MarkForDelete();
 			continue;
 		}
-		if (m_ModelComponents[i].m_GameObject == NULL_GAME_OBJECT ||
-			!GAME_OBJECT_IS_ALIVE( m_ModelComponents[i].m_GameObject))
+		if (!GameObjectManager::Instance()->Alive(m_Components[i].m_GameObject))
 		{
-			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
+			m_Components[i].m_InstanceNode->MarkForDelete();
 			continue;
 		}
-		if (!GAME_OBJECT_IS_ALIVE(m_ModelComponents[i].m_GameObject))
+		if (!GameObjectManager::Instance()->Alive(m_Components[i].m_GameObject))
 		{
-			GAME_OBJECT_KILL((*transform_comp).m_GameObject);
-			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
+			GameObjectManager::Instance()->Destroy((*transform_comp).m_GameObject);
+			m_Components[i].m_InstanceNode->MarkForDelete();
 		}
 		if (transform_comp != nullptr &&
-			!GAME_OBJECT_IS_ALIVE((*transform_comp).m_GameObject))
+			!GameObjectManager::Instance()->Alive((*transform_comp).m_GameObject))
 		{
-			GAME_OBJECT_KILL(m_ModelComponents[i].m_GameObject);
-			m_ModelComponents[i].m_InstanceNode->MarkForDelete();
+			GameObjectManager::Instance()->Destroy(m_Components[i].m_GameObject);
+			m_Components[i].m_InstanceNode->MarkForDelete();
 		}
 #ifdef _DEBUG
 		ASSERT(transform_comp, "MeshManager: GameObject doesn't have a transform component!");
 #endif // _DEBUG
-		m_ModelComponents[i].m_InstanceNode->SetTransform(transform_comp->m_Transform);
+		m_Components[i].m_InstanceNode->SetTransform(transform_comp->m_Transform);
 		
 	}
 	return true;

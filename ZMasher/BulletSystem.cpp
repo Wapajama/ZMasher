@@ -15,26 +15,19 @@ BulletSystem::~BulletSystem()
 {
 }
 
-bool BulletSystem::Simulate(const float dt, GameObjectManager* go_man)
+bool BulletSystem::Simulate(const float dt)
 {
-	for (short i = 0; i < m_BulletCompManager->m_Bullets.Size(); i++)
+	for (short i = 0; i < m_BulletCompManager->m_Components.Size(); i++)
 	{
-		BulletComponent& bullet = m_BulletCompManager->m_Bullets[i];
-		if (!GAME_OBJECT_IS_ALIVE(bullet.m_GameObject))
+		BulletComponent& bullet = m_BulletCompManager->m_Components[i];
+		if (!GameObjectManager::Instance()->Alive(bullet.m_GameObject))
 		{
 			continue;
-		}
-	 	ZMasher::Matrix44f* trans = m_TransformCompManager->GetTransform(bullet.m_GameObject);
-		if (!trans)
-		{
-			//GAME_OBJECT_KILL(m_TransformCompManager->GetTransformComp(bullet.m_GameObject)->m_GameObject);
-
-			go_man->Destroy(m_TransformCompManager->GetTransformComp(bullet.m_GameObject)->m_GameObject);
 		}
 		bullet.m_LifeTime -= dt;
 		if (bullet.m_LifeTime <= 0.f)
 		{
-			go_man->Destroy(bullet.m_GameObject);
+			GameObjectManager::Instance()->Destroy(bullet.m_GameObject);
 		}
 	}
 

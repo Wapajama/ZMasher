@@ -15,7 +15,7 @@ struct ModelComponent
 };
 
 class MeshComponentManager :
-	public ComponentManager
+	public ComponentManager<ModelComponent>
 {
 public:
 	MeshComponentManager();
@@ -24,10 +24,11 @@ public:
 	bool Init()override;
 	bool Update()override;
 	bool Update(class TransformComponentManager* transform_manager);//extract this to a render system instead
-	bool AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node);
 	void Destroy()override;
-	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
-private:
+	bool AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node);
+	//void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 
-	GrowArray<ModelComponent, short, 512> m_ModelComponents;
+private:
+	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
+	//GrowArray<ModelComponent, short, 512> m_ModelComponents;
 };

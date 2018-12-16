@@ -60,7 +60,8 @@ public:
 };
 
 class AIComponentManager :
-	public ComponentManager
+	public ComponentManager<AIComponent>
+		
 {
 public:
 	AIComponentManager();
@@ -69,21 +70,19 @@ public:
 	void AddComponent(GameObject game_object, eAIType type, 
 					  const ZMasher::Vector3f& target_pos = ZMasher::Vector3f(0,0,0));
 
-	AIComponent* GetComponent(GameObject game_object);
 	const AIType* GetAIType(eAIType type);
 	bool Init()override;
 	bool Update()override;
-	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 
 	short GetNumberOfAIs();
 
 private:
-
+	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
 	void HardcodedAITypes();
 
 	friend class AISystem;
 	GrowArray<AIType> m_AITypes;
-	GrowArray<AIComponent, short, 512> m_AIComponents;
-	ZMasher::BinarySearchTree<AIIndexPair, AIComparer> m_LookupSet;
+	//GrowArray<AIComponent, short, 512> m_AIComponents;
+	//ZMasher::BinarySearchTree<AIIndexPair, AIComparer> m_LookupSet;
 };
 

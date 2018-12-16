@@ -4,8 +4,6 @@
 #include "../GlobalIncludes/project_defines.h"//TODO: Remove relative paths
 #include <string>
 
-
-
 struct ProfilerTaskID
 {
 	int m_TaskID;//index to array
@@ -45,6 +43,9 @@ private:
 
 	GrowArray<ProfilerTask> m_Tasks;
 	GrowArray<TimeStamp> m_TimeStampStack;
+
+	int m_NOGameObjects;
+	float m_AvgGameObjects;
 
 	void FinishBenchmark();//output results to file
 

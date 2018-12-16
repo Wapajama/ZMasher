@@ -6,6 +6,7 @@
 #include <chrono>
 #include <ctime>
 #include <string> 
+#include <ZMasher\GameObjectManager.h> // TODO: NOT THIS
 
 
 Profiler::Profiler()
@@ -46,6 +47,10 @@ bool Profiler::IterateFrame(const float dt)
 #ifdef BENCHMARK
 	++m_NumberOfFrames;
 	m_BenchmarkTime -= dt;
+	m_NOGameObjects =  static_cast<float>(GameObjectManager::Instance()->m_GameObjects.Size());
+
+	m_AvgGameObjects = (((m_NumberOfFrames - 1)*(static_cast<float>(m_AvgGameObjects))) + m_NOGameObjects)/m_NumberOfFrames;
+
 	return m_BenchmarkTime >= 0;
 #else
 	return false;
@@ -139,7 +144,9 @@ void Profiler::FinishBenchmark()
 		<< " FPS"
 		<< std::endl;
 
-	fout << std::endl;
+	fout << "Avarage n gameobjects: "
+		<< m_AvgGameObjects
+		<< std::endl;
 
 	fout.flush();
 

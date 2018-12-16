@@ -20,8 +20,11 @@ struct BulletComponent//probably should be divided into other components, lets j
 	float m_LifeTime;
 };
 
+
 class BulletComponentManager :
-	public ComponentManager
+	public ComponentManager<
+		BulletComponent>
+		
 {
 	friend class BulletSystem;
 public:
@@ -33,8 +36,9 @@ public:
 	bool Init()override;
 	void Destroy()override;
 	bool Update()override;
-	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
+	
 private:
-	GrowArray<BulletComponent> m_Bullets;
+	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
+	//GrowArray<BulletComponent> m_Bullets;
 };
 

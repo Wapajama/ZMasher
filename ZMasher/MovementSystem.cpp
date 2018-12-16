@@ -1,5 +1,5 @@
 #include "MovementSystem.h"
-#include <ZMasher\CollisionComponentManager.h>
+#include <ZMasher\SphereCollisionComponentManager.h>
 #include <ZMasher\TransformComponentManager.h>
 
 

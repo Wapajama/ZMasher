@@ -1,16 +1,18 @@
 #include "AISystem.h"
-
 #include <ZMasher/AIComponentManager.h>
-#include <ZMasher/CollisionComponentManager.h>
+#include <ZMasher/SphereCollisionComponentManager.h>
+#include <ZMasher/MomentumComponentManager.h>
 #include <ZMasher/TransformComponentManager.h>
 #include <ZMasher/GameObjectManager.h>
 #include <ZMUtils\Utility\ZMasherUtilities.h>
 
 AISystem::AISystem(AIComponentManager* ai,
-		CollisionComponentManager* collision,
+		SphereCollisionComponentManager* sphere_collision,
+		MomentumComponentManager* momentum,
 		TransformComponentManager* transform)
 	: m_AIMngr(ai)
-	, m_CollisionMngr(collision)
+	, m_SphereCollisionMngr(sphere_collision)
+	, m_MomentumMngr(momentum)
 	, m_TransformMngr(transform)
 {
 }
@@ -29,14 +31,14 @@ bool AISystem::Init(void*)
 bool AISystem::Simulate(const float dt)
 {
 	//first try, everyone seeks 0,0,0
-	for (short i = 0; i < m_AIMngr->m_AIComponents.Size(); i++)
+	for (short i = 0; i < m_AIMngr->m_Components.Size(); i++)
 	{
-		const GameObject game_object = m_AIMngr->m_AIComponents[i].m_GameObject;
-		if (!GAME_OBJECT_IS_ALIVE(game_object))
+		const GameObject game_object = m_AIMngr->m_Components[i].m_GameObject;
+		if (!GameObjectManager::Instance()->Alive(game_object))
 		{
 			continue;
 		}
-		TransformComponent* transform_comp = m_TransformMngr->GetTransformComp(game_object);
+		TransformComponent* transform_comp = m_TransformMngr->GetComponent(game_object);
 		if (transform_comp == nullptr)
 		{
 			continue;
@@ -48,7 +50,7 @@ bool AISystem::Simulate(const float dt)
 		}
 		const ZMasher::Vector3f position = ZMasher::Vector3f(transform_comp->m_Transform.GetTranslation());
 		const float length_to_target = (ai_comp->m_TargetPos - position).Length();
-		const AIType* ai_type = m_AIMngr->GetAIType(m_AIMngr->m_AIComponents[i].m_Type);
+		const AIType* ai_type = m_AIMngr->GetAIType(m_AIMngr->m_Components[i].m_Type);
 
 		if (length_to_target < ai_type->m_ArrivedDist)
 		{
@@ -72,7 +74,7 @@ bool AISystem::Simulate(const float dt)
 		}
 
 		ClampMaxSpeed(steering, ai_type);
-		auto momentum = m_CollisionMngr->GetMomentumComponent(game_object);
+		auto momentum = m_MomentumMngr->GetComponent(game_object);
 		if (momentum != nullptr)
 		{
 			momentum->m_Speed = steering;

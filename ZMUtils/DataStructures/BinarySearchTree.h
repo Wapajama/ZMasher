@@ -256,14 +256,19 @@ namespace ZMasher
 		//ASSERT(m_Root != m_Root->parent, "Tree error!");
 		//ASSERT(m_Root != m_Root->parent, "Tree error!");
 
-		//--m_NumberOfNodes;
+		--m_NumberOfNodes;
+
 		//const int cnt = Count();
 		//ASSERT(cnt == m_NumberOfNodes, "Tree error!");
 	}
 	TEMPLATE_HEADER
 	void BinarySearchTree TEMPLATE_ARGS::Delete(const Type& value)
 	{
-		Delete(Find(value));
+		BSTNode TEMPLATE_ARGS* node = Find(value);
+		if (node)
+		{
+			Delete(node);
+		}
 	}
 	TEMPLATE_HEADER
 	BSTNode TEMPLATE_ARGS* BinarySearchTree TEMPLATE_ARGS::Find(BSTNode TEMPLATE_ARGS* node)

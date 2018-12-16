@@ -4,7 +4,7 @@
 #include <Math\ZMMatrix44.h>
 #include <ZMasher\GameObject.h>
 #include <Time/Profiler.h>
-#include <DataStructures\BinarySearchTree.h>
+//#include <DataStructures\BinarySearchTree.h>
 
 struct TransformComponent
 {
@@ -43,7 +43,8 @@ public:
 };
 
 class TransformComponentManager :
-	public ComponentManager
+	public ComponentManager<
+		TransformComponent>
 {
 	friend class BulletSystem;
 public:
@@ -55,17 +56,17 @@ public:
 	bool Update()override;
 
 	bool AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform);//will return false if invalid input, eg already exists, invalid transform etc
-	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
+	
 	ZMasher::Matrix44f* GetTransform(GameObject game_object);//brute force atm, be sure to optimize
-	TransformComponent* GetTransformComp(GameObject game_object);
+	//TransformComponent* GetTransformComp(GameObject game_object);
 
 protected:
-
-	void PostRemoveDeadComponents(GameObject) override;
+	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
 
 private:
-	ZMasher::BinarySearchTree<TransformIndexPair, TransformComparer> m_LookupSet;
-	GrowArray<TransformComponent, short, 1024> m_Transforms;
+
+	//ZMasher::BinarySearchTree<TransformIndexPair, TransformComparer> m_LookupSet;
+	//GrowArray<TransformComponent, short, 1024> m_Transforms;
 	ProfilerTaskID m_GetTransformTimeStamp;
 };
 

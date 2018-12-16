@@ -58,9 +58,6 @@
     <ClInclude Include="BulletSystem.h">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionComponentManager.h">
-      <Filter>Source\Gameplay\ComponentManager</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionSystem.h">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClInclude>
@@ -81,6 +78,12 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollisionComponentManager.h">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentumComponentManager.h">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +114,6 @@
     <ClCompile Include="BulletSystem.cpp">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionComponentManager.cpp">
-      <Filter>Source\Gameplay\ComponentManager</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionSystem.cpp">
       <Filter>Source\Gameplay\Systems</Filter>
     </ClCompile>
@@ -134,6 +134,12 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollisionComponentManager.cpp">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentumComponentManager.cpp">
+      <Filter>Source\Gameplay\ComponentManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

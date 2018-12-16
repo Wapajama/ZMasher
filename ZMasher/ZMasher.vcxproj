@@ -32,7 +32,8 @@
     <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
-    <ClInclude Include="CollisionComponentManager.h" />
+    <ClInclude Include="MomentumComponentManager.h" />
+    <ClInclude Include="SphereCollisionComponentManager.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="DebugNameComponentManager.h" />
@@ -52,7 +53,8 @@
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
-    <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="MomentumComponentManager.cpp" />
+    <ClCompile Include="SphereCollisionComponentManager.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="DebugNameComponentManager.cpp" />
