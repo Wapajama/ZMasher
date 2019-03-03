@@ -8,7 +8,7 @@ struct ZMWinApiCointainer
 	HWND m_WindowHandle;
 	WNDCLASSEX m_ExtWindowClass;
 	MSG m_Message;
-	LPCWSTR m_TitleBarName;
+	LPCSTR m_TitleBarName;
 
 	//not winApi, Should make better interface?
 	POINT m_Resolution;

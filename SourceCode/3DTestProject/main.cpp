@@ -26,12 +26,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   LPSTR lpCmdLine,
 				   int nCmdShow)
 {
-	//srand(time(0));
 	srand(1);
 
 	TestStruct test;
 	test.m_ID = 1;
-	//ZMasher::MemoryManager::CreateMemoryManager();
 
 	const bool init = ZMasherMain::Instance()->Init();
 

@@ -3,7 +3,7 @@
 #include <DataStructures\GrowArray.h>
 #include <ZMasherGfxDX11\Texture.h>
 #include <string>
-class ID3D11Device;
+struct ID3D11Device;
 class TextureContainer
 {
 public:

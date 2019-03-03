@@ -15,7 +15,12 @@
 #define max(var1, var2) var1 > var2 ? var1 : var2
 
 
+#ifdef WIN32
 typedef int MemSizeType;
+#elif defined(WIN64)
+typedef int64_t MemSizeType;
+#endif // WIN32
+
 namespace ZMasher
 {
 	struct Blk

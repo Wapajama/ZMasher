@@ -16,7 +16,7 @@ namespace ZMasher
 		virtual Blk AllocateAll()=0;
 		virtual Blk AllocateAligned(MemSizeType size, MemSizeType alignment)=0;
 		virtual Blk AllocateAllAligned(MemSizeType alignment)=0;
-		virtual bool Expand(Blk& blk, MemSizeType delta){return false;};
+		virtual bool Expand(Blk&, MemSizeType){return false;};
 		virtual void Reallocate(Blk& blk, MemSizeType size)=0;
 		virtual bool Owns(Blk blk)=0;
 		virtual void Deallocate(Blk blk)=0;

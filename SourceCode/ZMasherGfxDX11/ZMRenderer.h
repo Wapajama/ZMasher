@@ -11,7 +11,6 @@ class Camera;
 class ZMD3DInterface;
 class TextureShaderClass;
 class BaseShader;
-
 class ZMASHER_GFX_DX11_DLL ZMRenderer
 {
 public:

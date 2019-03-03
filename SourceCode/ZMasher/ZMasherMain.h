@@ -11,6 +11,11 @@
 
 class GameState;
 
+struct ZMasherInitInfo
+{
+	const char* m_Args;
+};
+
 class ZMASHER_DLL ZMasherMain
 {
 public:
@@ -20,10 +25,6 @@ public:
 	bool Init();
 	bool Update();
 	static void Destroy();
-
-	/*
-		TODO: remove and replace with legitimate game code
-	*/
 
 	inline ZMD3DInterface* GetD3DInterface();
 
@@ -49,8 +50,8 @@ private:
 	ProfilerTaskID m_RenderFrame;
 	ProfilerTaskID m_RenderInternalFrame;
 #endif // BENCHMMARK
-
-
+	class ModelViewerWindow* m_ModelViewerWindow;
+	bool ReadInitFile();
 	void InitWindowClass();
 	void CreateWinApiWindow();
 	bool CreateD3D();

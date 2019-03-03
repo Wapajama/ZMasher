@@ -1,0 +1,9 @@
+<init>
+	<fullscreen bool="false"/>
+	<vsync bool="false"/>
+	<screendepth float="1000"/>
+	<screennear float="0.1"/>
+	<modelviewer bool="false"/>
+	<titlebarname string="Hitler Is Coming!"/>
+	<resolution x="1280" y="720"/>
+</init>

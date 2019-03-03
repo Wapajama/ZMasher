@@ -32,6 +32,7 @@
     <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
+    <ClInclude Include="ModelViewerState.h" />
     <ClInclude Include="MomentumComponentManager.h" />
     <ClInclude Include="SphereCollisionComponentManager.h" />
     <ClInclude Include="CollisionSystem.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
+    <ClCompile Include="ModelViewerState.cpp" />
     <ClCompile Include="MomentumComponentManager.cpp" />
     <ClCompile Include="SphereCollisionComponentManager.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
@@ -99,7 +101,7 @@
     <ProjectGuid>{2A6D7881-C54B-47E3-9C47-867BD0CE0BDF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ZMasher</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -122,7 +124,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -134,11 +136,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -172,30 +174,36 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(LibraryPath)</LibraryPath>
-    <OutDir>$(ZM_Outputpath)$(Configuration)\</OutDir>
+    <IncludePath>../ModelViewer/$(Configuration)/;$(QT_DIR)/Include/;../GlobalInlcudes/;C:\Qt\5.12.0\msvc2017_x86\bin\;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(DXSDK_DIR)Samples\C++\Effects11\Debug;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>../ModelViewer/$(Configuration)/;$(QT_DIR)/Include/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x86\debug\;$(DXSDK_DIR)Samples\C++\Effects11\Debug;$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(ZM_Outputpath)$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>../ModelViewer/$(Configuration)/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x64\debug\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK_PATH)\lib\vs2015\x86\release\;$(DXSDK_DIR)Samples\C++\Effects11\Release;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir>$(ZM_Outputpath)$(Configuration)\</OutDir>
+    <IncludePath>../ModelViewer/$(Configuration)/;$(QT_DIR)/Include/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x86\release\;$(DXSDK_DIR)Samples\C++\Effects11\Release;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>../ModelViewer/$(Configuration)/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x64\release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -203,7 +211,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_DEBUG;_WINDOWS;NEW_OP_OVERRIDE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -213,7 +221,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QT_DIR)\lib;$(QT_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderType>
@@ -230,7 +238,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MinSpace</Optimization>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_DEBUG;_WINDOWS;NEW_OP_OVERRIDE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;_DEBUG;_WINDOWS;NEW_OP_OVERRIDE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -243,7 +251,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\Executables\debug\ModelViewer.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -261,27 +269,26 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
+    <FxCompile>
+      <ShaderType>
+      </ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>
+      </ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -291,7 +298,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;NDEBUG;_WINDOWS;NEW_OP_OVERRIDE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;_WINDOWS;NEW_OP_OVERRIDE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -302,7 +309,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\Executables\debug\ModelViewer.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -314,20 +321,30 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;NDEBUG;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <NoEntryPoint>false</NoEntryPoint>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

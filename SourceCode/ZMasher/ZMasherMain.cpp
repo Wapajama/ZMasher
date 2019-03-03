@@ -11,6 +11,10 @@
 
 #include <DataStructures\BinarySearchTree.h>
 #include <ZMUtils\Utility\ZMasherUtilities.h>
+#include <ZMUtils\File\ZMXML.h>
+#include <ZMUtils\File\PathManager.h>
+
+#include <tinyxml2.h>
 
 class IntComparer
 	:public ZMasher::BSTComparator<int>
@@ -31,7 +35,6 @@ public:
 };
 
 //ZMasher::BinarySearchTree<int, IntComparer> test;
-
 //void BinaryTreeTest()
 //{
 //	int derp = 0;
@@ -57,11 +60,11 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 #include <iostream>
 
 ZMasherMain::ZMasherMain()
-	:m_Camera(nullptr)
+	:m_Camera(nullptr)/*,
+	m_ModelViewerWindow(nullptr)*/
 {
-	m_WinVals.m_TitleBarName = reinterpret_cast<LPCWSTR>(ZMASHER_TITLE_BAR_NAME);
-	m_WinVals.m_Resolution.x = 1280;
-	m_WinVals.m_Resolution.y = 720;
+	
+	//QMainWindow test;
 }
 
 ZMasherMain::~ZMasherMain()
@@ -79,7 +82,9 @@ ZMasherMain* ZMasherMain::Instance()
 }
 
 bool ZMasherMain::Init()
-{
+{	
+	PathManager::Create();
+	ReadInitFile();
 	Profiler::Create();
 
 	AllocConsole();
@@ -87,6 +92,8 @@ bool ZMasherMain::Init()
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
 	//BinaryTreeTest();
+
+	//m_ModelViewerWindow = new ModelViewerWindow(nullptr);
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
@@ -187,6 +194,25 @@ bool ZMasherMain::HandleWinMsg()
 	return true;
 }
 
+bool ZMasherMain::ReadInitFile()
+{
+	std::string init_file = PathManager::Instance()->GetDataPath() + "init.xml";
+
+	ZMXML initReader(init_file);
+
+	m_WinVals.m_Fullscreen = initReader.GetBoolValue("fullscreen");
+	m_WinVals.m_ScreenDepth = initReader.GetFloatValue("ScreenDepth");
+	m_WinVals.m_ScreenNear = initReader.GetFloatValue("ScreenNear");
+	m_WinVals.m_VSync = initReader.GetBoolValue("vsync");
+
+	//std::wstring w_TitlebarName = 
+	m_WinVals.m_TitleBarName = reinterpret_cast<LPCSTR>(initReader.GetStringValue("titlebarname"));
+	const Vector2i res = initReader.GetVec2IValue("resolution");
+	m_WinVals.m_Resolution.x = res.x;
+	m_WinVals.m_Resolution.y = res.y;
+	return true;
+}
+
 void ZMasherMain::InitWindowClass()
 {
 	//this works on Windows 7 and windows 8
@@ -238,11 +264,6 @@ void ZMasherMain::CreateWinApiWindow()
 
 bool ZMasherMain::CreateD3D()
 {
-	m_WinVals.m_Fullscreen = false;
-	m_WinVals.m_ScreenDepth = 1000.f;
-	m_WinVals.m_ScreenNear = 0.1f;
-	m_WinVals.m_VSync = true;
-
 	const bool test = m_D3DInterface.Init(m_WinVals);
 	if (test == false)
 	{

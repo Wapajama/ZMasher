@@ -1,7 +1,7 @@
 #pragma once
 #include "GrowArray.h"
 
-#define MEM_CONTAINER_TEMPLATE template <typename DataType, int size, typename index_type = unsigned short>
+#define MEM_CONTAINER_TEMPLATE template <typename DataType, int size, typename index_type = short>
 #define MEM_CONTAINER_DECL MemoryContainer<DataType, size, index_type>
 MEM_CONTAINER_TEMPLATE
 class MemoryContainer
@@ -52,7 +52,7 @@ void MEM_CONTAINER_DECL::Delete(DataType* adress)
 	if (index > size ||
 		index < 0)
 	{
-		ASSERT("PUNG");
+		ASSERT(false, "DELETE FAILED");
 	}
 	m_Indexes.Add(index);
 }

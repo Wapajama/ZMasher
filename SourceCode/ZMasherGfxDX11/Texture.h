@@ -1,6 +1,6 @@
 #pragma once
 
-class ID3D11ShaderResourceView;
+struct ID3D11ShaderResourceView;
 
 class Texture
 {
