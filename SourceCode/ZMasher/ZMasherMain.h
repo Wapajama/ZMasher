@@ -11,6 +11,11 @@
 
 class GameState;
 
+namespace std
+{
+	class thread;
+}
+
 struct ZMasherInitInfo
 {
 	const char* m_Args;
@@ -43,6 +48,8 @@ private:
 	Camera* m_Camera;//TODO: redo design of this 
 	ZMRenderer m_Renderer;
 	GameState* m_GameState;
+
+	class ModelViewer* m_ModelViewer;
 	
 #ifdef BENCHMARK
 	ProfilerTaskID m_TotalFrame;
@@ -51,6 +58,8 @@ private:
 	ProfilerTaskID m_RenderInternalFrame;
 #endif // BENCHMMARK
 	class ModelViewerWindow* m_ModelViewerWindow;
+	std::thread* m_QApplicationThread;
+
 	bool ReadInitFile();
 	void InitWindowClass();
 	void CreateWinApiWindow();

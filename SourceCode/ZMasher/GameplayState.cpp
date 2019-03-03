@@ -32,7 +32,7 @@ void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args)
 	return; 
 };
 
-#define NUMBER_OF_ENEMIES 1000
+#define NUMBER_OF_ENEMIES 10
 
 bool GameplayState::Init(const char* args)
 {	

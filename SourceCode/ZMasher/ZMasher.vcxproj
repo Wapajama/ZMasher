@@ -186,8 +186,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../ModelViewer/$(Configuration)/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(QT_DIR)/lib/;$(FBXSDK_PATH)\lib\vs2015\x64\debug\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(QT_DIR64)/include/;$(QT_DIR64)/include/QtWidgets/;../ModelViewer/$(Configuration)/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ZM_Outputpath)\$(Platform)\$(Configuration)\;$(QT_DIR64)/lib/;$(FBXSDK_PATH)\lib\vs2015\x64\debug\;$(LibraryPath)</LibraryPath>
     <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
@@ -271,15 +271,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN64;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ModelViewer\;..\tinyxml2\;../GlobalIncludes/;..\ZMUtils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dinput8.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;d2d1.lib;dwrite.lib;libfbxsdk-md.lib;Qt5Widgetsd.lib;Modelviewer.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderType>

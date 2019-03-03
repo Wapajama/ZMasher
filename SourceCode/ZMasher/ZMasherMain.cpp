@@ -15,6 +15,11 @@
 #include <ZMUtils\File\PathManager.h>
 
 #include <tinyxml2.h>
+#include "modelviewer.h"
+#include <qapplication.h>
+#include <iostream>
+#include <thread>
+#include "C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\Executables\x64\Debug\ui_modelviewerwindow.h" // TODO: GO TO HELL FOR DOING THIS
 
 class IntComparer
 	:public ZMasher::BSTComparator<int>
@@ -57,19 +62,31 @@ using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
-#include <iostream>
+
+QApplication* g_Application;
+
+void QApplicationThread()
+{
+	g_Application->exec();
+}
 
 ZMasherMain::ZMasherMain()
-	:m_Camera(nullptr)/*,
-	m_ModelViewerWindow(nullptr)*/
+	:m_Camera(nullptr),
+	m_ModelViewer(nullptr)
 {
-	
-	//QMainWindow test;
+	int argc = 0;
+	char* argv = 0;
+	g_Application = new QApplication(argc, &argv);
+	m_ModelViewer = new ModelViewer();
+	m_ModelViewer->show();
+	m_QApplicationThread = new std::thread(QApplicationThread);
 }
 
 ZMasherMain::~ZMasherMain()
 {
 	Profiler::Release();
+	g_Application->exit();
+	m_QApplicationThread->join();
 }
 
 ZMasherMain* ZMasherMain::Instance()
@@ -213,6 +230,8 @@ bool ZMasherMain::ReadInitFile()
 	return true;
 }
 
+#define ZMASHER_MODELVIEWER
+
 void ZMasherMain::InitWindowClass()
 {
 	//this works on Windows 7 and windows 8
@@ -243,18 +262,24 @@ void ZMasherMain::CreateWinApiWindow()
 
 	AdjustWindowRectEx(&windowRect, windowStyle, false, windowStyleEx);
 
+
+#ifdef ZMASHER_MODELVIEWER
+	m_WinVals.m_WindowHandle = (HWND)m_ModelViewer->ui->graphicsView->winId();
+#else
 	m_WinVals.m_WindowHandle = CreateWindowEx(windowStyleEx,
-											  m_WinVals.m_TitleBarName,
-											  m_WinVals.m_TitleBarName,
-											  windowStyle,
-											  CW_USEDEFAULT,
-											  CW_USEDEFAULT,
-											  windowDims.x,
-											  windowDims.y,
-											  NULL,
-											  NULL,
-											  m_WinVals.m_ExtWindowClass.hInstance,
-											  NULL);
+		m_WinVals.m_TitleBarName,
+		m_WinVals.m_TitleBarName,
+		windowStyle,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		windowDims.x,
+		windowDims.y,
+		NULL,
+		NULL,
+		m_WinVals.m_ExtWindowClass.hInstance,
+		NULL);
+#endif // ZMASHER_MODELVIEWER
+
 
 	//when does this return false? 
 	//It sure as hell isn't when it failed to open the window :p
