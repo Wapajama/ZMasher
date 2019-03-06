@@ -6,7 +6,7 @@
 #include <ZMasherGfxDX11/ZMModel.h>
 #include <ZMasherGfxDX11/ZMRenderer.h>
 #include <Time/Profiler.h>
-
+#include <QtCore/qobject.h>
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
 class GameState;
@@ -21,8 +21,18 @@ struct ZMasherInitInfo
 	const char* m_Args;
 };
 
+class ZMModelViewer : public QObject
+{
+
+public:
+	ZMModelViewer();
+	~ZMModelViewer();
+
+};
+
 class ZMASHER_DLL ZMasherMain
 {
+
 public:
 
 	static ZMasherMain* Instance();

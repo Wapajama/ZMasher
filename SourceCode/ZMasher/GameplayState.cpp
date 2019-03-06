@@ -25,6 +25,7 @@ GameplayState::~GameplayState()
 {
 }
 
+
 void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
 {
 	GameObjectManager::Instance()->Destroy(args.a->m_GameObject);

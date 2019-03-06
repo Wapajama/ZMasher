@@ -16,6 +16,15 @@ public:
     ~ModelViewer();
 
     Ui::ModelViewerWindow *ui;
+
+    void SetPushButtonClicked(void(*)(bool));
+
+private:
+    void(*m_ButtonClickedLamda)(bool args);
+private slots:
+    void on_pushButton_clicked(bool checked);
+
+
 private:
 };
 

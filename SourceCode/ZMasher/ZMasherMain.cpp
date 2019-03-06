@@ -65,10 +65,28 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 
 QApplication* g_Application;
 
+
+ZMModelViewer::ZMModelViewer()
+{
+
+}
+ZMModelViewer::~ZMModelViewer()
+{
+
+}
+
+
+void OnTestButton(bool checked)
+{
+	ASSERT(!checked, "Hello world!222");
+}
+
 void QApplicationThread()
 {
 	g_Application->exec();
 }
+
+ZMModelViewer* g_ZmModelViewer = nullptr;
 
 ZMasherMain::ZMasherMain()
 	:m_Camera(nullptr),
@@ -78,7 +96,9 @@ ZMasherMain::ZMasherMain()
 	char* argv = 0;
 	g_Application = new QApplication(argc, &argv);
 	m_ModelViewer = new ModelViewer();
+	g_ZmModelViewer = new ZMModelViewer();
 	m_ModelViewer->show();
+	m_ModelViewer->SetPushButtonClicked(&OnTestButton);
 	m_QApplicationThread = new std::thread(QApplicationThread);
 }
 
@@ -110,7 +130,7 @@ bool ZMasherMain::Init()
 	freopen("CONOUT$", "w", stderr);
 	//BinaryTreeTest();
 
-	//m_ModelViewerWindow = new ModelViewerWindow(nullptr);
+	
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");

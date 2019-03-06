@@ -31,6 +31,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My3DTestProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>GameExe</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -113,11 +114,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../ZMasher/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <IncludePath>$(QT_DIR64)/include/;../ZMasher/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
     <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(QT_DIR64)/include/;../ZMasher/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -127,7 +129,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ZM_Outputpath)\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>../ZMasher/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
+    <IncludePath>$(QT_DIR64)/include/;../ZMasher/;../GlobalInlcudes/;../MemoryManager/;$(FBXSDK_PATH)\include\;$(SolutionDir);$(TRD_PARTY_SRC)\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -239,8 +241,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\GameExe\main.cpp" />
     <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
-    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MemoryManager\MemoryManager.vcxproj">
