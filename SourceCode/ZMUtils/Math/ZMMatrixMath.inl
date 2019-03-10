@@ -617,6 +617,22 @@ namespace ZMasher
 	}
 
 
+	inline float Matrix44f::GetRotationX()const
+	{
+		return acos(Dot( Matrix44f::Identity().GetVectorLeft(), this->GetVectorLeft()));
+	}
+
+	inline float Matrix44f::GetRotationY()const
+	{
+		return acos(Dot( Matrix44f::Identity().GetVectorUp(), this->GetVectorUp()));
+	}
+
+	inline float Matrix44f::GetRotationZ()const
+	{
+		return acos(Dot( Matrix44f::Identity().GetVectorForward(), this->GetVectorForward()));
+	}
+
+
 	inline Vector4f Matrix44f::GetVectorForward()const
 	{
 		return m_Vectors[2];

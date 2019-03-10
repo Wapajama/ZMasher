@@ -1,5 +1,5 @@
 #pragma once
-#include <project_defines.h>
+#include <C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\SourceCode\GlobalIncludes\project_defines.h>
 
 #ifdef ZMASHER_DX12
 #include <D3dx12.h>

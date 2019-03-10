@@ -2,7 +2,9 @@
 
 PathManager::PathManager()
 {
-	m_DataPath = new std::string("../../Data/");
+	m_ProjectRootPath = new std::string("../../../");
+	m_DataPath = new std::string(*m_ProjectRootPath + "Data/");
+	m_ShaderPath = new std::string(*m_ProjectRootPath + "Shaders/");
 }
 
 

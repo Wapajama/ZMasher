@@ -25,10 +25,11 @@ public:
 	bool IsMouseDown(unsigned char key);
 	bool IsMouseUp(unsigned char key);
 
+	inline void ClientInFocus(bool focus){m_WindowHasFocus=focus;};
+	inline void CursorInsideClientWindow(bool inside){m_MouseInsideClientWindow=inside;};
+
 	LONG MouseScrollValue();
-
 	ZMasher::Vector2i MousePos();
-
 	static bool Create(HINSTANCE instance, HWND hwnd, const int window_x, const int window_y);
 
 private:
@@ -54,5 +55,8 @@ private:
 	DIMOUSESTATE m_Mousestate;
 	DIMOUSESTATE m_PreviousMouseState;
 	ZMasher::Vector2i m_MousePos;
+
+	bool m_WindowHasFocus; // Game should ignore user input when not in focus
+	bool m_MouseInsideClientWindow;
 };
 

@@ -24,7 +24,7 @@ class ID3DX11EffectTechnique;
 
 
 
-static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, wchar_t* shaderFilename);
+static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename);
 
 #define RETURNF_IF_FAILED(result) if (FAILED(result))\
 	{\
@@ -50,7 +50,7 @@ public:
 	bool SetShaderVars(ID3D11DeviceContext*context,
 					   const MatrixBufferType& constant_buffer);
 
-	virtual bool Create(const wchar_t* source_file, ID3D11Device* device);
+	virtual bool Create(const char* source_file, ID3D11Device* device);
 
 	inline ID3DX11Effect* GetDX11Effect();
 	inline ID3DX11EffectTechnique* GetDX11Technique();

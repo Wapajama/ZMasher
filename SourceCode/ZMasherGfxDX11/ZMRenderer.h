@@ -11,6 +11,8 @@ class Camera;
 class ZMD3DInterface;
 class TextureShaderClass;
 class BaseShader;
+class PathManager;
+
 class ZMASHER_GFX_DX11_DLL ZMRenderer
 {
 public:
@@ -19,7 +21,7 @@ public:
 
 	void Render(ZMD3DInterface& d3dinterface, const float dt);
 
-	void Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance);
+	void Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance, PathManager* path_instance);
 
 	void RenderGrid(ZMD3DInterface& d3dinterface);
 

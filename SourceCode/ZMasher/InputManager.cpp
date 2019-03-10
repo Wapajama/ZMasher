@@ -2,7 +2,9 @@
 
 InputManager::InputManager(HINSTANCE instance, HWND hwnd, const int window_x, const int window_y)
 	:m_InstanceHandle(instance),
-	m_WindowHandle(hwnd)
+	m_WindowHandle(hwnd),
+	m_WindowHasFocus(true),
+	m_MouseInsideClientWindow(true)
 {
 	m_WindowSize.x = window_x;
 	m_WindowSize.y = window_y;
@@ -19,13 +21,13 @@ InputManager::InputManager(HINSTANCE instance, HWND hwnd, const int window_x, co
 
 	m_DirectInputMouse->SetCooperativeLevel(m_WindowHandle, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 	m_DirectInputMouse->Acquire();
-	for (int i = 0; i<256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		m_Keystate[i] = 0;
 		m_PreviousKeyState[i] = 0;
 		m_KeyPressedFlags[i] = false;
 	}
-	for (int i = 0; i<4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		m_PreviousMouseState.rgbButtons[i] = 0;
 		m_Mousestate.rgbButtons[i] = 0;
@@ -36,15 +38,21 @@ InputManager::InputManager(HINSTANCE instance, HWND hwnd, const int window_x, co
 
 void InputManager::ResetInputStates()
 {
-	for (short i = 0; i < 256; i++)
+	if (m_WindowHasFocus)
 	{
-		m_KeyPressedFlags[i] = false;
-		m_KeyReleasedFlags[i] = false;
+		for (short i = 0; i < 256; i++)
+		{
+			m_KeyPressedFlags[i] = false;
+			m_KeyReleasedFlags[i] = false;
+		}
 	}
-	for (int i = 0; i < 4; i++)
+	if (m_MouseInsideClientWindow)
 	{
-		m_PressedMouseKeyFlags[i] = false;
-		m_ReleasedMouseKeyFlags[i] = false;
+		for (int i = 0; i < 4; i++)
+		{
+			m_PressedMouseKeyFlags[i] = false;
+			m_ReleasedMouseKeyFlags[i] = false;
+		}
 	}
 }
 
@@ -56,52 +64,68 @@ void InputManager::Update(const float dt)
 {
 	ResetInputStates();
 
+	HRESULT result;
 	//KEYBOARD
-	HRESULT result = m_DirectInputKeyboard->Acquire();
-	m_DirectInputKeyboard->GetDeviceState(256, static_cast<LPVOID>(m_Keystate));
-
-	POINT cursorPos;
-	GetCursorPos(&cursorPos);
-	RECT windowPos;
-	GetWindowRect(m_WindowHandle, &windowPos);
-	cursorPos.x -= windowPos.left;
-	cursorPos.y -= windowPos.top;
-
-	m_MousePos.x = static_cast<int>(cursorPos.x);
-	m_MousePos.y = static_cast<int>(cursorPos.y);
-	int derp = DIERR_NOTINITIALIZED;
-	derp = DIERR_INVALIDPARAM;
-	derp = DIERR_OTHERAPPHASPRIO;
-	//MOUSE
-	result = m_DirectInputMouse->Acquire();
-	derp = result;
-	result = m_DirectInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), static_cast<LPVOID>(&m_Mousestate));
-
-	for (int i = 0; i<4; i++)
+	if (m_WindowHasFocus)
 	{
-		if (!(m_Mousestate.rgbButtons[i] & 0x80) && (m_PreviousMouseState.rgbButtons[i]))
+		result = m_DirectInputKeyboard->Acquire();
+		m_DirectInputKeyboard->GetDeviceState(256, static_cast<LPVOID>(m_Keystate));
+	}
+
+	if (m_MouseInsideClientWindow)
+	{
+		POINT cursorPos;
+		GetCursorPos(&cursorPos);
+		RECT windowPos;
+		GetWindowRect(m_WindowHandle, &windowPos);
+		cursorPos.x -= windowPos.left;
+		cursorPos.y -= windowPos.top;
+
+		m_MousePos.x = static_cast<int>(cursorPos.x);
+		m_MousePos.y = static_cast<int>(cursorPos.y);
+
+		//MOUSE
+		result = m_DirectInputMouse->Acquire();
+		result = m_DirectInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), static_cast<LPVOID>(&m_Mousestate));
+
+		for (int i = 0; i < 4; i++)
 		{
-			m_ReleasedMouseKeyFlags[i] = true;
-		}
-		if ((m_Mousestate.rgbButtons[i] & 0x80) && !(m_PreviousMouseState.rgbButtons[i]))
-		{
-			m_PressedMouseKeyFlags[i] = true;
+			if (!(m_Mousestate.rgbButtons[i] & 0x80) && (m_PreviousMouseState.rgbButtons[i]))
+			{
+				m_ReleasedMouseKeyFlags[i] = true;
+			}
+			if ((m_Mousestate.rgbButtons[i] & 0x80) && !(m_PreviousMouseState.rgbButtons[i]))
+			{
+				m_PressedMouseKeyFlags[i] = true;
+			}
 		}
 	}
 }
 
 bool InputManager::IsKeyDown(unsigned char key)
 {
+	if (!m_WindowHasFocus)
+	{
+		return false;
+	}
 	return m_Keystate[key] & 0x80;
 }
 
 bool InputManager::IsKeyUp(unsigned char key)
 {
+	if (!m_WindowHasFocus)
+	{
+		return false;
+	}
 	return !IsKeyDown(key);
 }
 
 bool InputManager::IsMouseUp(unsigned char key)
 {
+	if (!m_WindowHasFocus)
+	{
+		return false;
+	}
 	if (!(m_Mousestate.rgbButtons[key] & 0x80))
 	{
 		return false;
@@ -111,6 +135,10 @@ bool InputManager::IsMouseUp(unsigned char key)
 
 bool InputManager::IsMouseDown(unsigned char key)
 {
+	if (!m_WindowHasFocus)
+	{
+		return false;
+	}
 	if ((m_Mousestate.rgbButtons[key] & 0x80))
 	{
 		return true;
@@ -120,15 +148,18 @@ bool InputManager::IsMouseDown(unsigned char key)
 
 LONG InputManager::MouseScrollValue()
 {
-	return 0;
+	return 0; // NOT IMPLEMENTED
 }
 
 ZMasher::Vector2i InputManager::MousePos()
 {
-	POINT mouse_point;
-	GetCursorPos(&mouse_point);
-	m_MousePos.x = mouse_point.x;
-	m_MousePos.y = mouse_point.y;
+	if (m_MouseInsideClientWindow)
+	{
+		POINT mouse_point;
+		GetCursorPos(&mouse_point);
+		m_MousePos.x = mouse_point.x;
+		m_MousePos.y = mouse_point.y;
+	}
 	return m_MousePos;
 }
 

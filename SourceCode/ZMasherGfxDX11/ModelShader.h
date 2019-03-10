@@ -10,7 +10,7 @@ public:
 	~ModelShader();
 
 	virtual bool Apply(ID3D11DeviceContext* context)override;
-	virtual bool Create(const wchar_t* source_file, ID3D11Device* device)override;
+	virtual bool Create(const char* source_file, ID3D11Device* device)override;
 
 	inline void SetShaderResource(const eTextureType type, ID3D11ShaderResourceView* resource);
 

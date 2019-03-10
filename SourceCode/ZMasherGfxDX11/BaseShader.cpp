@@ -11,8 +11,9 @@
 #include <Windows.h>
 #include "D3Dcompiler.h"
 #include <FX11\inc\d3dx11effect.h>
+#include <ZMUtils\File\PathManager.h>
 
-static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const wchar_t* shaderFilename)
+static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -39,8 +40,9 @@ static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const 
 	// Release the error message.
 	errorMessage->Release();
 	errorMessage = 0;
-	std::wstring wmsg = std::wstring(shaderFilename);
-	std::string msg = std::string(wmsg.begin(), wmsg.end());
+	//std::wstring wmsg = std::wstring(shaderFilename);
+	//std::string msg = std::string(wmsg.begin(), wmsg.end());
+	std::string msg = shaderFilename;
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
 	MessageBox(hwnd, "Error compiling shader.  Check shader-error.txt for message.", msg.c_str(), MB_OK);
 
@@ -104,7 +106,7 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	return true;
 }
 
-bool BaseShader::Create(const wchar_t* source_file, ID3D11Device* device)
+bool BaseShader::Create(const char* source_file, ID3D11Device* device)
 {
 	HRESULT infoResult = S_OK;
 
@@ -118,14 +120,14 @@ bool BaseShader::Create(const wchar_t* source_file, ID3D11Device* device)
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	ID3DBlob* shaderBuffer = nullptr;
 
-	//fix some sort of PathManager to replace hardcoded L"../ZMasher/"
-	const std::wstring effect = L"../../Shaders/" + std::wstring(source_file);
+	const std::string effect = PathManager::Instance()->GetShaderPath() + std::string(source_file);
 
-	infoResult = D3DX11CompileEffectFromFile(effect.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, 0, 0, device, &m_Effect, &errorMessage);
+	std::wstring w_effect = std::wstring(effect.begin(), effect.end());
+	infoResult = D3DX11CompileEffectFromFile(w_effect.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, 0, 0, device, &m_Effect, &errorMessage);
 
 	if (FAILED(infoResult) && errorMessage)
 	{
-		OutputShaderErrorMessage(errorMessage, 0, L"Shader failed to compile");
+		OutputShaderErrorMessage(errorMessage, 0, "Shader failed to compile");
 	}
 
 	RETURNF_IF_FAILED(infoResult);

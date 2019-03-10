@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <Time\TimerManager.h>
 #include "GameplayState.h"
+#include <ModelViewerState.h>
+#include <CameraState.h>
 #include <ZMasher\InputManager.h>
 
 #include <iostream>
@@ -16,24 +18,26 @@
 
 #include <tinyxml2.h>
 #include "modelviewer.h"
-#include <qapplication.h>
+#include "ui_modelviewerwindow.h" 
 #include <iostream>
+
+#include <ZMasherGfxDX11/Camera.h>
+#include <qapplication.h>
 #include <thread>
-#include "C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\Executables\x64\Debug\ui_modelviewerwindow.h" // TODO: GO TO HELL FOR DOING THIS
 
 class IntComparer
 	:public ZMasher::BSTComparator<int>
 {
 public:
-	bool LessThan(const int& one,const int& two)const override
+	bool LessThan(const int& one, const int& two)const override
 	{
 		return one < two;
 	}
-	bool GreaterThan(const int& one,const int& two)const override
+	bool GreaterThan(const int& one, const int& two)const override
 	{
 		return one > two;
 	}
-	bool Equals(const int& one,const int& two)const override
+	bool Equals(const int& one, const int& two)const override
 	{
 		return one == two;
 	}
@@ -62,51 +66,21 @@ using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
-
 QApplication* g_Application;
-
-
-ZMModelViewer::ZMModelViewer()
-{
-
-}
-ZMModelViewer::~ZMModelViewer()
-{
-
-}
-
-
-void OnTestButton(bool checked)
-{
-	ASSERT(!checked, "Hello world!222");
-}
-
-void QApplicationThread()
-{
-	g_Application->exec();
-}
-
-ZMModelViewer* g_ZmModelViewer = nullptr;
-
 ZMasherMain::ZMasherMain()
 	:m_Camera(nullptr),
-	m_ModelViewer(nullptr)
+	m_QApplicationThread(nullptr)
 {
-	int argc = 0;
-	char* argv = 0;
-	g_Application = new QApplication(argc, &argv);
-	m_ModelViewer = new ModelViewer();
-	g_ZmModelViewer = new ZMModelViewer();
-	m_ModelViewer->show();
-	m_ModelViewer->SetPushButtonClicked(&OnTestButton);
-	m_QApplicationThread = new std::thread(QApplicationThread);
 }
 
 ZMasherMain::~ZMasherMain()
 {
+	if (m_QApplicationThread)
+	{
+		m_QApplicationThread->join();
+	}
+	delete m_QApplicationThread;
 	Profiler::Release();
-	g_Application->exit();
-	m_QApplicationThread->join();
 }
 
 ZMasherMain* ZMasherMain::Instance()
@@ -118,8 +92,15 @@ ZMasherMain* ZMasherMain::Instance()
 	return m_Instance;
 }
 
-bool ZMasherMain::Init()
-{	
+void QApplicationThread()
+{
+	g_Application->exec();
+	g_Application->exit();
+}
+
+bool ZMasherMain::Init(ZMasherInitInfo info)
+{
+	m_InitInfo = info;
 	PathManager::Create();
 	ReadInitFile();
 	Profiler::Create();
@@ -128,9 +109,6 @@ bool ZMasherMain::Init()
 	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
-	//BinaryTreeTest();
-
-	
 
 #ifdef BENCHMARK
 	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
@@ -138,27 +116,65 @@ bool ZMasherMain::Init()
 	m_LogicFrame = Profiler::Instance()->AddTask("Logic");
 	m_RenderInternalFrame = Profiler::Instance()->AddTask("RenderInternal");
 #endif // BENCHMARK
-	
-	InitWindowClass();
-	CreateWinApiWindow();
-	const bool test = CreateD3D();
-	assert(test);
 
 	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
-									   m_WinVals.m_Resolution.y));
+		m_WinVals.m_Resolution.y));
 
-	
 	if (m_Camera != nullptr)
 	{
 		m_Camera->SetPosition(Vector3f(0, 0, 10.f));
 	}
 
-	m_Renderer.Init(m_D3DInterface, Profiler::Instance(), TimerManager::GetInstance());
-	m_Renderer.SetCamera(m_Camera);
-	m_GameState = new GameplayState(m_Camera);
-	m_GameState->Init(nullptr);
+	InputManager::Create(GetModuleHandle(NULL), m_WinVals.m_WindowHandle, m_WinVals.m_Resolution.x, m_WinVals.m_Resolution.y);
+	if (m_InitInfo.m_Args != nullptr &&
+		strcmp(m_InitInfo.m_Args, "modelviewer") == 0)
+	{
+		//m_GameState = new ModelViewerState();
+		int argc = 0;
+		char* argv = 0;
+		g_Application = new QApplication(argc, &argv);
 
+		m_QApplicationThread = new std::thread(QApplicationThread);
+
+		ModelViewerState* modelViewerState = new ModelViewerState();
+		modelViewerState->Init(m_InitInfo.m_Args);
+
+		m_WinVals.m_WindowHandle = (HWND)modelViewerState->GetUI()->graphicsView->winId();
+		CameraState* cameraState = new CameraState();
+		cameraState->SetCamera(m_Camera);
+		cameraState->Init(m_InitInfo.m_Args);
+
+		m_StateStack.PushState(modelViewerState);
+		m_StateStack.PushState(cameraState);
+
+		InitWindowClass();
+		CreateWinApiWindow();
+
+		const bool test = CreateD3D();
+		ASSERT(test, "D3D Failed to init!");
+
+		m_Renderer.Init(m_D3DInterface, Profiler::Instance(), TimerManager::GetInstance(),PathManager::Instance());
+		m_Renderer.SetCamera(m_Camera);
+
+	} else
+	{
+		InitWindowClass();
+		CreateWinApiWindow();
+
+		const bool test = CreateD3D();
+		ASSERT(test, "D3D Failed to init!");
+
+		m_Renderer.Init(m_D3DInterface, Profiler::Instance(), TimerManager::GetInstance(), PathManager::Instance());
+		m_Renderer.SetCamera(m_Camera);
+
+		GameplayState* gameState = new GameplayState(m_Camera);
+		gameState->Init(nullptr);
+		m_StateStack.PushState(gameState);
+	}
 	TimerManager::GetInstance()->Update();
+
+
+
 	return true;
 }
 
@@ -166,6 +182,7 @@ bool ZMasherMain::Update()
 {
 	if (HandleWinMsg() == false)
 	{
+		//ASSERT(false, "HandleWinMsg() == false");
 		return false;
 	}
 	TimerManager::GetInstance()->Update();
@@ -196,13 +213,13 @@ bool ZMasherMain::Update()
 	//RECT window_rect;
 	//GetWindowRect(m_WinVals.m_WindowHandle, &window_rect);
 	//reinterpret_cast<GameplayState*>(m_GameState)->m_PrevMousePos = ZMasher::Vector2i((window_rect.left + window_rect.right) / 2, (window_rect.top + window_rect.bottom) / 2);
-	if (!m_GameState->Update(dt))
+	if (!m_StateStack.Update(dt))
 	{
 #ifdef BENCHMARK
 		Profiler::Instance()->EndTask(m_LogicFrame);
 #endif // BENCHMARK
-
-		return false;
+		//ASSERT(false, "!m_StateStack.Update(dt)");
+		//return false;
 	}
 #ifdef BENCHMARK
 	Profiler::Instance()->EndTask(m_LogicFrame);
@@ -250,8 +267,6 @@ bool ZMasherMain::ReadInitFile()
 	return true;
 }
 
-#define ZMASHER_MODELVIEWER
-
 void ZMasherMain::InitWindowClass()
 {
 	//this works on Windows 7 and windows 8
@@ -282,23 +297,21 @@ void ZMasherMain::CreateWinApiWindow()
 
 	AdjustWindowRectEx(&windowRect, windowStyle, false, windowStyleEx);
 
-
-#ifdef ZMASHER_MODELVIEWER
-	m_WinVals.m_WindowHandle = (HWND)m_ModelViewer->ui->graphicsView->winId();
-#else
-	m_WinVals.m_WindowHandle = CreateWindowEx(windowStyleEx,
-		m_WinVals.m_TitleBarName,
-		m_WinVals.m_TitleBarName,
-		windowStyle,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		windowDims.x,
-		windowDims.y,
-		NULL,
-		NULL,
-		m_WinVals.m_ExtWindowClass.hInstance,
-		NULL);
-#endif // ZMASHER_MODELVIEWER
+	if (m_WinVals.m_WindowHandle == 0)
+	{
+		m_WinVals.m_WindowHandle = CreateWindowEx(windowStyleEx,
+			m_WinVals.m_TitleBarName,
+			m_WinVals.m_TitleBarName,
+			windowStyle,
+			CW_USEDEFAULT,
+			CW_USEDEFAULT,
+			windowDims.x,
+			windowDims.y,
+			NULL,
+			NULL,
+			m_WinVals.m_ExtWindowClass.hInstance,
+			NULL);
+	}
 
 
 	//when does this return false? 
@@ -315,9 +328,6 @@ bool ZMasherMain::CreateD3D()
 		assert(test);
 		return false;
 	}
-	
-	InputManager::Create(GetModuleHandle(NULL), m_WinVals.m_WindowHandle, m_WinVals.m_Resolution.x, m_WinVals.m_Resolution.y);
-
 	return true;
 }
 
@@ -325,7 +335,7 @@ void ZMasherMain::Render(const float dt)
 {
 	m_D3DInterface.BeginScene();
 	m_Renderer.Render(m_D3DInterface, dt);
-	
+
 #ifdef BENCHMARK
 	Profiler::Instance()->BeginTask(m_RenderInternalFrame);
 	m_D3DInterface.EndScene();
@@ -353,6 +363,19 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+	case WM_MOUSELEAVE:
+		InputManager::Instance()->CursorInsideClientWindow(false);
+		return 0;
+	case WM_NCMOUSELEAVE:
+		InputManager::Instance()->CursorInsideClientWindow(true);
+		return 0;
+	case WM_KILLFOCUS:
+		InputManager::Instance()->ClientInFocus(false);
+		return 0;
+	case WM_SETFOCUS:
+		InputManager::Instance()->ClientInFocus(true);
+		return 0;
+
 	}
 
 	return DefWindowProc(hwnd, message, wparam, lparam);

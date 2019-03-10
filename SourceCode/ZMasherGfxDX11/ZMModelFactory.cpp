@@ -14,6 +14,7 @@
 #include <Debugging\ZMDebugger.h>
 #include <MemoryManager.h>
 #include <GlobalIncludes\project_defines.h>
+#include <ZMUtils\File\PathManager.h>
 #ifdef IOS_REF
 #undef  IOS_REF
 #define IOS_REF (*(pManager->GetIOSettings()))
@@ -235,7 +236,7 @@ ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 	{
 		if (std::strcmp(it->Name(), MODELFACTORY_MODEL_KEY) == 0)
 		{
-			model_xml_path = it->Attribute(MODELFACTORY_FILEPATH_KEY);
+			model_xml_path = PathManager::Instance()->GetDataPath() + it->Attribute(MODELFACTORY_FILEPATH_KEY);
 		}
 	}
 	

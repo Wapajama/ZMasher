@@ -64,7 +64,6 @@
     <None Include="Math\ZMVectorMath.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
     <ClCompile Include="Debugging\ZMDebugger.cpp" />
     <ClCompile Include="File\PathManager.cpp" />
     <ClCompile Include="File\ZMXML.cpp" />

@@ -4,7 +4,7 @@
 #include <Math/ZMMatrix44.h>
 #include <Math/Vector2decl.h>
 
-class __declspec(align(16)) Camera
+class Camera
 {
 public:
 	Camera(const ZMasher::Vector2<int>& window_size);

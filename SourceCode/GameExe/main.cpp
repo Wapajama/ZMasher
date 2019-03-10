@@ -9,8 +9,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 				   int nCmdShow)
 {
 	srand(1);
-
-	const bool init = ZMasherMain::Instance()->Init();
+	ZMasherInitInfo info = {nullptr};
+	const bool init = ZMasherMain::Instance()->Init(info);
 
 	ASSERT(init, "ZMasher Failed to init");
 

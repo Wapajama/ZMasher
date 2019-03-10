@@ -1,6 +1,7 @@
 #pragma once
+#include <ZMasher\dllHeader.h>
 
-class GameState
+class ZMASHER_DLL GameState
 {
 public:
 	GameState();

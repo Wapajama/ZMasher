@@ -6,7 +6,7 @@
 #include <ZMUtils\Utility\ZMasherUtilities.h>
 #include "ZMModelFactory.h"
 #include "ZMModelNode.h"
-
+#include <ZMUtils\File\PathManager.h>
 #include <D3D11.h>
 
 void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
@@ -73,10 +73,11 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 #endif // BENCHMARK
 }
 
-void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance)
+void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance, PathManager* path_instance)
 {
 	Profiler::Create(profiler);
 	TimerManager::Create(instance);
+	PathManager::Create(path_instance);
 
 #ifdef BENCHMARK
 	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
@@ -87,20 +88,20 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerMan
 
 	m_Shader = new ModelShader();
 
-	const bool succeded = m_Shader->Create(L"PBRShader.fx", d3dinterface.GetDevice());
+	const bool succeded = m_Shader->Create("PBRShader.fx", d3dinterface.GetDevice());
 	ASSERT(succeded, "shader failed to init!");
 
 	m_SkyboxShader = new ModelShader();
-	const bool succeded_skybox = m_SkyboxShader->Create(L"Skybox.fx", d3dinterface.GetDevice());
+	const bool succeded_skybox = m_SkyboxShader->Create("Skybox.fx", d3dinterface.GetDevice());
 	ASSERT(succeded_skybox, "shader failed to init!");
 
-	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox("../../data/cubemaps/Skybox001.dds");
+	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox((PathManager::Instance()->GetDataPath() + "cubemaps/Skybox001.dds").c_str());
 
 	m_TerrainShader = new ModelShader();
-	const bool succeded_flatTerrain = m_TerrainShader->Create(L"FlatTerrain.fx", d3dinterface.GetDevice());
+	const bool succeded_flatTerrain = m_TerrainShader->Create("FlatTerrain.fx", d3dinterface.GetDevice());
 	ASSERT(succeded_flatTerrain, "shader failed to init!");
 
-	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain("../../data/maps/grass.dds");
+	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain((PathManager::Instance()->GetDataPath()+ "maps/grass.dds").c_str());
 
 }
 

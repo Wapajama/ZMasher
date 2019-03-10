@@ -33,6 +33,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZMasherGfxDX12", "ZMasherGf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModelViewerExe", "ModelViewerExe\ModelViewerExe.vcxproj", "{BA792D5B-541A-424E-8786-4390AC587E75}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modelviewer", "Modelviewer\Modelviewer.vcxproj", "{70259FE8-1934-3011-AA55-5268FD22D86C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -623,6 +625,50 @@ Global
 		{BA792D5B-541A-424E-8786-4390AC587E75}.Release|x64.Build.0 = Release|x64
 		{BA792D5B-541A-424E-8786-4390AC587E75}.Release|x86.ActiveCfg = Release|Win32
 		{BA792D5B-541A-424E-8786-4390AC587E75}.Release|x86.Build.0 = Release|Win32
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|ARM.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|Win32.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|x64.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|x64.Build.0 = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Debug|x86.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|ARM.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|ARM.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|Mixed Platforms.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|Mixed Platforms.Build.0 = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|Win32.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|Win32.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|x64.ActiveCfg = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|x64.Build.0 = Debug|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|x86.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.DebugTest|x86.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|ARM.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|ARM.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|Mixed Platforms.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|Mixed Platforms.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|Win32.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|Win32.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|x64.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|x64.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|x86.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.gtest_debug|x86.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|ARM.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|ARM.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|Mixed Platforms.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|Mixed Platforms.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|Win32.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|Win32.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|x64.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|x64.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|x86.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Profile|x86.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|ARM.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|Mixed Platforms.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|Win32.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|x64.ActiveCfg = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|x64.Build.0 = Release|x64
+		{70259FE8-1934-3011-AA55-5268FD22D86C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -636,7 +682,7 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {9621ADE4-8321-4ADC-8CBE-4E09C220DD06}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6D82E264-04DE-4E76-8C29-DDBC73CB417E}
 		Qt5Version = msvc2017_64
+		SolutionGuid = {6D82E264-04DE-4E76-8C29-DDBC73CB417E}
 	EndGlobalSection
 EndGlobal

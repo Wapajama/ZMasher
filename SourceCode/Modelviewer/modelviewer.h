@@ -3,27 +3,25 @@
 
 #include "modelviewer_global.h"
 #include <QMainWindow>
-
+#include <string>
 namespace Ui {
-class ModelViewerWindow;
+	class ModelViewerWindow;
 }
 
 class MODELVIEWERSHARED_EXPORT ModelViewer : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ModelViewer(QWidget* parent = nullptr);
-    ~ModelViewer();
+	explicit ModelViewer(QWidget* parent = nullptr);
+	~ModelViewer();
 
-    Ui::ModelViewerWindow *ui;
+	inline Ui::ModelViewerWindow *GetUI() { return ui; }
 
-    void SetPushButtonClicked(void(*)(bool));
+protected:
+	Ui::ModelViewerWindow *ui;
 
-private:
-    void(*m_ButtonClickedLamda)(bool args);
-private slots:
-    void on_pushButton_clicked(bool checked);
-
+protected slots:
+	virtual void OnLoadFile(const std::string& path) = 0;
 
 private:
 };
