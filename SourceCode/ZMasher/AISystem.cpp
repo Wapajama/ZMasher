@@ -28,6 +28,8 @@ bool AISystem::Init(void*)
 	return true;
 }
 
+const float ai_range = 300.f;
+
 bool AISystem::Simulate(const float dt)
 {
 	//first try, everyone seeks 0,0,0
@@ -54,8 +56,8 @@ bool AISystem::Simulate(const float dt)
 
 		if (length_to_target < ai_type->m_ArrivedDist)
 		{
-			transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f( -100, position.y, ZMasher::GetRandomFloat(-100, 100), transform_comp->m_Transform.GetTranslation().w));
-			ai_comp->m_TargetPos.z = transform_comp->m_Transform.GetTranslation().z;
+			transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f( -ai_range, position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), transform_comp->m_Transform.GetTranslation().w));
+			ai_comp->m_TargetPos.z = ai_range*0.5;
 			continue;
 		}
 		SteeringArgs steer_args{ai_comp, ai_type, ai_comp->m_TargetPos - position}; 
@@ -100,24 +102,6 @@ ZMasher::Vector3f AISystem::Arrive(const SteeringArgs& args)
 
 void AISystem::AddNewZoldier()
 {
-	//ZMasher::Vector4f position(0, 1, 0.f, 1.f);
-	//ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
-	//const float range = 100;
-	//for (int i = 0; i < 10; ++i)
-	//{
-	//	transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-range, range), 0, ZMasher::GetRandomFloat(-range, range), 0));
-	//	if (i%2)
-	//	{
-	//		transform.RotateY(M_PI / 2);
-	//	}
-	//	GameObject new_object = m_GameObjectManager.CreateGameObject();
-	//	m_GameObjects.Add(new_object);
-	//	m_GameObjectManager.TransformManager()->AddComponent(new_object, transform);
-	//	m_GameObjectManager.MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance("../../data/dragonfly01/dragonfly01.model"));
-	//	m_GameObjectManager.CollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, new_object, 10);
-	//	m_GameObjectManager.AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
-	//	
-	//	m_GameObjectManager.AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(200, 1, transform.GetTranslation().z));
 }
 
 void AISystem::ClampMaxSpeed(ZMasher::Vector3f& steering, const class AIType* type)

@@ -47,7 +47,7 @@ namespace ZMasher
 	FREE_BLK_LIST_TEMPL
 	FREE_BLK_LIST_DECL::~FreeBlkList()
 	{
-		BaseAllocator::Deallocate(m_Data);
+		//BaseAllocator::Deallocate(m_Data);
 	}
 
 	FREE_BLK_LIST_TEMPL

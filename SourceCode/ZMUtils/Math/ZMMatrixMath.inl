@@ -668,6 +668,7 @@ namespace ZMasher
 		rotationMatrix.m23 = -sine;
 		rotationMatrix.m32 = sine;
 		rotationMatrix.m33 = cosine;
+		rotationMatrix.m44 = 1.f;
 
 		return rotationMatrix;
 	}
@@ -682,6 +683,7 @@ namespace ZMasher
 		rotationMatrix.m13 = sine;
 		rotationMatrix.m31 = -sine;
 		rotationMatrix.m33 = cosine;
+		rotationMatrix.m44 = 1.f;
 
 		return rotationMatrix;
 	}
@@ -696,6 +698,7 @@ namespace ZMasher
 		rotationMatrix.m12 = -sine;
 		rotationMatrix.m21 = sine;
 		rotationMatrix.m22 = cosine;
+		rotationMatrix.m44 = 1.f;
 
 		return rotationMatrix;
 	}
@@ -714,7 +717,13 @@ namespace ZMasher
 		matrix.m_Vectors[2].x = vector.x*vector.z*(1 - cos(radians)) - vector.y*sin(radians);
 		matrix.m_Vectors[2].y = vector.y*vector.z*(1 - cos(radians)) + vector.x*sin(radians);
 		matrix.m_Vectors[2].z = vector.z*vector.z*(1 - cos(radians)) + cos(radians);
-		
+
+		matrix.m_Vectors[0].Normalize();
+		matrix.m_Vectors[1].Normalize();
+		matrix.m_Vectors[2].Normalize();
+
+		matrix.m44 = 1.f;
+
 		return matrix;
 	}
 

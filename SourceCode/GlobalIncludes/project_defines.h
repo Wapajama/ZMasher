@@ -10,6 +10,7 @@
 //#endif // WIN64
 
 
+
 #ifndef ZMASHER_DX12
 #define ZMASHER_DX11  
 #endif // !ZMASHER_DX12

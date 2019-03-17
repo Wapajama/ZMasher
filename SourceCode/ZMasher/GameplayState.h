@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.h"
+#include "project_defines.h"
 #include <DataStructures\GrowArray.h>
 #include <Math\Vector2.h>
 #include <Math\ZMMatrix44.h>
@@ -32,7 +33,7 @@ private:
 	void MoveDown();
 
 	void ShootBullet();
-	void SpawnEnemy();
+	void SpawnEnemy(bool random_x = false);
 
 	Camera* m_Camera;
 	ZMasher::Matrix44f m_CameraForwardMatrix;

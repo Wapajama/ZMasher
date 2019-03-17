@@ -4,6 +4,7 @@
 #include <Math/ZMMatrix44.h>
 #include <Math/Vector2decl.h>
 #include <ZMasherGfxDX11\dllHeader.h>
+
 class ZMASHER_GFX_DX11_DLL Camera
 {
 public:
@@ -20,8 +21,6 @@ public:
 	ZMasher::Vector3f GetPosition();
 	ZMasher::Matrix44f GetWorldOrientation()const;
 
-	void GetWorldOrientationaTest(ZMasher::Matrix44f& matrix)const;
-
 	void SetWindowSize(const ZMasher::Vector2i& size);
 	const ZMasher::Vector2i GetWindowSize()const;
 
@@ -30,7 +29,7 @@ public:
 	void RotateZ(const float radians);
 
 private:
-
+	ZMasher::Vector3f m_Translation;
 	ZMasher::Matrix44f m_Orientation;
 	ZMasher::Matrix44f m_ProjectionMatrix;
 

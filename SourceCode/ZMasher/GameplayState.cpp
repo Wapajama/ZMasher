@@ -1,7 +1,14 @@
+
 #include "GameplayState.h"
+#ifdef ZMASHER_DX11
+#include <ZMasherGfxDX11/Camera.h>
+#elif defined(ZMASHER_DX12)
+#include <ZMasherGfxDX12/Camera.h>
+#else
+#error No renderer specified!
+#endif
 #include <ZMasherGfxDX11\ZMModelFactory.h>
 #include <ZMasher\InputManager.h>
-#include <ZMasher\Camera.h>
 #include <Math\ZMVector3.h>
 #include <ZMUtils\Utility\ZMasherUtilities.h>
 #include <DataStructures\BinarySearchTree.h>
@@ -44,18 +51,17 @@ bool GameplayState::Init(const char* args)
 	
 	for (int i = 0; i < NUMBER_OF_ENEMIES; ++i)
 	{
-		SpawnEnemy();
+		SpawnEnemy(true);
 	}
 
 	return true;
 }
-
-void GameplayState::SpawnEnemy()
+const float ai_range = 300.f;
+void GameplayState::SpawnEnemy(bool random_x)
 {
-	const float range = 100;
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
-	transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-range, range), 0, ZMasher::GetRandomFloat(-range, range), 0));
+	transform.SetTranslation(position + ZMasher::Vector4f(random_x ? ZMasher::GetRandomFloat(-ai_range, ai_range) : -ai_range, position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), 0));
 	//if (i % 2)
 	//{
 	//	transform.RotateY(M_PI / 2);
@@ -68,7 +74,7 @@ void GameplayState::SpawnEnemy()
 	
 	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 
-	GameObjectManager::Instance()->AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(100, 1, transform.GetTranslation().z));
+	GameObjectManager::Instance()->AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(ai_range, 1, ai_range*0.5f));
 }
 
 #define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
@@ -163,6 +169,7 @@ void GameplayState::ShootBullet()
 {
 	GameObject bullet = GameObjectManager::Instance()->CreateGameObject();
 	ZMasher::Matrix44f bulletTransform = m_Camera->GetWorldOrientation();
+	bulletTransform.SetTranslation(ZMasher::Vector4f(m_Camera->GetPosition(), 1));
 	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + m_Camera->GetWorldOrientation().GetVectorForward() * 20);
 	GameObjectManager::Instance()->TransformManager()->AddComponent(bullet, bulletTransform);
 	GameObjectManager::Instance()->MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "sphere.model").c_str()));
@@ -201,10 +208,19 @@ void GameplayState::MouseRotation(const float dt)
 
 	cam_orientation.SetTranslation(cam_trans);
 
+	cam_orientation.m_Vectors[0].Normalize();
+	cam_orientation.m_Vectors[1].Normalize();
+	cam_orientation.m_Vectors[2].Normalize();
+
+	m_CameraForwardMatrix.m_Vectors[0].Normalize();
+	m_CameraForwardMatrix.m_Vectors[1].Normalize();
+	m_CameraForwardMatrix.m_Vectors[2].Normalize();
+
 	m_Camera->SetOrientation(cam_orientation);
 
 	m_Camera->RotateY(global_rotation_speed*diff_pos.x*dt);
 	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x*m_Dt);
+
 }
 
 void GameplayState::Movement()

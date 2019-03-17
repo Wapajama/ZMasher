@@ -121,8 +121,9 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 	{
 		DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 		m_Camera->UpdateProjMatrix();
-
-		const ZMasher::Matrix44f view_matrix = ~m_Camera->GetWorldOrientation();
+		ZMasher::Matrix44f world = m_Camera->GetWorldOrientation();
+		world.SetTranslation(ZMasher::Vector4f(m_Camera->GetPosition(),1));
+		const ZMasher::Matrix44f view_matrix = ~world;
 		cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
 		m_Camera->GetProjectionMatrix(projectionMatrix);
 
@@ -130,13 +131,9 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		const ZMasher::Matrix44f current_transform =  model->GetTransform()* parent_orientation;
 
-		//modelWorldMatrix.r[0] = current_transform.m_Data[0];
-		//modelWorldMatrix.r[1] = current_transform.m_Data[1];
-		//modelWorldMatrix.r[2] = current_transform.m_Data[2];
-		//modelWorldMatrix.r[3] = current_transform.m_Data[3];
 		SetXMMatrix(modelWorldMatrix, current_transform);
 
-		DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+		DirectX::XMVECTOR cam_pos;
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
@@ -173,8 +170,7 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
 	ZMasher::Matrix44f camera_ori;
-	//camera_ori = m_Camera->GetWorldOrientation();
-	m_Camera->GetWorldOrientationaTest(camera_ori);
+	camera_ori = m_Camera->GetWorldOrientation();
 	camera_ori.SetTranslation(ZMasher::Vector4f(0,0,0,1));
 	const ZMasher::Matrix44f view_matrix = ~camera_ori;
 	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
@@ -189,15 +185,11 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 	ZMasher::Matrix44f current_transform; 
 	current_transform = m_Skybox->GetTransform();
 
-	//modelWorldMatrix.r[0] = current_transform.m_Data[0];
-	//modelWorldMatrix.r[1] = current_transform.m_Data[1];
-	//modelWorldMatrix.r[2] = current_transform.m_Data[2];
-	//modelWorldMatrix.r[3] = current_transform.m_Data[3];
 	SetXMMatrix(modelWorldMatrix, current_transform);
 
 	if (m_Camera != nullptr)
 	{
-		DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+		DirectX::XMVECTOR cam_pos;
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
@@ -222,11 +214,14 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 
 void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 {
-	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	m_Camera->UpdateProjMatrix();
-	ZMasher::Matrix44f camera_ori;// = m_Camera->GetWorldOrientation();
-	m_Camera->GetWorldOrientationaTest(camera_ori);
-	const ZMasher::Matrix44f view_matrix = ~camera_ori;
+	ZMasher::Matrix44f camera_ori;
+	
+	ZMasher::Matrix44f world = m_Camera->GetWorldOrientation();
+	world.SetTranslation(ZMasher::Vector4f(m_Camera->GetPosition(),1));
+	const ZMasher::Matrix44f view_matrix = ~world;
+
+	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
 	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
 	m_Camera->GetProjectionMatrix(projectionMatrix);
 
@@ -235,13 +230,9 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 	ZMasher::Matrix44f current_transform;
 	current_transform = m_Terrain->GetTransform();
 
-	//modelWorldMatrix.r[0] = current_transform.m_Data[0];
-	//modelWorldMatrix.r[1] = current_transform.m_Data[1];
-	//modelWorldMatrix.r[2] = current_transform.m_Data[2];
-	//modelWorldMatrix.r[3] = current_transform.m_Data[3];
 	SetXMMatrix(modelWorldMatrix, current_transform);
 
-	DirectX::XMVECTOR cam_pos;// = m_Camera->GetPosition().m_Data;
+	DirectX::XMVECTOR cam_pos;
 	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 	cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 	cam_pos.m128_f32[2] = m_Camera->GetPosition().z;

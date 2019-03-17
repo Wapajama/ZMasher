@@ -1,9 +1,17 @@
 #include "CameraState.h"
+#include "project_defines.h"
 #include <ZMasher\InputManager.h>
 #include <Math\ZMVector3.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <ZMasher\Camera.h>
+
+#ifdef ZMASHER_DX11
+#include <ZMasherGfxDX11/Camera.h>
+#elif defined(ZMASHER_DX12)
+#include <ZMasherGfxDX12/Camera.h>
+#else
+#error No renderer specified!
+#endif
 
 CameraState::CameraState() :
 	m_SpeedModifier(1.f)
@@ -67,11 +75,19 @@ void CameraState::Movement()
 	}
 }
 
-const float global_rotation_speed = 50.f;
+const float global_rotation_speed = 1.f;
 void CameraState::MouseRotation()
 {
+
+
 	m_PrevMousePos = m_MousePos;
 	m_MousePos = InputManager::Instance()->MousePos();
+
+	if( !InputManager::Instance()->IsMouseDown(DIK_LMOUSE))
+	{
+		return;
+	}
+
 	const ZMasher::Vector2i diff_pos = m_PrevMousePos - m_MousePos;
 
 	ZMasher::Matrix44f cam_orientation = m_Camera->GetWorldOrientation();
@@ -95,6 +111,10 @@ void CameraState::MouseRotation()
 	}
 
 	cam_orientation.SetTranslation(cam_trans);
+
+	cam_orientation.m_Vectors[0].Normalize();
+	cam_orientation.m_Vectors[1].Normalize();
+	cam_orientation.m_Vectors[2].Normalize();
 
 	m_Camera->SetOrientation(cam_orientation);
 

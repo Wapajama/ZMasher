@@ -80,6 +80,7 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	MatrixBufferType* dataPtr = nullptr;
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
+	
 	DirectX::XMMATRIX worldLocal = DirectX::XMMatrixTranspose(constant_buffer.world);
 	DirectX::XMMATRIX viewLocal = DirectX::XMMatrixTranspose(constant_buffer.view);
 	DirectX::XMMATRIX projectionLocal = DirectX::XMMatrixTranspose(constant_buffer.projection);
