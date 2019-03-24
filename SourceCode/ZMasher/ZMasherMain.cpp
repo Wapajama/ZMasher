@@ -18,11 +18,12 @@
 
 #include <tinyxml2.h>
 #include "modelviewer.h"
-#include "ui_modelviewerwindow.h" 
+#include <Modelviewer/GeneratedFiles/ui_modelviewerwindow.h>
 #include <iostream>
 
 #include <ZMasherGfxDX11/Camera.h>
 #include <qapplication.h>
+#include <QGraphicsProxyWidget>
 #include <thread>
 
 class IntComparer
@@ -140,6 +141,7 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 		modelViewerState->Init(m_InitInfo.m_Args);
 
 		m_WinVals.m_WindowHandle = (HWND)modelViewerState->GetUI()->graphicsView->winId();
+
 		CameraState* cameraState = new CameraState();
 		cameraState->SetCamera(m_Camera);
 		cameraState->Init(m_InitInfo.m_Args);
@@ -187,7 +189,8 @@ bool ZMasherMain::Update()
 	}
 	TimerManager::GetInstance()->Update();
 
-	const float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.064);//TODO: optimize dis
+	//const float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.064);//TODO: optimize dis
+	const float dt = static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());
 
 #ifdef BENCHMARK
 	const bool benchmark = Profiler::Instance()->IterateFrame(dt);

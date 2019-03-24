@@ -12,16 +12,17 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,12 +32,16 @@ class Ui_ModelViewerWindow
 public:
     QAction *actionLoad_File;
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout_2;
+    QHBoxLayout *horizontalLayout;
     QSplitter *splitter;
-    QGraphicsView *graphicsView;
+    QWidget *graphicsView;
     QTabWidget *PropertyView;
     QWidget *PropertyViewPage1;
+    QVBoxLayout *verticalLayout_2;
+    QVBoxLayout *verticalLayout;
     QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer;
+    QSpacerItem *verticalSpacer;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QToolBar *mainToolBar;
@@ -46,21 +51,21 @@ public:
     {
         if (ModelViewerWindow->objectName().isEmpty())
             ModelViewerWindow->setObjectName(QString::fromUtf8("ModelViewerWindow"));
-        ModelViewerWindow->resize(994, 638);
+        ModelViewerWindow->resize(995, 638);
         actionLoad_File = new QAction(ModelViewerWindow);
         actionLoad_File->setObjectName(QString::fromUtf8("actionLoad_File"));
         centralWidget = new QWidget(ModelViewerWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        horizontalLayout_2 = new QHBoxLayout(centralWidget);
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout = new QHBoxLayout(centralWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         splitter = new QSplitter(centralWidget);
         splitter->setObjectName(QString::fromUtf8("splitter"));
         splitter->setOrientation(Qt::Horizontal);
-        graphicsView = new QGraphicsView(splitter);
+        graphicsView = new QWidget(splitter);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
@@ -68,25 +73,46 @@ public:
         splitter->addWidget(graphicsView);
         PropertyView = new QTabWidget(splitter);
         PropertyView->setObjectName(QString::fromUtf8("PropertyView"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        PropertyView->setEnabled(true);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(PropertyView->sizePolicy().hasHeightForWidth());
         PropertyView->setSizePolicy(sizePolicy1);
         PropertyViewPage1 = new QWidget();
         PropertyViewPage1->setObjectName(QString::fromUtf8("PropertyViewPage1"));
+        verticalLayout_2 = new QVBoxLayout(PropertyViewPage1);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         pushButton = new QPushButton(PropertyViewPage1);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(10, 40, 75, 23));
+
+        verticalLayout->addWidget(pushButton);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        verticalLayout->addItem(horizontalSpacer);
+
+
+        verticalLayout_2->addLayout(verticalLayout);
+
+        verticalSpacer = new QSpacerItem(20, 463, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer);
+
         PropertyView->addTab(PropertyViewPage1, QString());
         splitter->addWidget(PropertyView);
 
-        horizontalLayout_2->addWidget(splitter);
+        horizontalLayout->addWidget(splitter);
 
         ModelViewerWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ModelViewerWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 994, 21));
+        menuBar->setGeometry(QRect(0, 0, 995, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         ModelViewerWindow->setMenuBar(menuBar);

@@ -1,7 +1,7 @@
 #include "ModelViewerState.h"
 #include <ZMUtils/Debugging/ZMDebugger.h>
 #include <iostream>
-#include "ui_modelviewerwindow.h" 
+#include <Modelviewer/GeneratedFiles/ui_modelviewerwindow.h>
 #include <ZMasher\InputManager.h>
 
 
