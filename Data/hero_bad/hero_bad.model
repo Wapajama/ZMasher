@@ -1,4 +1,0 @@
-<modelroot name = "First">
-	<albedoTexture filepath = "../data/hero_bad/antihero_albedo.dds"/>
-	<model filepath = "../data/hero_bad/hero_bad.FBX"/>
-</modelroot>

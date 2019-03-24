@@ -1,4 +1,0 @@
-<modelroot name = "First">
-	<albedoTexture filepath = "../data/mactex.jpg"/>
-	<model filepath = "../../data/Truax_Studio_Mac11.FBX"/>
-</modelroot>

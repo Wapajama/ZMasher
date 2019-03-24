@@ -277,7 +277,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN64;ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\ModelViewer\;$(ZM_Outputpath)\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ModelViewer\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -333,7 +333,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ZMASHER_DLL_EXPORT;TINYXML2_IMPORT;_CRT_SECURE_NO_WARNINGS;ZMASHER;_WINDOWS;NEW_OP_OVERRIDE;NDEBUG;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\ModelViewer\;$(ZM_Outputpath)\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ModelViewer\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>

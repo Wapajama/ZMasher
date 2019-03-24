@@ -10,7 +10,7 @@ class ModelViewerState :
 	public GameState, public ModelViewer
 {
 public:
-	ModelViewerState();
+	ModelViewerState(class Camera* camera);
 	~ModelViewerState();
 
 	bool Init(const char* args)override;
@@ -21,13 +21,16 @@ public:
 	
 protected:
 	bool event(QEvent* e)override;
-	void OnLoadFile(const std::string& path)override;
+	void OnLoadFile()override;
+	std::string FileBrowserLoadPath(const std::string& dir);
 
 private:
 
+	void UpdateCameraPos(float x, float y, float z) override;
 	ZMWinApiCointainer* m_WinVals;
 	ModelViewerWindow* m_ModelViewerWindow;
-	
+	class ZMModelInstanceNode* m_Model;
+	Camera* m_Camera;
 	bool m_ExitCalled;
 };
 

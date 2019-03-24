@@ -12,13 +12,13 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDockWidget>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
@@ -31,21 +31,29 @@ class Ui_ModelViewerWindow
 {
 public:
     QAction *actionLoad_File;
+    QAction *actionLoad_Model;
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout;
-    QSplitter *splitter;
+    QHBoxLayout *horizontalLayout_2;
     QWidget *graphicsView;
-    QTabWidget *PropertyView;
-    QWidget *PropertyViewPage1;
-    QVBoxLayout *verticalLayout_2;
-    QVBoxLayout *verticalLayout;
-    QPushButton *pushButton;
-    QSpacerItem *horizontalSpacer;
-    QSpacerItem *verticalSpacer;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
+    QDockWidget *dockWidget;
+    QWidget *dockWidgetContents;
+    QHBoxLayout *horizontalLayout;
+    QTabWidget *PropertyView;
+    QWidget *PropertyViewPage1;
+    QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout_2;
+    QVBoxLayout *verticalLayout;
+    QLabel *cameraPosLabel;
+    QHBoxLayout *horizontalLayout_3;
+    QLabel *cameraPosX;
+    QLabel *cameraPosY;
+    QLabel *cameraPosZ;
+    QSpacerItem *horizontalSpacer;
+    QSpacerItem *verticalSpacer;
 
     void setupUi(QMainWindow *ModelViewerWindow)
     {
@@ -54,60 +62,23 @@ public:
         ModelViewerWindow->resize(995, 638);
         actionLoad_File = new QAction(ModelViewerWindow);
         actionLoad_File->setObjectName(QString::fromUtf8("actionLoad_File"));
+        actionLoad_Model = new QAction(ModelViewerWindow);
+        actionLoad_Model->setObjectName(QString::fromUtf8("actionLoad_Model"));
         centralWidget = new QWidget(ModelViewerWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        horizontalLayout = new QHBoxLayout(centralWidget);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        splitter = new QSplitter(centralWidget);
-        splitter->setObjectName(QString::fromUtf8("splitter"));
-        splitter->setOrientation(Qt::Horizontal);
-        graphicsView = new QWidget(splitter);
+        horizontalLayout_2 = new QHBoxLayout(centralWidget);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        graphicsView = new QWidget(centralWidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
         graphicsView->setSizePolicy(sizePolicy);
-        splitter->addWidget(graphicsView);
-        PropertyView = new QTabWidget(splitter);
-        PropertyView->setObjectName(QString::fromUtf8("PropertyView"));
-        PropertyView->setEnabled(true);
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(PropertyView->sizePolicy().hasHeightForWidth());
-        PropertyView->setSizePolicy(sizePolicy1);
-        PropertyViewPage1 = new QWidget();
-        PropertyViewPage1->setObjectName(QString::fromUtf8("PropertyViewPage1"));
-        verticalLayout_2 = new QVBoxLayout(PropertyViewPage1);
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        pushButton = new QPushButton(PropertyViewPage1);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
-        verticalLayout->addWidget(pushButton);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        verticalLayout->addItem(horizontalSpacer);
-
-
-        verticalLayout_2->addLayout(verticalLayout);
-
-        verticalSpacer = new QSpacerItem(20, 463, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_2->addItem(verticalSpacer);
-
-        PropertyView->addTab(PropertyViewPage1, QString());
-        splitter->addWidget(PropertyView);
-
-        horizontalLayout->addWidget(splitter);
+        horizontalLayout_2->addWidget(graphicsView);
 
         ModelViewerWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ModelViewerWindow);
@@ -122,9 +93,98 @@ public:
         statusBar = new QStatusBar(ModelViewerWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         ModelViewerWindow->setStatusBar(statusBar);
+        dockWidget = new QDockWidget(ModelViewerWindow);
+        dockWidget->setObjectName(QString::fromUtf8("dockWidget"));
+        dockWidgetContents = new QWidget();
+        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
+        horizontalLayout = new QHBoxLayout(dockWidgetContents);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        PropertyView = new QTabWidget(dockWidgetContents);
+        PropertyView->setObjectName(QString::fromUtf8("PropertyView"));
+        PropertyView->setEnabled(true);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(PropertyView->sizePolicy().hasHeightForWidth());
+        PropertyView->setSizePolicy(sizePolicy1);
+        PropertyViewPage1 = new QWidget();
+        PropertyViewPage1->setObjectName(QString::fromUtf8("PropertyViewPage1"));
+        verticalLayout_3 = new QVBoxLayout(PropertyViewPage1);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        cameraPosLabel = new QLabel(PropertyViewPage1);
+        cameraPosLabel->setObjectName(QString::fromUtf8("cameraPosLabel"));
+
+        verticalLayout->addWidget(cameraPosLabel);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        cameraPosX = new QLabel(PropertyViewPage1);
+        cameraPosX->setObjectName(QString::fromUtf8("cameraPosX"));
+        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(cameraPosX->sizePolicy().hasHeightForWidth());
+        cameraPosX->setSizePolicy(sizePolicy2);
+        cameraPosX->setMinimumSize(QSize(43, 13));
+        cameraPosX->setMaximumSize(QSize(43, 16777215));
+
+        horizontalLayout_3->addWidget(cameraPosX);
+
+        cameraPosY = new QLabel(PropertyViewPage1);
+        cameraPosY->setObjectName(QString::fromUtf8("cameraPosY"));
+        sizePolicy2.setHeightForWidth(cameraPosY->sizePolicy().hasHeightForWidth());
+        cameraPosY->setSizePolicy(sizePolicy2);
+        cameraPosY->setMinimumSize(QSize(43, 13));
+        cameraPosY->setMaximumSize(QSize(43, 16777215));
+
+        horizontalLayout_3->addWidget(cameraPosY);
+
+        cameraPosZ = new QLabel(PropertyViewPage1);
+        cameraPosZ->setObjectName(QString::fromUtf8("cameraPosZ"));
+        sizePolicy2.setHeightForWidth(cameraPosZ->sizePolicy().hasHeightForWidth());
+        cameraPosZ->setSizePolicy(sizePolicy2);
+        cameraPosZ->setMinimumSize(QSize(43, 13));
+        cameraPosZ->setMaximumSize(QSize(43, 16777215));
+
+        horizontalLayout_3->addWidget(cameraPosZ);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        verticalLayout->addItem(horizontalSpacer);
+
+
+        verticalLayout_2->addLayout(verticalLayout);
+
+        verticalSpacer = new QSpacerItem(20, 463, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer);
+
+
+        verticalLayout_3->addLayout(verticalLayout_2);
+
+        PropertyView->addTab(PropertyViewPage1, QString());
+
+        horizontalLayout->addWidget(PropertyView);
+
+        dockWidget->setWidget(dockWidgetContents);
+        ModelViewerWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
 
         menuBar->addAction(menuFile->menuAction());
-        menuFile->addAction(actionLoad_File);
+        menuFile->addAction(actionLoad_Model);
 
         retranslateUi(ModelViewerWindow);
 
@@ -135,9 +195,16 @@ public:
     {
         ModelViewerWindow->setWindowTitle(QApplication::translate("ModelViewerWindow", "ModelViewerWindow", nullptr));
         actionLoad_File->setText(QApplication::translate("ModelViewerWindow", "Load File..", nullptr));
-        pushButton->setText(QApplication::translate("ModelViewerWindow", "Test button", nullptr));
-        PropertyView->setTabText(PropertyView->indexOf(PropertyViewPage1), QString());
+        actionLoad_Model->setText(QApplication::translate("ModelViewerWindow", "Load Model", nullptr));
+#ifndef QT_NO_SHORTCUT
+        actionLoad_Model->setShortcut(QApplication::translate("ModelViewerWindow", "Ctrl+O", nullptr));
+#endif // QT_NO_SHORTCUT
         menuFile->setTitle(QApplication::translate("ModelViewerWindow", "File..", nullptr));
+        cameraPosLabel->setText(QApplication::translate("ModelViewerWindow", "Camera position", nullptr));
+        cameraPosX->setText(QApplication::translate("ModelViewerWindow", "x: 12345", nullptr));
+        cameraPosY->setText(QApplication::translate("ModelViewerWindow", "x: 12345", nullptr));
+        cameraPosZ->setText(QApplication::translate("ModelViewerWindow", "x: 12345", nullptr));
+        PropertyView->setTabText(PropertyView->indexOf(PropertyViewPage1), QString());
     } // retranslateUi
 
 };

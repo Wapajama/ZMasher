@@ -19,11 +19,13 @@ public:
 
 protected:
 	Ui::ModelViewerWindow *ui;
-
 protected slots:
-	virtual void OnLoadFile(const std::string& path) = 0;
+	virtual void OnLoadFile() = 0;
+private slots:
+    void on_actionLoad_Model_triggered();
 
 private:
+	virtual void UpdateCameraPos(float x, float y, float z) = 0;
 };
 
 #endif // MODELVIEWER_H

@@ -9,14 +9,14 @@ class TimerManager
 public:
 	static TimerManager* GetInstance();
 	static void Create(TimerManager* instance);
-	const Timer&	GetMainTimer		() const;
-	const int		CreateTimer			();
-	const int		CreateAndStartTimer	();
-	Timer&			GetTimer			(const int);
-	void			Update				();
+	Timer&	GetMainTimer();
+	const int		CreateTimer();
+	const int		CreateAndStartTimer();
+	Timer&			GetTimer(const int);
+	void			Update();
 private:
-	TimerManager								(void);
-	~TimerManager								(void);
+	TimerManager(void);
+	~TimerManager(void);
 
 	static TimerManager* myInstance;
 

@@ -25,7 +25,7 @@ CameraState::~CameraState()
 
 bool CameraState::Init(const char* args)
 {
-	m_Camera->SetPosition(ZMasher::Vector3f(100, 0, -100));
+	m_Camera->SetPosition(ZMasher::Vector3f(0, 10, 0));
 	return true;
 }
 
@@ -75,7 +75,7 @@ void CameraState::Movement()
 	}
 }
 
-const float global_rotation_speed = 1.f;
+const float global_rotation_speed = 0.01f;
 void CameraState::MouseRotation()
 {
 
@@ -99,7 +99,7 @@ void CameraState::MouseRotation()
 
 	// Aligning the forward matrix with the camera matrix
 
-	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*m_Dt*diff_pos.y);
+	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y);
 
 	// Means that the camera has rotated further than "straight up" or "straight down". 
 	const ZMasher::Vector4f cam_forw = cam_orientation.GetVectorForward();
@@ -107,7 +107,7 @@ void CameraState::MouseRotation()
 	const float rotation_result = ZMasher::Dot(cam_orientation.GetVectorForward(), m_CameraForwardMatrix.GetVectorForward());
 	if ( rotation_result < 0.f)
 	{
-		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed*m_Dt*diff_pos.y));
+		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed*diff_pos.y));
 	}
 
 	cam_orientation.SetTranslation(cam_trans);
@@ -118,8 +118,8 @@ void CameraState::MouseRotation()
 
 	m_Camera->SetOrientation(cam_orientation);
 
-	m_Camera->RotateY(global_rotation_speed*diff_pos.x*m_Dt);
-	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x*m_Dt);
+	m_Camera->RotateY(global_rotation_speed*diff_pos.x);
+	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x);
 }
 
 const float global_speed = 200.f;

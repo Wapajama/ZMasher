@@ -40,7 +40,7 @@ void TimerManager::Update()
 	}
 }
 
-const Timer& TimerManager::GetMainTimer() const
+Timer& TimerManager::GetMainTimer()
 {
 	return myMainTimer;
 }

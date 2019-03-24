@@ -178,7 +178,7 @@ void GameplayState::ShootBullet()
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (m_Camera->GetWorldOrientation().GetVectorForward()).ToVector3f() * 3000.f);
 }
 
-const float global_rotation_speed = 1.f;
+const float global_rotation_speed = 0.01f;
 
 void GameplayState::MouseRotation(const float dt)
 {
@@ -195,7 +195,7 @@ void GameplayState::MouseRotation(const float dt)
 
 	// Aligning the forward matrix with the camera matrix
 
-	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*m_Dt*diff_pos.y);
+	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y);
 
 	// Means that the camera has rotated further than "straight up" or "straight down". 
 	const ZMasher::Vector4f cam_forw = cam_orientation.GetVectorForward();
@@ -203,7 +203,7 @@ void GameplayState::MouseRotation(const float dt)
 	const float rotation_result = ZMasher::Dot(cam_orientation.GetVectorForward(), m_CameraForwardMatrix.GetVectorForward());
 	if ( rotation_result < 0.f)
 	{
-		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed*m_Dt*diff_pos.y));
+		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed*diff_pos.y));
 	}
 
 	cam_orientation.SetTranslation(cam_trans);
@@ -218,8 +218,8 @@ void GameplayState::MouseRotation(const float dt)
 
 	m_Camera->SetOrientation(cam_orientation);
 
-	m_Camera->RotateY(global_rotation_speed*diff_pos.x*dt);
-	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x*m_Dt);
+	m_Camera->RotateY(global_rotation_speed*diff_pos.x);
+	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x);
 
 }
 

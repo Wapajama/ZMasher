@@ -35,6 +35,9 @@ public:
 	inline ZMD3DInterface* GetD3DInterface();
 
 private:
+
+	int m_LoopTimer;
+
 	ZMasherInitInfo m_InitInfo;
 	void Render(const float dt);
 

@@ -123,7 +123,7 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 
 	if (m_Camera != nullptr)
 	{
-		m_Camera->SetPosition(Vector3f(0, 0, 10.f));
+		m_Camera->SetPosition(Vector3f(0, 0, 0));
 	}
 
 	InputManager::Create(GetModuleHandle(NULL), m_WinVals.m_WindowHandle, m_WinVals.m_Resolution.x, m_WinVals.m_Resolution.y);
@@ -137,7 +137,7 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 
 		m_QApplicationThread = new std::thread(QApplicationThread);
 
-		ModelViewerState* modelViewerState = new ModelViewerState();
+		ModelViewerState* modelViewerState = new ModelViewerState(m_Camera);
 		modelViewerState->Init(m_InitInfo.m_Args);
 
 		m_WinVals.m_WindowHandle = (HWND)modelViewerState->GetUI()->graphicsView->winId();
@@ -176,7 +176,7 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 	TimerManager::GetInstance()->Update();
 
 
-
+	m_LoopTimer = TimerManager::GetInstance()->CreateAndStartTimer();
 	return true;
 }
 
@@ -184,13 +184,11 @@ bool ZMasherMain::Update()
 {
 	if (HandleWinMsg() == false)
 	{
-		//ASSERT(false, "HandleWinMsg() == false");
 		return false;
 	}
-	TimerManager::GetInstance()->Update();
 
-	//const float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.064);//TODO: optimize dis
-	const float dt = static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());
+	TimerManager::GetInstance()->GetMainTimer().Update();
+	float dt = static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());
 
 #ifdef BENCHMARK
 	const bool benchmark = Profiler::Instance()->IterateFrame(dt);
