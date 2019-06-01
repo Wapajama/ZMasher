@@ -1,6 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-#include <d3d11.h>
+#include <D3dx12.h>
 #include <Math/ZMVector.h>
 
 #define Float4InputDesc DXGI_FORMAT_R32G32B32A32_FLOAT

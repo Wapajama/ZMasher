@@ -1,19 +1,13 @@
 #pragma once
-#include <C:\Users\Kristoffer\Documents\Visual Studio 2017\Projects\ZMasher\SourceCode\GlobalIncludes\project_defines.h>
+#include <GlobalIncludes/project_defines.h>
 
-#ifdef ZMASHER_DX12
 #include <D3dx12.h>
 #include <dxgi1_4.h>
-#elif defined ZMASHER_DX11
-#include <d3d11.h>
-#else 
-	#error No render API specified
-#endif // ZMASHER_DX12
 
-#include "ZMVertexTypes.h"
 #include "ZMAPIStructs.h"
 #include <DirectXMath.h>
-#include <ZMasherGfxDX11\dllHeader.h>
+#include <ZMasherGfxDX12/ZMVertexTypes.h>
+#include <ZMasherGfxDX12/dllHeader.h>
 //#include <Windows.h>
 /*
 	TO DO: refactor this class to one with better name
@@ -22,7 +16,7 @@
 	NOTE: this here class is virtually copied from a tutorial
 */
 
-class ZMASHER_GFX_DX11_DLL ZMD3DInterface
+class ZMASHER_GFX_DX12_DLL ZMD3DInterface
 {
 	typedef const ZMWinApiCointainer& ZMInitArgs;
 public:
@@ -36,18 +30,11 @@ public:
 	bool Clear();
 	void Release();
 
-#ifdef ZMASHER_DX12
 	ID3D12Device* GetDevice();
 	inline ID3D12CommandList* GetCommandList() { return m_CommandList; };
-#else
-	ID3D11DeviceContext* GetContext();
-	ID3D11Device* GetDevice();
-#endif // ZMASHER_DX12
-
 
 private:
 
-#ifdef ZMASHER_DX12
 	ID3D12Device* m_Device;
 	IDXGISwapChain* m_SwapChain;
 	ID3D12DescriptorHeap* m_RenderTargetViewHeap;
@@ -99,17 +86,6 @@ private:
 	bool CreateDescriptorHeap(ZMInitArgs args);
 	bool CreateRenderTargetView(ZMInitArgs args);
 	bool CreateDepthStencilTargetAndView(ZMInitArgs args);
-#elif defined ZMASHER_DX11
-	bool CreateDeviceAndSwapChain(ZMInitArgs args);
-	ID3D11DeviceContext* m_Context;
-	ID3D11Device* m_Device;
-	IDXGISwapChain* m_SwapChain;
-	ID3D11RenderTargetView* m_RenderTarget;
-	ID3D11Texture2D* m_DepthStencilBuffer;
-	ID3D11DepthStencilState* m_DepthStencilState;
-	ID3D11DepthStencilView* m_DepthStencil;
-	ID3D11RasterizerState* m_RasterizerState;
-#endif // USE_DX11
 
 	unsigned int m_Numerator  ;
 	unsigned int m_Denominator;

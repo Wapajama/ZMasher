@@ -1,9 +1,9 @@
 #pragma once
 
 #include <DataStructures\GrowArray.h>
-#include <ZMasherGfxDX11\Texture.h>
+#include <ZMasherGfxDX12\Texture.h>
 #include <string>
-class ID3D11Device;
+class ID3D12Device;
 class TextureContainer
 {
 public:
@@ -11,7 +11,7 @@ public:
 	~TextureContainer();
 
 	Texture* GetTexture(const char* file_path);
-	inline void SetDevice(ID3D11Device* device){ m_Device = device;};
+	inline void SetDevice(ID3D12Device* device){ m_Device = device;};
 
 private:
 
@@ -21,7 +21,7 @@ private:
 		Texture m_Texture;
 	};
 	GrowArray<TexturePathPair> m_Textures;
-	ID3D11Device* m_Device;
+	ID3D12Device* m_Device;
 
 	Texture* LoadTexture(const char* file_path);
 	 

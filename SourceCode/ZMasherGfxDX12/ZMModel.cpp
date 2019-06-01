@@ -17,7 +17,7 @@ ZMModel::~ZMModel()
 {
 }
 
-bool ZMModel::Init(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices, Material* material)
+bool ZMModel::Init(ID3D12Device* device, CurrentVertexType* vertices, unsigned long* indices, Material* material)
 {
 	bool success = false;
 
@@ -41,7 +41,7 @@ void ZMModel::ShutDown()
 {
 	ShutDownBuffers();
 }
-void ZMModel::SetRenderVars(ID3D11DeviceContext* context)
+void ZMModel::SetRenderVars(ID3D12Device* context)
 {
 	SetBufferVars(context);
 }
@@ -51,10 +51,11 @@ int ZMModel::GetIndexCount()
 	return m_IndexCount;
 }
 
-bool ZMModel::InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, unsigned long* indices)
+bool ZMModel::InitBuffers(ID3D12Device* device, CurrentVertexType* vertices, unsigned long* indices)
 {
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	//D3D12_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	CD3DX12_RESOURCE_DESC vertexBufferDesc(sizeof(CurrentVertexType) * m_VertexCount, D3D12_BIND_VERTEX
+	D3D12_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 		
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -74,28 +75,28 @@ bool ZMModel::InitBuffers(ID3D11Device* device, CurrentVertexType* vertices, uns
 		return false;
 	}
 
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_IndexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
+	//indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_IndexCount;
+	//indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//indexBufferDesc.CPUAccessFlags = 0;
+	//indexBufferDesc.MiscFlags = 0;
+	//indexBufferDesc.StructureByteStride = 0;
 
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
+	//indexData.pSysMem = indices;
+	//indexData.SysMemPitch = 0;
+	//indexData.SysMemSlicePitch = 0;
 
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_IndexBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
+	//result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_IndexBuffer);
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
 
-	delete[] vertices;//TODO: move this memory management somewhere else
-	vertices = 0;
+	//delete[] vertices;//TODO: move this memory management somewhere else
+	//vertices = 0;
 
-	delete[] indices;
-	indices = 0;
+	//delete[] indices;
+	//indices = 0;
 
 	return true;
 }
@@ -113,7 +114,7 @@ void ZMModel::ShutDownBuffers()
 		m_VertexBuffer = 0;
 	}
 }
-void ZMModel::SetBufferVars(ID3D11DeviceContext* context)
+void ZMModel::SetBufferVars(ID3D12GraphicsCommandList* context)
 {
 	unsigned int stride = sizeof(CurrentVertexType);
 	unsigned int offset = 0;

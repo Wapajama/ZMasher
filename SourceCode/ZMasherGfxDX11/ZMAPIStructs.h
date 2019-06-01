@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include <ZMasherGfxDX11\dllHeader.h>
+#include <ZMasherGfxDX12\dllHeader.h>
 #include <Math/ZMVector.h>
 
 struct ZMWinApiCointainer
