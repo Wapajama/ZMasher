@@ -165,6 +165,7 @@ void GameplayState::MoveDown()
 	m_Camera->SetPosition(translation);
 }
 
+const float global_bullet_speed = 300.f;
 void GameplayState::ShootBullet()
 {
 	GameObject bullet = GameObjectManager::Instance()->CreateGameObject();
@@ -173,9 +174,9 @@ void GameplayState::ShootBullet()
 	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + m_Camera->GetWorldOrientation().GetVectorForward() * 20);
 	GameObjectManager::Instance()->TransformManager()->AddComponent(bullet, bulletTransform);
 	GameObjectManager::Instance()->MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "sphere.model").c_str()));
-	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 30.f, 1337, 3);
+	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 1.f, 1337, 10);
 	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, g_TestCallBack);
-	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (m_Camera->GetWorldOrientation().GetVectorForward()).ToVector3f() * 3000.f);
+	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (m_Camera->GetWorldOrientation().GetVectorForward()).ToVector3f() * global_bullet_speed);
 }
 
 const float global_rotation_speed = 0.01f;

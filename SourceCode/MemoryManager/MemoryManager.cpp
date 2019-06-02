@@ -28,7 +28,7 @@ namespace ZMasher
 	}
 	MemoryManager::~MemoryManager()
 	{
-		m_Allocator->~Allocator();
+		//m_Allocator->~Allocator();
 		FreeMalloc(m_Allocator);
 		m_Allocator = nullptr;
 	}

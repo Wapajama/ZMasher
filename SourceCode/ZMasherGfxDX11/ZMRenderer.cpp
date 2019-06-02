@@ -138,16 +138,9 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 		cam_pos.m128_f32[3] = 1.f;
-		const bool succeded = m_Shader->SetShaderVars(d3dinterface.GetContext(),
-														{modelWorldMatrix,
-														cameraWorldMatrix,
-														projectionMatrix,
-														cam_pos, 
-														m_Dt});
-		ASSERT(succeded, "shader failed to init!");
+
 		ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_Shader);
 		Material* material = model->GetModelNode()->GetModel()->GetMaterial();
-
 		model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
 		model_shader->SetShaderResource(eTextureType::NORMAL, material->GetTexture(eTextureType::NORMAL));
 		model_shader->SetShaderResource(eTextureType::AMBIENT_OCCLUSION, material->GetTexture(eTextureType::AMBIENT_OCCLUSION));
@@ -156,6 +149,13 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 		
 		m_Shader->Apply(d3dinterface.GetContext());
 
+		const bool succeded = m_Shader->SetShaderVars(d3dinterface.GetContext(),
+														{modelWorldMatrix,
+														cameraWorldMatrix,
+														projectionMatrix,
+														cam_pos, 
+														m_Dt});
+		ASSERT(succeded, "shader failed to init!");
 		d3dinterface.GetContext()->DrawIndexed(model->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
 		
 	}

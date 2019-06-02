@@ -28,6 +28,7 @@ public:
 	inline void SetCamera(Camera* camera);
 
 	/*
+		TODO
 		This should later on be the lowest step in loading a model,
 		since all the data orientation needs to take place here
 		(or someplace similar)

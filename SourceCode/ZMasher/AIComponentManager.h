@@ -9,6 +9,7 @@ enum eAIBehaviour
 	ARRIVE,
 	SEEK,
 	FLEE,
+	ATTACK,
 
 	BEHAVIOUR_COUNT
 };
@@ -16,6 +17,7 @@ enum eAIBehaviour
 enum eAIType
 {
 	ZOLDIER,
+	BASIC_TURRET,
 
 	AITYPE_COUNT
 };

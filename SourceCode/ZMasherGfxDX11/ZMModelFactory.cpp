@@ -194,9 +194,7 @@ ZMModelInstanceNode* ZMModelFactory::InitModelInstanceNode(ZMModelNode* model_no
 		instance_node->AddModelInstanceNode(new_node);
 	}
 	new_node->SetModelNode(model_node);
-	ZMasher::Vector3f position;
 
-	//new_node->SetPosition(position);
 	for (short i = 0; i < model_node->ChildCount(); ++i)
 	{
 		InitModelInstanceNode(model_node->GetChild(i), new_node);
@@ -218,8 +216,12 @@ const char* AO_SUFF = "ao";
 const char* ROUGHNESS_SUFF = "ro";
 const char* SUBSTANCE_SUFF = "su";
 
+
 ZMModelInstanceNode* ZMModelFactory::LoadModelInstance(const char * model_path)
 {
+	// TODO: 
+	// Don't read an xml file every single time we're loading a model -.-
+	// it might already be loaded
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLError error_code = doc.LoadFile(model_path);
 	if (error_code != tinyxml2::XMLError::XML_SUCCESS)
