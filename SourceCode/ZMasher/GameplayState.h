@@ -34,6 +34,7 @@ private:
 
 	void ShootBullet();
 	void SpawnEnemy(bool random_x = false);
+	void SpawnAABB();
 
 	Camera* m_Camera;
 	ZMasher::Matrix44f m_CameraForwardMatrix;
@@ -41,4 +42,6 @@ private:
 	float m_RotationX;
 	float m_RotationY;
 	float m_SpeedModifier;
+
+	class DebugLineInfo* m_DebugLine;
 };

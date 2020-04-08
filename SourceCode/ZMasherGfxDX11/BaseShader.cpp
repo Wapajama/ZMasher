@@ -1,5 +1,5 @@
 #include "BaseShader.h"
-
+#include <ZMasherGfxDX11/ZMVertexTypes.h>
 #ifdef ZMASHER_DX12
 
 #else
@@ -51,6 +51,7 @@ static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const 
 
 BaseShader::BaseShader()
 {
+	m_VertexType = nullptr;
 	m_Effect = nullptr;
 	m_Layout = nullptr;
 	m_MatrixBuffer = nullptr;
@@ -80,7 +81,6 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	MatrixBufferType* dataPtr = nullptr;
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	
 	DirectX::XMMATRIX worldLocal = DirectX::XMMatrixTranspose(constant_buffer.world);
 	DirectX::XMMATRIX viewLocal = DirectX::XMMatrixTranspose(constant_buffer.view);
 	DirectX::XMMATRIX projectionLocal = DirectX::XMMatrixTranspose(constant_buffer.projection);
@@ -103,7 +103,10 @@ bool BaseShader::SetShaderVars(ID3D11DeviceContext* context,
 	{
 		return false;//couldn't find Matrixbuffer!
 	}
-	m_Technique->GetPassByIndex(0)->Apply(0, context);//fix more advanced system for this
+	infoResult = m_Technique->GetPassByIndex(0)->Apply(0, context);//fix more advanced system for this
+
+	RETURNF_IF_FAILED(infoResult);
+	
 	return true;
 }
 
@@ -135,8 +138,11 @@ bool BaseShader::Create(const char* source_file, ID3D11Device* device)
 	m_Technique = m_Effect->GetTechniqueByIndex(0);//TODO: dangerous, unorthodox, change to a more sustainable solution
 	D3DX11_PASS_DESC passDesc;
 	infoResult = m_Technique->GetPassByIndex(0)->GetDesc(&passDesc);
-	auto numElements = sizeof(g_PosNormUv) / sizeof(g_PosNormUv[0]);
-	infoResult = device->CreateInputLayout(g_PosNormUv, numElements,
+	if (m_VertexType == nullptr)
+	{
+		return false;
+	}
+	infoResult = device->CreateInputLayout(m_VertexType->array, m_VertexType->nElements,
 										   passDesc.pIAInputSignature,
 										   passDesc.IAInputSignatureSize, &m_Layout);
 	RETURNF_IF_FAILED(infoResult);

@@ -37,30 +37,6 @@ struct AIComponent
 	eAIBehaviour m_CurrentBehaviour;//TODO: switch to a decisiontree/statemachine pattern
 };
 
-struct AIIndexPair
-{
-	GameObject game_object;
-	int index;
-};
-
-class AIComparer
-	: public ZMasher::BSTComparator<AIIndexPair>
-{
-public:
-	bool LessThan(const AIIndexPair& one,const AIIndexPair& two)const override
-	{
-		return one.game_object.m_ID < two.game_object.m_ID;
-	}
-	bool GreaterThan(const AIIndexPair& one,const AIIndexPair& two)const override
-	{
-		return one.game_object.m_ID > two.game_object.m_ID;
-	}
-	bool Equals(const AIIndexPair& one,const AIIndexPair& two)const override
-	{
-		return one.game_object == two.game_object;
-	}
-};
-
 class AIComponentManager :
 	public ComponentManager<AIComponent>
 		
@@ -79,12 +55,9 @@ public:
 	short GetNumberOfAIs();
 
 private:
-	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
 	void HardcodedAITypes();
 
 	friend class AISystem;
 	GrowArray<AIType> m_AITypes;
-	//GrowArray<AIComponent, short, 512> m_AIComponents;
-	//ZMasher::BinarySearchTree<AIIndexPair, AIComparer> m_LookupSet;
 };
 

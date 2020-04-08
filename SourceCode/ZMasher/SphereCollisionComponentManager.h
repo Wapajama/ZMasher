@@ -3,55 +3,19 @@
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMVector3.h>
 #include <DataStructures\BinarySearchTree.h>
-
-struct CollCallbackArgs
-{
-	class SphereCollisionComponent* a;
-	SphereCollisionComponent* b;
-	class MomentumComponent* x;
-	MomentumComponent* y;
-};
-
-typedef void(*CollisionCallBack)(CollCallbackArgs args);
-
-typedef unsigned short CollisionType;
-enum eCOLLISIONTYPE: CollisionType
-{
-	eSphere = 1 << 0,
-	eAABB = 1 << 1,
-};
+#include <ZMasher\CollisionDefines.h>
 
 struct SphereCollisionComponent
 {
+	//DONT CHANGE THE ORDER OF THE VARIABLES
 	CollisionType m_CollisionFilter;
 	float m_Radius;
 	GameObject m_GameObject;
 	CollisionCallBack m_CollisionCallback = nullptr;
+	//index for the collision info array in the collision system. -1 if nothing, else > 0
+	int collInfoIndex = -1;
 };
 
-//struct SphereIndexPair
-//{
-//	GameObject game_object;
-//	int index;
-//};
-//
-//class SphereComparer
-//	: public ZMasher::BSTComparator<SphereIndexPair>
-//{
-//public:
-//	bool LessThan(const SphereIndexPair& one,const SphereIndexPair& two)const override
-//	{
-//		return one.game_object.m_ID < two.game_object.m_ID;
-//	}
-//	bool GreaterThan(const SphereIndexPair& one,const SphereIndexPair& two)const override
-//	{
-//		return one.game_object.m_ID > two.game_object.m_ID;
-//	}
-//	bool Equals(const SphereIndexPair& one,const SphereIndexPair& two)const override
-//	{
-//		return one.game_object == two.game_object;
-//	}
-//};
 
 class SphereCollisionComponentManager :
 	public ComponentManager<SphereCollisionComponent>
@@ -64,21 +28,12 @@ public:
 						const float radius, 
 						GameObject game_object,
 						CollisionCallBack callback);
-
+	void DeleteComponentCallback(GameObject component)override;
 	bool Init()override;
 	void Destroy()override;
 	bool Update()override;
-	//void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
-	//MomentumComponent* GetMomentumComponent(GameObject game_object);
-	//SphereCollisionComponent* GetSphereCollisionComponent(GameObject game_object);
 
 private:
-	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
-
-	//GrowArray<SphereCollisionComponent, short, 512> m_Spheres;
-	//GrowArray<MomentumComponent, short, 512> m_Momentums;
-
-	//ZMasher::BinarySearchTree<SphereIndexPair, SphereComparer> m_LookupSet;
 
 	friend class CollisionSystem;
 };

@@ -6,6 +6,7 @@
 #include <Time/TimerManager.h>
 #include <Time/Profiler.h>
 #include <ZMasherGfxDX11\dllHeader.h>
+#include <ZMasherGfxDX11/DebugLine.h>
 
 class Camera;
 class ZMD3DInterface;
@@ -43,14 +44,19 @@ private:
 	void RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInstanceNode* model, const ZMasher::Matrix44f& parent_orientation);
 	void RenderSkybox(ZMD3DInterface& d3dinterface);
 	void Render2DTerrain(ZMD3DInterface& d3dinterface);
+	void RenderDebugLines(ZMD3DInterface& d3dinterface);
+
 
 	//TODO: create scene class that wraps all content specific data
 	BaseShader* m_Shader; 
 	BaseShader* m_SkyboxShader;
 	BaseShader* m_TerrainShader;
+	BaseShader* m_DebugLineShader;
 	Camera* m_Camera;
 	ZMModelInstanceNode* m_Skybox;
 	ZMModelInstanceNode* m_Terrain;
+	class DebugLine* m_DebugLine;
+
 
 #ifdef BENCHMARK
 	ProfilerTaskID m_ModelsTimeStamp;

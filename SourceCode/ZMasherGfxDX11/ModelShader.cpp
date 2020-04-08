@@ -1,6 +1,4 @@
 #include "ModelShader.h"
-#include <Windows.h>
-#include "ZMVertexTypes.h"
 #include <FX11\inc\d3dx11effect.h>
 
 ModelShader::ModelShader()
@@ -10,7 +8,6 @@ ModelShader::ModelShader()
 		m_Textures[i] = nullptr;
 	}
 }
-
 
 ModelShader::~ModelShader()
 {

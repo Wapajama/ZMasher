@@ -54,7 +54,11 @@ public:
 
 	inline ID3DX11Effect* GetDX11Effect();
 	inline ID3DX11EffectTechnique* GetDX11Technique();
+	inline void SetVertexType(class VertexType* vert_type){m_VertexType = vert_type;}
+
 private:
+
+	VertexType* m_VertexType;
 
 	ID3D11InputLayout*	m_Layout;
 	ID3D11Buffer*		m_MatrixBuffer;

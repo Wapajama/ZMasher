@@ -164,6 +164,8 @@
     <ClCompile Include="..\GlobalIncludes\DynamicAllocation.cpp" />
     <ClCompile Include="BaseShader.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugLine.cpp" />
+    <ClCompile Include="DebugLineShader.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialFactory.cpp" />
     <ClCompile Include="ModelShader.cpp" />
@@ -180,6 +182,8 @@
   <ItemGroup>
     <ClInclude Include="BaseShader.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugLine.h" />
+    <ClInclude Include="DebugLineShader.h" />
     <ClInclude Include="dllHeader.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialFactory.h" />
@@ -236,6 +240,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Shaders\color.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="FlatTerrain.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

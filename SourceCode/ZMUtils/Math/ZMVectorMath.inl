@@ -1,6 +1,7 @@
 #pragma once
 #include "mathdefines.h"
 #include "ZMVector4.h"
+#include "ZMVector3.h"
 namespace ZMasher
 {
 
@@ -431,9 +432,9 @@ namespace ZMasher
 	inline Vector3f::Vector3f(const Vector3f& copy)
 	{
 		//m_Data = copy.m_Data;
-		x = copy.x;
-		y = copy.y;
-		z = copy.z;
+		this->x = copy.x;
+		this->y = copy.y;
+		this->z = copy.z;
 	}
 
 	inline Vector3f::Vector3f(const Vector4f& vector4)

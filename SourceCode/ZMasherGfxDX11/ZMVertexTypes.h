@@ -6,18 +6,36 @@
 #define Float4InputDesc DXGI_FORMAT_R32G32B32A32_FLOAT
 #define Float2InputDesc DXGI_FORMAT_R32G32_FLOAT
 
-static D3D11_INPUT_ELEMENT_DESC g_PosUv[2]
+struct VertexType
+{
+	D3D11_INPUT_ELEMENT_DESC* array;
+	int nElements;
+};
+
+
+static D3D11_INPUT_ELEMENT_DESC g_PosUvArray[2]
 {
 	{ "POSITION", 0, Float4InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD", 0, Float2InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-static D3D11_INPUT_ELEMENT_DESC g_PosNormUv[3]
+static D3D11_INPUT_ELEMENT_DESC g_PosNormUvArray[3]
 {
 	{ "POSITION", 0, Float4InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD", 0, Float2InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL", 0,	 Float4InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
+
+static D3D11_INPUT_ELEMENT_DESC g_PosColArray[2] =
+{
+	{ "POSITION",	0, Float4InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",		0, Float4InputDesc,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
+
+static VertexType g_PosUv{g_PosUvArray, 2};
+static VertexType g_PosUVNorm{g_PosNormUvArray, 3};
+static VertexType g_PosCol{g_PosColArray, 2};
+
 
 struct VertexPosUV
 {
@@ -74,6 +92,6 @@ struct VertexPosNormUV
 
 struct VertexPosCol
 {
-	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT4 position;
 	DirectX::XMFLOAT4 color;
 };

@@ -2,11 +2,10 @@
 
 GameObjectManager::GameObjectManager()
 	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
-	, m_CollisionSystem(&m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager)
+	, m_CollisionSystem(&m_SphereCollisionCompManager, &m_AABBComponentManager, &m_MomentumComponentManager, &m_TransformManager)
 	, m_AISystem(&m_AICompManager, &m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager)
 	, m_GameObjects(1024)
 {
-	//m_CurrentID = NULL_GAME_OBJECT.m_ID + 1;
 }
 
 GameObjectManager::~GameObjectManager()
@@ -60,6 +59,7 @@ bool GameObjectManager::Init()
 	m_ComponentManagers.Add(&m_MeshManager);
 	m_ComponentManagers.Add(&m_TransformManager);
 	m_ComponentManagers.Add(&m_SphereCollisionCompManager);
+	m_ComponentManagers.Add(&m_AABBComponentManager);
 	m_ComponentManagers.Add(&m_MomentumComponentManager);
 	m_ComponentManagers.Add(&m_AICompManager);
 
@@ -77,13 +77,6 @@ void GameObjectManager::Destroy()
 
 GameObject GameObjectManager::CreateGameObject()
 {
-	//GameObject new_game_object;
-	//new_game_object.m_ID = m_CurrentID;
-	//GAME_OBJECT_TOGGLE_ALIVE_GO(new_game_object);
-
-	//++m_CurrentID;
-	//return new_game_object;
-
 	GameObject new_GameObject;
 	if (m_FreeIndexes.Size() > 0)
 	{

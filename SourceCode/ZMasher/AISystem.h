@@ -3,6 +3,7 @@
 #include <Math\ZMVector3.h>
 #include <Math\ZMMatrix44.h>
 #include <Time/Profiler.h>
+#include <ZMasher/GameObject.h>
 class AISystem
 	:public BaseSystem
 {
@@ -17,6 +18,15 @@ public:
 	bool Simulate(const float dt);
 
 private:
+	struct AIBehaviourArgs
+	{
+		class TransformComponent* transform_comp;
+		class AIComponent* ai_comp;
+		GameObject game_object;
+	};
+
+	void HitlerBehaviour(const AIBehaviourArgs& args);
+	void BasicTurretBehaviour(const AIBehaviourArgs& args);
 
 	ProfilerTaskID m_AIInternalTimeStamp;
 
@@ -33,13 +43,14 @@ private:
 
 	ZMasher::Vector3f Seek(const SteeringArgs& args);
 	ZMasher::Vector3f Arrive(const SteeringArgs& args);
+	void SpawnBullet(const AIBehaviourArgs & args);
 
 	void ClampMaxSpeed(ZMasher::Vector3f& steering, const class AIType* type);
 
-	AIComponentManager* m_AIMngr;
-	SphereCollisionComponentManager* m_SphereCollisionMngr;
-	MomentumComponentManager* m_MomentumMngr;
-	TransformComponentManager* m_TransformMngr;
+	class AIComponentManager* m_AIMngr;
+	class SphereCollisionComponentManager* m_SphereCollisionMngr;
+	class MomentumComponentManager* m_MomentumMngr;
+	class TransformComponentManager* m_TransformMngr;
 	
 };
 

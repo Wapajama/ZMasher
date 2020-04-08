@@ -3,11 +3,14 @@
 #include "ZMD3DInterface.h"
 
 #include "ModelShader.h"
+#include "DebugLineShader.h"
 #include <ZMUtils\Utility\ZMasherUtilities.h>
 #include "ZMModelFactory.h"
 #include "ZMModelNode.h"
 #include <ZMUtils\File\PathManager.h>
 #include <D3D11.h>
+#include <ZMasherGfxDX11/ZMVertexTypes.h>
+#include <ZMasherGfxDX11/DebugLine.h>
 
 void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
 {
@@ -62,8 +65,9 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass n****z aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
-	RenderSkybox(d3dinterface);
+	//RenderSkybox(d3dinterface);
 	Render2DTerrain(d3dinterface);
+	RenderDebugLines(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)
 	{
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
@@ -87,22 +91,32 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerMan
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
 
 	m_Shader = new ModelShader();
-
-	const bool succeded = m_Shader->Create("PBRShader.fx", d3dinterface.GetDevice());
-	ASSERT(succeded, "shader failed to init!");
+	m_Shader->SetVertexType(&g_PosUVNorm);
+	const bool succeeded = m_Shader->Create("PBRShader.fx", d3dinterface.GetDevice());
+	ASSERT(succeeded, "model shader failed to init!");
 
 	m_SkyboxShader = new ModelShader();
-	const bool succeded_skybox = m_SkyboxShader->Create("Skybox.fx", d3dinterface.GetDevice());
-	ASSERT(succeded_skybox, "shader failed to init!");
+	m_SkyboxShader->SetVertexType(&g_PosUVNorm);
+	const bool succeeded_skybox = m_SkyboxShader->Create("Skybox.fx", d3dinterface.GetDevice());
+	ASSERT(succeeded_skybox, "skybox shader failed to init!");
 
 	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox((PathManager::Instance()->GetDataPath() + "cubemaps/Skybox001.dds").c_str());
 
 	m_TerrainShader = new ModelShader();
-	const bool succeded_flatTerrain = m_TerrainShader->Create("FlatTerrain.fx", d3dinterface.GetDevice());
-	ASSERT(succeded_flatTerrain, "shader failed to init!");
+	m_TerrainShader->SetVertexType(&g_PosUVNorm);
+	const bool succeeded_flatTerrain = m_TerrainShader->Create("FlatTerrain.fx", d3dinterface.GetDevice());
+	ASSERT(succeeded_flatTerrain, "terrain shader failed to init!");
+
+	m_DebugLineShader = new DebugLineShader();
+	m_DebugLineShader->SetVertexType(&g_PosCol);
+	const bool succeeded_debugLine = m_DebugLineShader->Create("Color.fx", d3dinterface.GetDevice());
+	ASSERT(succeeded_debugLine, "debugLine shader failed to init!");
 
 	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain((PathManager::Instance()->GetDataPath()+ "maps/grass.dds").c_str());
 
+	m_DebugLine = new DebugLine();
+	m_DebugLine->Create(d3dinterface.GetDevice());
+	
 }
 
 void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
@@ -155,7 +169,7 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 														projectionMatrix,
 														cam_pos, 
 														m_Dt});
-		ASSERT(succeded, "shader failed to init!");
+		ASSERT(succeded, "shader failed to SetShaderVars!");
 		d3dinterface.GetContext()->DrawIndexed(model->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
 		
 	}
@@ -253,4 +267,81 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 	m_TerrainShader->Apply(d3dinterface.GetContext());
 
 	d3dinterface.GetContext()->DrawIndexed(m_Terrain->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
+}
+
+void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
+{
+	m_Camera->UpdateProjMatrix();
+	ZMasher::Matrix44f camera_ori;
+	
+	ZMasher::Matrix44f world = m_Camera->GetWorldOrientation();
+	world.SetTranslation(ZMasher::Vector4f(m_Camera->GetPosition(),1));
+	const ZMasher::Matrix44f view_matrix = ~world;
+
+	DirectX::XMMATRIX modelWorldMatrix, cameraWorldMatrix, projectionMatrix;
+	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
+	m_Camera->GetProjectionMatrix(projectionMatrix);
+
+	DirectX::XMVECTOR cam_pos;
+	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
+	cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
+	cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
+	cam_pos.m128_f32[3] = 1.f;
+
+	// REPLACE THIS
+	ZMasher::Matrix44f current_transform;
+	current_transform = m_Terrain->GetTransform();
+
+	SetXMMatrix(modelWorldMatrix, current_transform);
+	// -- REPLACE THIS
+
+
+	const bool succeded = m_DebugLineShader->SetShaderVars(d3dinterface.GetContext(),
+														{modelWorldMatrix,
+														cameraWorldMatrix,
+														projectionMatrix,
+														cam_pos, 
+														m_Dt});
+	ASSERT(succeded, "shader failed to init!");
+
+	GrowArray<DebugLineInfo*>& debugLines = ZMModelFactory::Instance()->m_DebugLines;
+	for (int i = 0; i < debugLines.Size(); ++i)
+	{
+		DWORD colour;
+		switch (debugLines[i]->m_Colour)
+		{
+		case eColour::BLUE:
+			colour = txtBlue;
+			break;
+		case eColour::RED:
+			colour = txtRed;
+			break;
+		case eColour::GREEN:
+			colour = txtGreen;
+		default:
+			break;
+		}
+
+		int a = (colour >> 24) & 0xff;
+		int r = (colour >> 16) & 0xff;
+		int g = (colour >> 8) & 0xff;
+		int b = (colour) & 0xff;
+		
+		ZMasher::Vector4f colour4f;
+		colour4f.x = ( ( FLOAT ) r / 255.0f);
+		colour4f.y = ( ( FLOAT ) g / 255.0f);
+		colour4f.z = ( ( FLOAT ) b / 255.0f);
+		colour4f.w = ( ( FLOAT ) a / 255.0f);
+
+		m_DebugLine->SetPositions(debugLines[i]->a-m_Camera->GetPosition(), debugLines[i]->b-m_Camera->GetPosition());
+		m_DebugLine->SetColour(colour4f);
+
+		m_DebugLine->Apply(d3dinterface.GetContext());
+
+		DebugLineShader* dlShader = reinterpret_cast<DebugLineShader*>( m_DebugLineShader);
+
+		dlShader->Apply(d3dinterface.GetContext());
+
+		d3dinterface.GetContext()->Draw( 2, 0 );
+	}
 }

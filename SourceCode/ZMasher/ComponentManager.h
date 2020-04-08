@@ -40,11 +40,9 @@ public:
 	virtual bool Init() = 0;
 	virtual void Destroy() {};
 	virtual bool Update() = 0;
+	virtual void DeleteComponentCallback(GameObject component){};
 
 	virtual void RemoveComponentWithGameObject(GameObject object, bool directly = false)=0;
-
-protected:
-	//virtual void RemoveComponentWithGameObjectInternal(GameObject object);
 };
 
 
@@ -137,7 +135,7 @@ void COMPONENTMANAGER_DECL::RemoveComponentWithGameObjectInternal(GameObject obj
 			auto new_comp = m_LookupSet.Find({ new_game_object, -1 });
 			new_comp->value.index = comp->value.index;
 		}
-
+		this->DeleteComponentCallback(object);
 		m_LookupSet.Delete({ object,-1 });
 	}
 }

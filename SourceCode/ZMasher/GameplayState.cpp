@@ -24,10 +24,11 @@ GameplayState::GameplayState(Camera* camera)
 	m_SpeedModifier(1.f)
 {
 	m_CameraForwardMatrix.RotateX(m_Camera->GetWorldOrientation().GetRotationY());
-	ZMModelInstanceNode* enemy = ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model").c_str());
-	ZMModelInstanceNode* bullet = ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "sphere.model").c_str());
-	enemy->MarkForDelete();
-	bullet->MarkForDelete();
+	//ZMModelInstanceNode* enemy = ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model").c_str());
+	//ZMModelInstanceNode* bullet = ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "sphere.model").c_str());
+	//
+	//enemy->MarkForDelete();
+	//bullet->MarkForDelete();
 }
 
 GameplayState::~GameplayState()
@@ -37,26 +38,48 @@ GameplayState::~GameplayState()
 
 void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
 {
-	GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
-	GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
+	//GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
+	//GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
 	return; 
 };
 
-#define NUMBER_OF_ENEMIES 100
+#define NUMBER_OF_ENEMIES 800
 
+#define NUMBER_OF_BOXES 80
+
+const float ai_range = 300.f;
 bool GameplayState::Init(const char* args)
 {	
 	GameObjectManager::Create();
-	m_Camera->SetPosition(ZMasher::Vector3f(100, 0, -100));
+	m_Camera->SetPosition(ZMasher::Vector3f(0, 100, 0));
+
+	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
+	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
+	transform.SetTranslation(ZMasher::Vector4f(ai_range, 1, ai_range*0.5f,1));
+	transform.RotateY(M_PI_2);
+	GameObject new_object = GameObjectManager::Instance()->CreateGameObject();
+	GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
+	GameObjectManager::Instance()->MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model").c_str()));
+	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
+	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
+	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::BASIC_TURRET);
+
+	//m_DebugLine = ZMModelFactory::Instance()->CreateDebugLine(ZMasher::Vector3f(50, -50, 0), ZMasher::Vector3f(0, 50, 50), eColour::RED);
 	
 	for (int i = 0; i < NUMBER_OF_ENEMIES; ++i)
 	{
 		SpawnEnemy(true);
 	}
 
+	for (int i = 0; i < NUMBER_OF_BOXES; ++i)
+	{
+		SpawnAABB();
+	}
+
 	return true;
 }
-const float ai_range = 300.f;
+
+
 void GameplayState::SpawnEnemy(bool random_x)
 {
 	ZMasher::Vector4f position(0, 1, 0.f, 1.f);
@@ -69,15 +92,27 @@ void GameplayState::SpawnEnemy(bool random_x)
 	GameObject new_object = GameObjectManager::Instance()->CreateGameObject();
 	GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
 	GameObjectManager::Instance()->MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model").c_str()));
-	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 0.1, new_object, g_TestCallBack);
-	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 10);
-	
+	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
+	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
-
 	GameObjectManager::Instance()->AICompManager()->GetComponent(new_object)->m_TargetPos = (ZMasher::Vector3f(ai_range, 1, ai_range*0.5f));
 }
 
+void GameplayState::SpawnAABB()
+{
+	float halfWidth[3] = {10,5,10};
+	ZMasher::Vector4f position(0, 1, halfWidth[1], 1.f);
+	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
+	transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-ai_range, ai_range), position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), 0));
+
+	GameObject new_object = GameObjectManager::Instance()->CreateGameObject();
+	GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
+	GameObjectManager::Instance()->AABBCompManager()->AddComponent(eCOLLISIONTYPE::eBlocker, halfWidth, new_object, g_TestCallBack);
+
+}
+
 #define KEY_DOWN(key) InputManager::Instance()->IsKeyDown(key)
+
 bool GameplayState::Update(const float dt)
 {
 	m_Dt = dt;
@@ -174,8 +209,8 @@ void GameplayState::ShootBullet()
 	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + m_Camera->GetWorldOrientation().GetVectorForward() * 20);
 	GameObjectManager::Instance()->TransformManager()->AddComponent(bullet, bulletTransform);
 	GameObjectManager::Instance()->MeshCompManager()->AddComponent(bullet, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "sphere.model").c_str()));
-	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 1.f, 1337, 10);
-	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 15, bullet, g_TestCallBack);
+	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 1.f, 1337, 3);
+	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 20, bullet, g_TestCallBack);
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (m_Camera->GetWorldOrientation().GetVectorForward()).ToVector3f() * global_bullet_speed);
 }
 

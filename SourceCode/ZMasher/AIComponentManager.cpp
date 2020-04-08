@@ -35,9 +35,9 @@ bool AIComponentManager::Init()
 
 void AIComponentManager::HardcodedAITypes()
 {
-	m_AITypes[eAIType::ZOLDIER].m_ArrivedDist = 3.0f;
+	m_AITypes[eAIType::ZOLDIER].m_ArrivedDist = 15.0f;
 	m_AITypes[eAIType::ZOLDIER].m_ArrivingDist = 30.f;
-	m_AITypes[eAIType::ZOLDIER].m_MaxSpeed = 30.f;
+	m_AITypes[eAIType::ZOLDIER].m_MaxSpeed = 10.f;
 }
 
 bool AIComponentManager::Update()

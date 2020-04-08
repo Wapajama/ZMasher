@@ -27,12 +27,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABBComponentManager.h" />
     <ClInclude Include="AIComponentManager.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CameraState.h" />
+    <ClInclude Include="CollisionDefines.h" />
+    <ClInclude Include="DebugLineComponentManager.h" />
+    <ClInclude Include="GameObjectLookup.h" />
     <ClInclude Include="ModelViewerState.h" />
     <ClInclude Include="MomentumComponentManager.h" />
     <ClInclude Include="SphereCollisionComponentManager.h" />
@@ -51,12 +55,14 @@
     <ClInclude Include="ZMasherMain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABBComponentManager.cpp" />
     <ClCompile Include="AIComponentManager.cpp" />
     <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CameraState.cpp" />
+    <ClCompile Include="DebugLineComponentManager.cpp" />
     <ClCompile Include="ModelViewerState.cpp" />
     <ClCompile Include="MomentumComponentManager.cpp" />
     <ClCompile Include="SphereCollisionComponentManager.cpp" />

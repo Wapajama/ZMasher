@@ -50,39 +50,63 @@ bool AISystem::Simulate(const float dt)
 		{
 			continue;
 		}
-		const ZMasher::Vector3f position = ZMasher::Vector3f(transform_comp->m_Transform.GetTranslation());
-		const float length_to_target = (ai_comp->m_TargetPos - position).Length();
-		const AIType* ai_type = m_AIMngr->GetAIType(m_AIMngr->m_Components[i].m_Type);
-
-		if (length_to_target < ai_type->m_ArrivedDist)
+		switch (ai_comp->m_Type)
 		{
-			transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f( -ai_range, position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), transform_comp->m_Transform.GetTranslation().w));
-			ai_comp->m_TargetPos.z = ai_range*0.5;
-			continue;
+		case eAIType::ZOLDIER:
+		{
+			HitlerBehaviour({transform_comp, ai_comp, game_object});
 		}
-		SteeringArgs steer_args{ai_comp, ai_type, ai_comp->m_TargetPos - position}; 
-
-		FaceDirection(transform_comp->m_Transform, steer_args.m_ToTarget);
-
-		ZMasher::Vector3f steering(0,0,0);
-
-		if (steer_args.m_ToTarget.Length() < steer_args.m_Type->m_ArrivingDist)
+		break;
+		case eAIType::BASIC_TURRET:
 		{
-			steering += Arrive(steer_args);
+			BasicTurretBehaviour({transform_comp, ai_comp, game_object});
 		}
-		else
-		{
-			steering += Seek(steer_args);
-		}
+			break;
 
-		ClampMaxSpeed(steering, ai_type);
-		auto momentum = m_MomentumMngr->GetComponent(game_object);
-		if (momentum != nullptr)
-		{
-			momentum->m_Speed = steering;
+		default:
+			break;
 		}
 	}
 	return true;
+}
+
+void AISystem::HitlerBehaviour(const AIBehaviourArgs& args)
+{
+	const ZMasher::Vector3f position = ZMasher::Vector3f(args.transform_comp->m_Transform.GetTranslation());
+	const float length_to_target = (args.ai_comp->m_TargetPos - position).Length();
+	const AIType* ai_type = m_AIMngr->GetAIType(args.ai_comp->m_Type);
+
+	if (length_to_target < ai_type->m_ArrivedDist)
+	{
+		args.transform_comp->m_Transform.SetTranslation(ZMasher::Vector4f(-ai_range, position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), args.transform_comp->m_Transform.GetTranslation().w));
+		args.ai_comp->m_TargetPos.z = ai_range * 0.5;
+		return;
+	}
+	SteeringArgs steer_args{ args.ai_comp, ai_type, args.ai_comp->m_TargetPos - position };
+
+	FaceDirection(args.transform_comp->m_Transform, steer_args.m_ToTarget);
+
+	ZMasher::Vector3f steering(0, 0, 0);
+
+	if (steer_args.m_ToTarget.Length() < steer_args.m_Type->m_ArrivingDist)
+	{
+		steering += Arrive(steer_args);
+	} else
+	{
+		steering += Seek(steer_args);
+	}
+
+	ClampMaxSpeed(steering, ai_type);
+	MomentumComponent* momentum = m_MomentumMngr->GetComponent(args.game_object);
+	if (momentum != nullptr)
+	{
+		momentum->m_Speed = steering;
+	}
+}
+
+void AISystem::BasicTurretBehaviour(const AIBehaviourArgs & args)
+{
+
 }
 
 ZMasher::Vector3f AISystem::Seek(const SteeringArgs& args)
@@ -99,6 +123,26 @@ ZMasher::Vector3f AISystem::Arrive(const SteeringArgs& args)
 	float speed = (args.m_Type->m_MaxSpeed * args.m_ToTarget.Length())/args.m_Type->m_ArrivingDist;
 	return steering*speed;
 }
+
+const float global_bullet_speed = 300.f;
+void AISystem::SpawnBullet(const AIBehaviourArgs & args)
+{
+	GameObject bullet = GameObjectManager::Instance()->CreateGameObject();
+	ZMasher::Matrix44f bulletTransform = args.transform_comp->m_Transform;
+	bulletTransform.SetTranslation(ZMasher::Vector4f(args.transform_comp->m_Transform.GetTranslation()));
+	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + args.transform_comp->m_Transform.GetVectorForward() * 20);
+	GameObjectManager::Instance()->TransformManager()->AddComponent(bullet, bulletTransform);
+	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 1.f, 1337, 3);
+	//GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 2, bullet, g_TestCallBack);
+	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (args.transform_comp->m_Transform.GetVectorForward()).ToVector3f() * global_bullet_speed);
+} 
+
+//void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
+//{
+//	//GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
+//	//GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
+//	return; 
+//};
 
 void AISystem::AddNewZoldier()
 {

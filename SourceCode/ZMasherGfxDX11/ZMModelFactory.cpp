@@ -451,3 +451,19 @@ ZMModelInstanceNode* ZMModelFactory::Load2DTerrain(	const char* texture_path,
 	model->GetMaterial()->AddTexture(eTextureType::ALBEDO, temp_texture->GetResourceView());
 	return InitModelInstanceNode(new ZMModelNode(model));
 }
+
+DebugLineInfo* ZMModelFactory::CreateDebugLine(const ZMasher::Vector3f & point_a, const ZMasher::Vector3f & point_b, eColour colour)
+{
+	DebugLineInfo* debugLine = new DebugLineInfo{point_a, point_b, colour};
+	m_DebugLines.Add(debugLine);
+	return debugLine;
+}
+
+void ZMModelFactory::RemoveDebugLine(DebugLineInfo* debugLine)
+{
+	auto index = m_DebugLines.Find(debugLine);
+	if(index != m_DebugLines.found_none)
+	{
+		m_DebugLines.DeleteCyclic(index);
+	}
+}
