@@ -11,12 +11,13 @@ SphereCollisionComponentManager::~SphereCollisionComponentManager()
 {
 }
 
-void SphereCollisionComponentManager::AddComponent(	const CollisionType filter, 
+SphereCollisionComponent* SphereCollisionComponentManager::AddComponent(	const CollisionType filter, 
 												const float radius, 
 												GameObject game_object,
 												CollisionCallBack callback)
 {
 	ComponentManager::AddComponent({ filter, radius, game_object, callback }, game_object);
+	return &m_Components.GetLast();
 }
 
 void SphereCollisionComponentManager::DeleteComponentCallback(GameObject component)

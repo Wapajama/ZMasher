@@ -34,6 +34,7 @@ struct AIComponent
 	GameObject m_GameObject;
 	eAIType m_Type;//"Prefabs"
 	ZMasher::Vector3f m_TargetPos;//could be used for search, arrive, flee, etc
+	ZMasher::Vector3f m_LastFramePos;
 	eAIBehaviour m_CurrentBehaviour;//TODO: switch to a decisiontree/statemachine pattern
 };
 
@@ -45,7 +46,7 @@ public:
 	AIComponentManager();
 	~AIComponentManager();
 
-	void AddComponent(GameObject game_object, eAIType type, 
+	AIComponent* AddComponent(GameObject game_object, eAIType type,
 					  const ZMasher::Vector3f& target_pos = ZMasher::Vector3f(0,0,0));
 
 	const AIType* GetAIType(eAIType type);

@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "mathdefines.h"
 #include "ZMVector4.h"
 #include "ZMVector3.h"
@@ -63,9 +64,9 @@ namespace ZMasher
 		return Vector4f(_mm_mul_ps(_mm_set_ps1(scalar), operand.m_Data));
 #else
 		return Vector4f(operand.x * scalar,
-					   operand.y * scalar,
-					   operand.z * scalar,
-					   operand.w * scalar);
+						operand.y * scalar,
+						operand.z * scalar,
+						operand.w * scalar);
 #endif // ZM_MATH_USE_SIMD
 	}
 
@@ -75,9 +76,9 @@ namespace ZMasher
 		return Vector4f(_mm_div_ps(_mm_set_ps1(scalar), operand.m_Data));
 #else
 		return Vector4f(operand.x / scalar,
-					   operand.y / scalar,
-					   operand.z / scalar,
-					   operand.w / scalar);
+						operand.y / scalar,
+						operand.z / scalar,
+						operand.w / scalar);
 #endif // ZM_MATH_USE_SIMD
 	}
 
@@ -88,7 +89,7 @@ namespace ZMasher
 		return Vector4f(_mm_sub_ps(
 			_mm_mul_ps(_mm_shuffle_ps(operand1.m_Data, operand1.m_Data, _MM_SHUFFLE(3, 0, 2, 1)), _mm_shuffle_ps(operand2.m_Data, operand2.m_Data, _MM_SHUFFLE(3, 1, 0, 2))),
 			_mm_mul_ps(_mm_shuffle_ps(operand1.m_Data, operand1.m_Data, _MM_SHUFFLE(3, 1, 0, 2)), _mm_shuffle_ps(operand2.m_Data, operand2.m_Data, _MM_SHUFFLE(3, 0, 2, 1)))
-			));
+		));
 #else
 		return Vector4f(Cross(Vector3f(operand1), Vector3f(operand2)));
 #endif // ZM_MATH_USE_SIMD
@@ -112,6 +113,16 @@ namespace ZMasher
 			leftOperand.w * rightOperand.w;
 #endif // ZM_MATH_USE_SIMD
 
+	}
+
+	// radians
+	inline float AngleBetweenVectors(const Vector4f& leftOperand, const Vector4f& rightOperand, Vector4f upVector = Vector4f(0.f, 1.f, 0.f, 0.f))
+	{
+		const float dot = Dot(leftOperand, rightOperand);
+		Vector4f cross = Cross4(leftOperand, rightOperand);
+		const float crossDot = Dot(cross, upVector);
+
+		return crossDot > 0.f ? -acos(dot) : acos(dot);
 	}
 
 	ZM_ALWAYS_INLINE const float Length2(const Vector4f& operand)
@@ -366,8 +377,8 @@ namespace ZMasher
 		return Vector3f(_mm_mul_ps(_mm_set_ps1(scalar), operand.m_Data));
 #else
 		return Vector3f(operand.x * scalar,
-					   operand.y * scalar,
-					   operand.z * scalar);
+						operand.y * scalar,
+						operand.z * scalar);
 #endif // ZM_MATH_USE_SIMD
 	}
 
@@ -377,8 +388,8 @@ namespace ZMasher
 		return Vector3f(_mm_div_ps(_mm_set_ps1(scalar), operand.m_Data));
 #else
 		return Vector3f(operand.x / scalar,
-					   operand.y / scalar,
-					   operand.z / scalar);
+						operand.y / scalar,
+						operand.z / scalar);
 #endif // ZM_MATH_USE_SIMD
 	}
 
@@ -410,7 +421,7 @@ namespace ZMasher
 	ZM_ALWAYS_INLINE const float Length2(const Vector3f& operand)
 	{
 		return ((operand.x * operand.x) +
-				(operand.y * operand.y) +
+			(operand.y * operand.y) +
 				(operand.z * operand.z));
 	}
 

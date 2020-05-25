@@ -25,10 +25,5 @@ public:
 	bool Update()override;
 	bool Update(class TransformComponentManager* transform_manager);//extract this to a render system instead
 	void Destroy()override;
-	bool AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node);
-	//void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
-
-private:
-	//void RemoveComponentWithGameObjectInternal(GameObject object)override;
-	//GrowArray<ModelComponent, short, 512> m_ModelComponents;
+	ModelComponent* AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node);
 };

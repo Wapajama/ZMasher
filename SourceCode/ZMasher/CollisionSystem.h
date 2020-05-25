@@ -2,18 +2,11 @@
 #include <Time/Profiler.h>
 #include <ZMasher/GameObject.h>
 #include <ZMUtils/Math/ZMVector.h>
+#include <CollisionDefines.h>
 class SphereCollisionComponentManager;
 class AABBComponentManager;
 class MomentumComponentManager;
 class TransformComponentManager;
-
-struct CollisionInfoStruct
-{
-	GameObject objectA;
-	GameObject objectB;
-	ZMasher::Vector3f posA;
-	ZMasher::Vector3f posB;
-};
 
 namespace ZMasher
 {
@@ -32,21 +25,27 @@ public:
 	bool Simulate(const float dt);
 
 	CollisionInfoStruct* GetCollisionInfo(const int index);
+	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
+	//void CreateQuery(eCOLLISIONTYPE type, struct AABBCollisionComponent* component);
+
+	CollisionQuery* GetQuery(GameObject owner, int id);
 
 private:
-
 
 	GrowArray<class DebugLineInfo*> m_DebugLines; // buffer of many debuglines to be used for debug rendering
 	bool SimulatePhysics(const float dt);
 	void DrawDebugLines();
 	void DrawAABBs();
 	void DrawSpheres();
+	void DrawSphere(const float radius, const ZMasher::Vector3f pos);
 	void QuerySphereAgainstAllAABBS(const struct SphereCollisionComponent& sphere, ZMasher::Matrix44f* transform);
+	void ResolveQueries();
 	GrowArray<CollisionInfoStruct> m_CollInfos;
+	GrowArray<CollisionQuery> m_Queries;
+	GrowArray<SphereQueryArgs> m_SphereQueries;
 	SphereCollisionComponentManager* m_SphereCollisionCompManager;
 	AABBComponentManager* m_AABBComponentManager;
 	MomentumComponentManager* m_MomentumCompManager;
 	TransformComponentManager* m_TransformCompManager;
 	ProfilerTaskID m_SingleCollisionTimeStamp;
 };
-

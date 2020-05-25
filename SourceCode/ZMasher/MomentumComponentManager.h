@@ -18,7 +18,7 @@ public:
 	MomentumComponentManager();
 	~MomentumComponentManager();
 
-	void AddComponent(
+	MomentumComponent* AddComponent(
 		GameObject game_object,
 		const float weight,
 		const ZMasher::Vector3f& speed = ZMasher::Vector3f());

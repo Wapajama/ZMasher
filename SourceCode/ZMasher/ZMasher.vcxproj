@@ -29,7 +29,9 @@
   <ItemGroup>
     <ClInclude Include="AABBComponentManager.h" />
     <ClInclude Include="AIComponentManager.h" />
+    <ClInclude Include="AIGroup.h" />
     <ClInclude Include="AISystem.h" />
+    <ClInclude Include="AllocationGroup.h" />
     <ClInclude Include="BaseSystem.h" />
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
@@ -57,7 +59,9 @@
   <ItemGroup>
     <ClCompile Include="AABBComponentManager.cpp" />
     <ClCompile Include="AIComponentManager.cpp" />
+    <ClCompile Include="AIGroup.cpp" />
     <ClCompile Include="AISystem.cpp" />
+    <ClCompile Include="AllocationGroup.cpp" />
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />

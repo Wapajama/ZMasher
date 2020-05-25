@@ -3,7 +3,7 @@
 GameObjectManager::GameObjectManager()
 	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
 	, m_CollisionSystem(&m_SphereCollisionCompManager, &m_AABBComponentManager, &m_MomentumComponentManager, &m_TransformManager)
-	, m_AISystem(&m_AICompManager, &m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager)
+	, m_AISystem(&m_AICompManager, &m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager, &m_CollisionSystem)
 	, m_GameObjects(1024)
 {
 }
@@ -35,9 +35,9 @@ void GameObjectManager::Update(const float dt)
 #else 
 	m_BulletSystem.Simulate(dt);
 
-	m_CollisionSystem.Simulate(dt);
-
 	m_AISystem.Simulate(dt);
+
+	m_CollisionSystem.Simulate(dt);
 
 	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
 #endif // BENCHMARK

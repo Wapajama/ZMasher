@@ -4,6 +4,8 @@
 #include <Math\ZMMatrix44.h>
 #include <Time/Profiler.h>
 #include <ZMasher/GameObject.h>
+#include <ZMasher/AIGroup.h>
+
 class AISystem
 	:public BaseSystem
 {
@@ -11,18 +13,26 @@ public:
 	AISystem(	class AIComponentManager* ai,
 				class SphereCollisionComponentManager* sphere_collision,
 				class MomentumComponentManager* momentum,
-				class TransformComponentManager* transform);
+				class TransformComponentManager* transform,
+				class CollisionSystem* coll_system);
 	~AISystem();
 
 	bool Init(void* arguments)override;
 	bool Simulate(const float dt);
 
+	AIGroup* CreateAIs(AIObjectArgs* args, int count);
+
 private:
 	struct AIBehaviourArgs
 	{
-		class TransformComponent* transform_comp;
-		class AIComponent* ai_comp;
-		GameObject game_object;
+		AIObject* obj;
+		const float dt;
+	};
+
+	struct TurretArgs
+	{
+		GameObject target;
+		struct CollisionQuery* query;
 	};
 
 	void HitlerBehaviour(const AIBehaviourArgs& args);
@@ -30,7 +40,7 @@ private:
 
 	ProfilerTaskID m_AIInternalTimeStamp;
 
-	void FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vector3f& direction);
+	void FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vector3f& direction, const float dt);
 
 	struct SteeringArgs
 	{
@@ -46,11 +56,12 @@ private:
 	void SpawnBullet(const AIBehaviourArgs & args);
 
 	void ClampMaxSpeed(ZMasher::Vector3f& steering, const class AIType* type);
-
+	bool IsInAnyOfAIGroups(int i);
 	class AIComponentManager* m_AIMngr;
 	class SphereCollisionComponentManager* m_SphereCollisionMngr;
 	class MomentumComponentManager* m_MomentumMngr;
 	class TransformComponentManager* m_TransformMngr;
-	
-};
+	class CollisionSystem* m_CollSystem;
+	GrowArray<AIGroup> m_AIGroups;
 
+};

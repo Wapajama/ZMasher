@@ -4,7 +4,7 @@
 //#define GAME_OBJECT_TOGGLE_ALIVE_GO(go) go.m_ID = go.m_ID ^ GAME_OBJECT_ALIVE_BIT
 //#define GAME_OBJECT_KILL(go) GAME_OBJECT_IS_ALIVE(go)? GAME_OBJECT_TOGGLE_ALIVE_GO(go) : 0
 //#define GAME_OBJECT_SET_ALIVE(go) GAME_OBJECT_IS_ALIVE(go)? 0: GAME_OBJECT_TOGGLE_ALIVE_GO(go)
-
+#include <stdint.h>
 typedef unsigned __int64 GO_ID_TYPE;
 typedef unsigned short GO_GEN_TYPE;
 const GO_ID_TYPE GAMEOBJECT_ID_BITS = 48;
@@ -64,5 +64,5 @@ struct GameObject
 	}
 };
 
-//constexpr GameObject g_NullGameObject = { 0 };
-//#define NULL_GAME_OBJECT g_NullGameObject
+constexpr GameObject g_NullGameObject = { INT64_MAX };
+#define NULL_GAME_OBJECT g_NullGameObject

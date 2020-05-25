@@ -10,10 +10,11 @@ AIComponentManager::~AIComponentManager()
 {
 }
 
-void AIComponentManager::AddComponent(GameObject game_object, eAIType type, 
+AIComponent* AIComponentManager::AddComponent(GameObject game_object, eAIType type, 
 					const ZMasher::Vector3f& target_pos)
 {
 	ComponentManager::AddComponent({ game_object, type, target_pos }, game_object);
+	return &m_Components.GetLast();
 }
 
 const AIType* AIComponentManager::GetAIType(eAIType type)

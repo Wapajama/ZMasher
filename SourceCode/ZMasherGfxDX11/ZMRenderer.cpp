@@ -65,7 +65,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 			ZMModelFactory::Instance()->m_ModelInstances.RemoveCyclic(i);//hope to fuck none of you squired ass n****z aint gon and hidin some danglin pointers in da hood yao -.-
 		}
 	}
-	//RenderSkybox(d3dinterface);
+	RenderSkybox(d3dinterface);
 	Render2DTerrain(d3dinterface);
 	RenderDebugLines(d3dinterface);
 	for (int i = 0; i < ZMModelFactory::Instance()->m_ModelInstances.Size(); ++i)

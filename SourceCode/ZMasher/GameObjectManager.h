@@ -34,6 +34,8 @@ public:
 	inline MomentumComponentManager* MomentumCompManager() { return &m_MomentumComponentManager; }
 	inline AIComponentManager* AICompManager() {return &m_AICompManager;}
 	inline AABBComponentManager* AABBCompManager() {return &m_AABBComponentManager;}
+	inline CollisionSystem* GetCollisionSystem() {return &m_CollisionSystem;}
+	inline AISystem* GetAISystem() { return &m_AISystem; }
 
 protected:
 

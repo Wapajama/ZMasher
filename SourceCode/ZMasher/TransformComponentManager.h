@@ -54,7 +54,7 @@ public:
 	void Destroy()override;
 	bool Update()override;
 
-	bool AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform);//will return false if invalid input, eg already exists, invalid transform etc
+	TransformComponent* AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform);//will return false if invalid input, eg already exists, invalid transform etc
 	
 	ZMasher::Matrix44f* GetTransform(GameObject game_object);
 

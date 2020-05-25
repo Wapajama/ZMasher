@@ -20,12 +20,16 @@ bool TransformComponentManager::Update()
 	return ComponentManager::Update();
 }
 
-bool TransformComponentManager::AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform)
+TransformComponent* TransformComponentManager::AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform)
 {
 	ASSERT(GameObjectManager::Instance()->Alive(game_object), "Can't add dead game objects!");
+	if (!GameObjectManager::Instance()->Alive(game_object))
+	{
+		return nullptr;
+	}
 
 	ComponentManager::AddComponent({ game_object, transform }, game_object);
-	return true;
+	return &m_Components.GetLast();
 }
 
 ZMasher::Matrix44f* TransformComponentManager::GetTransform(GameObject game_object)

@@ -7,27 +7,28 @@
 #include <ZMasherGfxDX11\ZMModelFactory.h>
 
 CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collision_comp_manager,
-	AABBComponentManager* aabb_component_manager,
-	MomentumComponentManager* momentum_comp_manager,
-	TransformComponentManager* transform_comp_manager)
+								 AABBComponentManager* aabb_component_manager,
+								 MomentumComponentManager* momentum_comp_manager,
+								 TransformComponentManager* transform_comp_manager)
 	: m_SphereCollisionCompManager(sphere_collision_comp_manager)
 	, m_AABBComponentManager(aabb_component_manager)
 	, m_MomentumCompManager(momentum_comp_manager)
 	, m_TransformCompManager(transform_comp_manager)
 	, m_CollInfos(1024)
 	, m_DebugLines(1024)
+	, m_Queries(1024)
+	, m_SphereQueries(1024)
 {
 	m_SingleCollisionTimeStamp = Profiler::Instance()->AddTask("SingleCollision");
 	m_DebugLines.Resize(1024 * 128);
 }
 
 static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
-	const AABBCollisionComponent& aabb,
+	const float* r,
 	const ZMasher::Vector4f& pos_aabb)
 {
 	float p[3] = { pos_a.x, pos_a.y, pos_a.z };
 	float b[3] = { pos_aabb.x, pos_aabb.y, pos_aabb.z };
-	const float* r = aabb.r;
 	float sqDist = 0.f;
 	for (short i = 0; i < 3; i++)
 	{
@@ -38,21 +39,31 @@ static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
 	return sqDist;
 }
 
-static bool SphereVsSphereTest(const SphereCollisionComponent& sphere_a, const SphereCollisionComponent& sphere_b,
-	const ZMasher::Vector4f& pos_a, const ZMasher::Vector4f& pos_b, float& diff)
+static bool SphereVsSphereTest(float r_a, float r_b,
+	const ZMasher::Vector4f& pos_a, const ZMasher::Vector4f& pos_b)
 {
 	using namespace ZMasher;
-	const Vector4f closest_a_pos = Vector4Add(Vector4MulScalar((Vector4Sub(pos_b, pos_a)).GetNormal(), sphere_a.m_Radius), pos_a);
-	diff = Vector4Sub(closest_a_pos, pos_b).Length() - sphere_b.m_Radius;
-	return diff < 0;
+	Vector4f d = pos_a - pos_b;
+	d.w = 0.f;
+	const float dist2 = Dot(d, d);
+
+	float radSum = r_a + r_b;
+	return dist2 <= radSum * radSum;
 }
 
-static bool SphereVsAABBTest(const SphereCollisionComponent& sphere, const AABBCollisionComponent& aabb,
+static bool SphereVsAABBTest(float r_a, float* r_b,
 	const ZMasher::Vector4f& pos_sphere, const ZMasher::Vector4f& pos_aabb, float& sqDistRef)
 {
-	const float sqDist = SqDistToAABB(pos_sphere, aabb, pos_aabb);
+	const float sqDist = SqDistToAABB(pos_sphere, r_b, pos_aabb);
 	sqDistRef = sqDist;
-	return sqDist <= sphere.m_Radius * sphere.m_Radius;
+	return sqDist <= r_a * r_a;
+}
+
+static void ZombieCollisionFeedback(ZMasher::Matrix44f* transformA, ZMasher::Matrix44f* transformB, const float diff)
+{
+	ZMasher::Vector4f dir = (transformA->GetTranslation() - transformB->GetTranslation()).GetNormal()*(diff*0.5f);
+	dir.y = 0; // don't want them to get pushed over or under
+	transformA->SetTranslation(transformA->GetTranslation() - dir);
 }
 
 CollisionSystem::~CollisionSystem()
@@ -62,6 +73,9 @@ CollisionSystem::~CollisionSystem()
 bool CollisionSystem::Simulate(const float dt)
 {
 	m_CollInfos.RemoveAll();
+
+	SimulatePhysics(dt);
+	ResolveQueries();
 
 	//BRUTEFOOOOOOOOOOOOOOOOOOOORCE
 	//TODO: Optimize this, might be a major task
@@ -79,18 +93,19 @@ bool CollisionSystem::Simulate(const float dt)
 		{
 			SphereCollisionComponent& sphereB = m_SphereCollisionCompManager->m_Components[j];
 			const GameObject object_b = sphereB.m_GameObject;
-			if (!GameObjectManager::Instance()->Alive(object_b))
+			if (object_a == object_b ||
+				!GameObjectManager::Instance()->Alive(object_b))
 			{
 				continue;
 			}
-			float diff = 0.f;
 			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
+			ZMasher::Vector4f ta = transformA->GetTranslation();
+			ZMasher::Vector4f tb = transformB->GetTranslation();
 			if (transformA &&
 				transformB &&
-				SphereVsSphereTest(sphereA,
-					sphereB,
-					transformA->GetTranslation(),
-					transformB->GetTranslation(), diff))
+				SphereVsSphereTest(sphereA.m_Radius,
+					sphereB.m_Radius,
+					ta,tb))
 			{
 				MomentumComponent* mom_a = m_MomentumCompManager->GetComponent(object_a);
 				MomentumComponent* mom_b = m_MomentumCompManager->GetComponent(object_b);
@@ -101,24 +116,60 @@ bool CollisionSystem::Simulate(const float dt)
 				m_CollInfos.Add(
 					{ object_a,
 					object_b,
-					transformA->GetTranslation().ToVector3f(),
-					transformB->GetTranslation().ToVector3f() });
+					ta.ToVector3f(),
+					tb.ToVector3f() });
 
-				ZMasher::Vector4f dir = (transformA->GetTranslation() - transformB->GetTranslation()).GetNormal()*(diff*0.5f);
-				dir.y = 0; // don't want them to get pushed over or under
-				transformA->SetTranslation(transformA->GetTranslation() - dir);
+				ZMasher::Vector3f diffv = ta.ToVector3f() - tb.ToVector3f();
+				const float diff = diffv.Length() - (sphereA.m_Radius + sphereB.m_Radius);
 
-				dir = (transformB->GetTranslation() - transformA->GetTranslation()).GetNormal()*(diff*0.5f);
-				dir.y = 0; // don't want them to get pushed over or under
-				transformB->SetTranslation(transformB->GetTranslation() - dir);
-
+				ZombieCollisionFeedback(transformA, transformB, diff);
+				ZombieCollisionFeedback(transformB, transformA, diff);
 			}
 		}
 		QuerySphereAgainstAllAABBS(sphereA, transformA);
 		Profiler::Instance()->EndTask(m_SingleCollisionTimeStamp);
 	}
 	DrawDebugLines();
-	return SimulatePhysics(dt);
+	return true;
+}
+
+void CollisionSystem::ResolveQueries()
+{
+	for (int i = 0; i < m_Queries.Size(); i++)
+	{
+		m_Queries[i].target = NULL_GAME_OBJECT;
+		float shortestDiff = 9999999;
+		switch (m_Queries[i].args->type)
+		{
+		case eSPHERE:
+		{
+			
+			SphereQueryArgs* args = reinterpret_cast<SphereQueryArgs*>(m_Queries[i].args);
+			for (int o = 0; o < m_SphereCollisionCompManager->m_Components.Size(); o++)
+			{
+				SphereCollisionComponent s = m_SphereCollisionCompManager->m_Components[o];
+				if (s.m_GameObject == m_Queries[i].owner)
+				{
+					continue;
+				}
+				ZMasher::Vector4f pos = m_TransformCompManager->GetTransform(s.m_GameObject)->GetTranslation();
+				if (SphereVsSphereTest(args->r, s.m_Radius, args->position, pos))
+				{
+					ZMasher::Vector3f diffv = pos.ToVector3f() - args->position.ToVector3f();
+					const float diff = diffv.Length() - (args->r + s.m_Radius);
+
+					if (diff < shortestDiff)
+					{
+						shortestDiff = diff;
+						m_Queries[i].target = s.m_GameObject;
+					}
+				}
+			}
+		}
+		default:
+			break;
+		}
+	}
 }
 
 void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent& sphere, ZMasher::Matrix44f* transform)
@@ -133,13 +184,10 @@ void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent&
 		}
 		ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(aabb_object);
 		float sqDist = 0.f;
-		if (SphereVsAABBTest(sphere, aabb, transform->GetTranslation(), transformB->GetTranslation(), sqDist))
+		if (SphereVsAABBTest(sphere.m_Radius, aabb.r, transform->GetTranslation(), transformB->GetTranslation(), sqDist))
 		{
-			// Sphere and box are intersecting, seperate them.  
-
-			ZMasher::Vector4f dir = (transform->GetTranslation() - transformB->GetTranslation()).GetNormal()*(sqrt(sqDist) - sphere.m_Radius);
-			dir.y = 0; // don't want them to get pushed over or under the boxes
-			transform->SetTranslation(transform->GetTranslation() - dir);
+			// Sphere and box are intersecting, separate them.
+			ZombieCollisionFeedback(transform, transformB, sqrt(sqDist) - sphere.m_Radius);
 		}
 
 	}
@@ -147,7 +195,6 @@ void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent&
 
 void CollisionSystem::DrawDebugLines()
 {
-	// Spheres
 	for (int i = 0; i < m_DebugLines.Size(); ++i)
 	{
 		ZMModelFactory::Instance()->RemoveDebugLine(m_DebugLines[i]);
@@ -229,13 +276,31 @@ void CollisionSystem::DrawSpheres()
 		SphereCollisionComponent sphere = m_SphereCollisionCompManager->m_Components[i];
 		ZMasher::Vector3f pos = m_TransformCompManager->GetTransform(sphere.m_GameObject)->GetTranslation().ToVector3f();
 		const float radius = sphere.m_Radius;
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(radius, 0, 0), pos + ZMasher::Vector3f(-radius, 0, 0), eColour::RED));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, radius, 0), pos + ZMasher::Vector3f(0, -radius, 0), eColour::RED));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, 0, radius), pos + ZMasher::Vector3f(0, 0, -radius), eColour::RED));
+		DrawSphere(radius, pos);
+	}
+	for (int i = 0; i < m_Queries.Size(); i++)
+	{
+		switch (m_Queries[i].args->type)
+		{
+		case eSPHERE:
+		{
+			SphereQueryArgs* args = reinterpret_cast<SphereQueryArgs*>(m_Queries[i].args);
+			DrawSphere(args->r, args->position.ToVector3f());
+		}
+		default:
+			break;
+		}
 	}
 }
 
-CollisionInfoStruct * CollisionSystem::GetCollisionInfo(const int index)
+void CollisionSystem::DrawSphere(const float radius, const ZMasher::Vector3f pos)
+{
+	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(radius, 0, 0), pos + ZMasher::Vector3f(-radius, 0, 0), eColour::RED));
+	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, radius, 0), pos + ZMasher::Vector3f(0, -radius, 0), eColour::RED));
+	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, 0, radius), pos + ZMasher::Vector3f(0, 0, -radius), eColour::RED));
+}
+
+CollisionInfoStruct* CollisionSystem::GetCollisionInfo(const int index)
 {
 	if (index >= 0 &&
 		index < m_CollInfos.Size())
@@ -267,13 +332,40 @@ bool CollisionSystem::SimulatePhysics(const float dt)
 	return true;
 }
 
+CollisionQuery* CollisionSystem::CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos)
+{
+	SphereQueryArgs sq;
+	sq.type = eSPHERE;
+	sq.position = m_TransformCompManager->GetComponent(owner)->m_Transform.GetTranslation();
+	sq.r = radius;
+	m_SphereQueries.Add(sq);
+
+	CollisionQuery cq;
+	cq.args = &m_SphereQueries.GetLast();
+	cq.owner = owner;
+	cq.target = NULL_GAME_OBJECT;
+	m_Queries.Add(cq);
+	return &m_Queries.GetLast();
+}
+
+
+CollisionQuery* CollisionSystem::GetQuery(GameObject owner, int id)
+{
+	for (int i = 0; i < m_Queries.Size(); i++)
+	{
+		if (m_Queries[i].owner == owner)
+		{
+			return &m_Queries[i];
+		}
+	}
+	return nullptr;
+}
 
 // If the object died, make sure to clean up the components
 //if (!GameObjectManager::Instance()->Alive(sphereA.m_GameObject))
 //{
 //	TransformComponent* trans = m_TransformCompManager->GetComponent(object_a);
 //	MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
-
 //	if (trans)
 //	{
 //		GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);
@@ -288,7 +380,6 @@ bool CollisionSystem::SimulatePhysics(const float dt)
 //{
 //	TransformComponent* trans = m_TransformCompManager->GetComponent(object_b);
 //	MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
-
 //	if (trans)
 //	{
 //		GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);

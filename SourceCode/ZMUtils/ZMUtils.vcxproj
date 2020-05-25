@@ -193,7 +193,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -216,7 +216,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -236,7 +236,7 @@
       <Optimization>MinSpace</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -256,7 +256,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -276,6 +276,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -289,6 +290,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -304,7 +306,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -322,7 +324,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../ZMasher/;../TinyXml2/;../ZMUtils/;../GlobalIncludes/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

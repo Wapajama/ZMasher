@@ -34,10 +34,10 @@ MeshComponentManager::~MeshComponentManager()
 //	m_ModelComponents.RemoveCyclic(index);
 //}
 
-bool MeshComponentManager::AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node)
+ModelComponent* MeshComponentManager::AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node)
 {
 	ComponentManager::AddComponent(ModelComponent(game_object, instance_node), game_object);
-	return true;
+	return &m_Components.GetLast();
 }
 
 bool MeshComponentManager::Init()

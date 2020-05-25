@@ -188,7 +188,7 @@ bool ZMasherMain::Update()
 	}
 
 	TimerManager::GetInstance()->GetMainTimer().Update();
-	float dt = static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds());
+	float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.032f);
 
 #ifdef BENCHMARK
 	const bool benchmark = Profiler::Instance()->IterateFrame(dt);

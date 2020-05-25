@@ -24,7 +24,7 @@ public:
 	SphereCollisionComponentManager();
 	~SphereCollisionComponentManager();
 
-	void AddComponent(	const CollisionType filter, 
+	SphereCollisionComponent* AddComponent(	const CollisionType filter,
 						const float radius, 
 						GameObject game_object,
 						CollisionCallBack callback);

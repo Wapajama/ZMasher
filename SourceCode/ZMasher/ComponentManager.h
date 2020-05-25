@@ -64,6 +64,8 @@ public:
 	virtual bool Init() = 0;
 	virtual bool Update() = 0;
 
+	__forceinline int Count() {return m_Components.Size();}
+
 protected:
 	void RemoveComponentWithGameObjectInternal(GameObject object);
 
