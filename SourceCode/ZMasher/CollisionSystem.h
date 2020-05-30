@@ -3,6 +3,8 @@
 #include <ZMasher/GameObject.h>
 #include <ZMUtils/Math/ZMVector.h>
 #include <CollisionDefines.h>
+#include <Time/Timer.h>
+
 class SphereCollisionComponentManager;
 class AABBComponentManager;
 class MomentumComponentManager;
@@ -28,7 +30,9 @@ public:
 	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
 	//void CreateQuery(eCOLLISIONTYPE type, struct AABBCollisionComponent* component);
 
-	CollisionQuery* GetQuery(GameObject owner, int id);
+	CollisionQuery* GetQuery(GameObject owner, int id = 0);
+
+	void Destroy();
 
 private:
 
@@ -40,6 +44,7 @@ private:
 	void DrawSphere(const float radius, const ZMasher::Vector3f pos);
 	void QuerySphereAgainstAllAABBS(const struct SphereCollisionComponent& sphere, ZMasher::Matrix44f* transform);
 	void ResolveQueries();
+
 	GrowArray<CollisionInfoStruct> m_CollInfos;
 	GrowArray<CollisionQuery> m_Queries;
 	GrowArray<SphereQueryArgs> m_SphereQueries;
@@ -47,5 +52,10 @@ private:
 	AABBComponentManager* m_AABBComponentManager;
 	MomentumComponentManager* m_MomentumCompManager;
 	TransformComponentManager* m_TransformCompManager;
-	ProfilerTaskID m_SingleCollisionTimeStamp;
+	Timer m_SingleCollisionTimeStamp;
+	Timer m_QueriesTimeStamp;
+	Timer m_SimulatePhysicsTimeStamp;
+	Timer m_DrawDebugLinesTimeStamp;
+
+	GrowArray<Timer> m_TimeStamps;
 };

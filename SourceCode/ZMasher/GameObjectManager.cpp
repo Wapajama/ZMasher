@@ -17,21 +17,21 @@ void GameObjectManager::Update(const float dt)
 	UpdateAllComponentManagers();//removes dead components,TODO: name change?
 
 #ifdef BENCHMARK
-	//Profiler::Instance()->BeginTask(m_BulletsTimeStamp);
+	//m_BulletsTimeStamp);
 	m_BulletSystem.Simulate(dt);
-	//Profiler::Instance()->EndTask(m_BulletsTimeStamp);
+	//m_BulletsTimeStamp);
 
-	Profiler::Instance()->BeginTask(m_CollisionTimeStamp);
+	m_CollisionTimeStamp.StartTimeStamp();
 	m_CollisionSystem.Simulate(dt);
-	Profiler::Instance()->EndTask(m_CollisionTimeStamp);
+	m_CollisionTimeStamp.EndTimeStamp();
 
-	Profiler::Instance()->BeginTask(m_AITimeStamp);
+	m_AITimeStamp.StartTimeStamp();
 	m_AISystem.Simulate(dt);
-	Profiler::Instance()->EndTask(m_AITimeStamp);
+	m_AITimeStamp.EndTimeStamp();
 
-	Profiler::Instance()->BeginTask(m_MeshCompManagerTimeStamp);
+	m_MeshCompManagerTimeStamp.StartTimeStamp();
 	m_MeshManager.Update(&m_TransformManager);//TODO: meshmanager has two update functions, refactor, rename
-	Profiler::Instance()->EndTask(m_MeshCompManagerTimeStamp);
+	m_MeshCompManagerTimeStamp.EndTimeStamp();
 #else 
 	m_BulletSystem.Simulate(dt);
 
@@ -46,13 +46,6 @@ void GameObjectManager::Update(const float dt)
 
 bool GameObjectManager::Init()
 {
-#ifdef BENCHMARK
-	m_AITimeStamp = Profiler::Instance()->AddTask("AISystem");
-	m_CollisionTimeStamp = Profiler::Instance()->AddTask("CollisionSystem");
-	m_MeshCompManagerTimeStamp = Profiler::Instance()->AddTask("MeshComponentManager");
-	//m_BulletsTimeStamp = Profiler::Instance()->AddTask("BulletSystem");
-#endif // BENCHMARK
-
 	m_AISystem.Init(nullptr);
 
 	m_ComponentManagers.Add(&m_BulletCompManager);
@@ -73,6 +66,18 @@ bool GameObjectManager::Init()
 
 void GameObjectManager::Destroy()
 {
+	#ifdef BENCHMARK
+	Profiler::Instance()->AddTimeStamp(m_AITimeStamp, "AISystem");
+	Profiler::Instance()->AddTimeStamp(m_CollisionTimeStamp, "CollisionSystem");
+	Profiler::Instance()->AddTimeStamp(m_MeshCompManagerTimeStamp, "MeshComponentManager");
+#endif // BENCHMARK
+
+	for (int i = 0; i < m_ComponentManagers.Size(); i++)
+	{
+		m_ComponentManagers[i]->Destroy();
+	}
+	m_CollisionSystem.Destroy();
+	m_AISystem.Destroy();
 }
 
 GameObject GameObjectManager::CreateGameObject()

@@ -3,7 +3,8 @@
 #include <DataStructures\GrowArray.h>
 #include <Math\ZMMatrix44.h>
 #include <ZMasher\GameObject.h>
-#include <Time/Profiler.h>
+#include <Time/Timer.h>
+#include <GlobalIncludes/project_defines.h>
 
 struct TransformComponent
 {
@@ -61,6 +62,9 @@ public:
 protected:
 private:
 
-	ProfilerTaskID m_GetTransformTimeStamp;
+#ifdef BENCHMARK
+	Timer m_GetTransformTimeStamp;
+#endif // BENCHMARK
+
 };
 

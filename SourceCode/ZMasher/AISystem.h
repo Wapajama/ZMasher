@@ -2,7 +2,7 @@
 #include <ZMasher\BaseSystem.h>
 #include <Math\ZMVector3.h>
 #include <Math\ZMMatrix44.h>
-#include <Time/Profiler.h>
+#include <Time/Timer.h>
 #include <ZMasher/GameObject.h>
 #include <ZMasher/AIGroup.h>
 
@@ -18,10 +18,10 @@ public:
 	~AISystem();
 
 	bool Init(void* arguments)override;
+	bool Destroy()override;
 	bool Simulate(const float dt);
 
 	AIGroup* CreateAIs(AIObjectArgs* args, int count);
-
 private:
 	struct AIBehaviourArgs
 	{
@@ -38,7 +38,7 @@ private:
 	void HitlerBehaviour(const AIBehaviourArgs& args);
 	void BasicTurretBehaviour(const AIBehaviourArgs& args);
 
-	ProfilerTaskID m_AIInternalTimeStamp;
+	Timer m_AIInternalTimeStamp;
 
 	void FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vector3f& direction, const float dt);
 

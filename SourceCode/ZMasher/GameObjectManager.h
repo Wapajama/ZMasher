@@ -11,7 +11,7 @@
 #include <ZMasher/DebugLineComponentManager.h>
 #include <ZMasher\CollisionSystem.h>
 #include <ZMasher\AISystem.h>
-#include <Time/Profiler.h>
+#include <Time/Timer.h>
 #include <Utility\ZMSingleton.h>
 
 //Dataoriented entitysystem
@@ -54,11 +54,11 @@ private:
 	TransformComponentManager m_TransformManager;
 	BulletComponentManager m_BulletCompManager;
 	AIComponentManager m_AICompManager;
-
 	BulletSystem m_BulletSystem;
 	SphereCollisionComponentManager m_SphereCollisionCompManager;
 	AABBComponentManager m_AABBComponentManager;
 	MomentumComponentManager m_MomentumComponentManager;
+
 	CollisionSystem m_CollisionSystem;
 	AISystem m_AISystem;
 	//DebugLineComponentManager m_DebugLineComponentManager;
@@ -69,10 +69,10 @@ private:
 	// the value of the element will indicate its generation
 	GrowArray<GO_GEN_TYPE, int> m_GameObjects;
 #ifdef BENCHMARK
-	ProfilerTaskID m_CollisionTimeStamp;
-	ProfilerTaskID m_AITimeStamp;
-	ProfilerTaskID m_MeshCompManagerTimeStamp;
-	ProfilerTaskID m_BulletsTimeStamp;
+	Timer m_CollisionTimeStamp;
+	Timer m_AITimeStamp;
+	Timer m_MeshCompManagerTimeStamp;
+	Timer m_BulletsTimeStamp;
 	friend class Profiler;
 #endif // BENCHMARK
 

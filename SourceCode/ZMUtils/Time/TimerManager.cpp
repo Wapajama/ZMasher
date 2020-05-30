@@ -1,30 +1,32 @@
 #include "TimerManager.h"
 
-TimerManager* TimerManager::myInstance = nullptr;
+TimerManager* TimerManager::m_Instance = nullptr;
+
+
 
 TimerManager* TimerManager::GetInstance()
 {
-	if(myInstance == nullptr)
+	if(m_Instance == nullptr)
 	{
-		myInstance = new TimerManager();
+		m_Instance = new TimerManager();
 	}
 
-	return myInstance;
+	return m_Instance;
 }
 
 void TimerManager::Create(TimerManager* instance)
 {
 	if (instance)
 	{
-		myInstance = instance;
+		m_Instance = instance;
 		return;
 	}
-	myInstance = new TimerManager();
+	m_Instance = new TimerManager();
 }
 
-TimerManager::TimerManager(void):myTimers(16)
+TimerManager::TimerManager(void):m_Timers(1024)
 {
-	myMainTimer.Start();
+	m_MainTimer.Start();
 }
 
 TimerManager::~TimerManager(void)
@@ -33,39 +35,34 @@ TimerManager::~TimerManager(void)
 
 void TimerManager::Update()
 {
-	myMainTimer.Update();
-	for(unsigned int i = 0; i < myTimers.Size(); ++i)
+	m_MainTimer.Update();
+	for(unsigned int i = 0; i < m_Timers.Size(); ++i)
 	{
-		myTimers[i].Update();
+		m_Timers[i].Update();
 	}
-}
-
-Timer& TimerManager::GetMainTimer()
-{
-	return myMainTimer;
 }
 
 Timer& TimerManager::GetTimer(const int aId)
 {
 	int id = -1;
 
-	for(int i = 0; i < myTimers.Size(); ++i)
+	for(int i = 0; i < m_Timers.Size(); ++i)
 	{
-		if(myTimers[i].GetId() == aId)
+		if(m_Timers[i].GetId() == aId)
 		{
 			id = static_cast<int>(i);
-			return myTimers[id];
+			return m_Timers[id];
 		}
 	}
 	ASSERT(false, "Couldn't find timer with specified id");
-	return myTimers[-1];
+	return m_Timers[-1];
 }
 
 const int TimerManager::CreateTimer()
 {
 	Timer t;
-	t.SetID(myTimers.Size());
-	myTimers.Add(t);
+	t.SetID(m_Timers.Size());
+	m_Timers.Add(t);
 	
 	return t.GetId();
 }
@@ -74,7 +71,7 @@ const int TimerManager::CreateAndStartTimer()
 {
 	Timer t;
 	t.Start();
-	myTimers.Add(t);
+	m_Timers.Add(t);
 
 	return t.GetId();
 }

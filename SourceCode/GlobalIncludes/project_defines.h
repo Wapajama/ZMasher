@@ -9,7 +9,7 @@
 //typedef size_t ZM_Mem_Size;
 //#endif // WIN64
 
-
+#define BENCHMARK
 
 #ifndef ZMASHER_DX12
 #define ZMASHER_DX11  

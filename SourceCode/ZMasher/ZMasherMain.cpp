@@ -26,6 +26,8 @@
 #include <QGraphicsProxyWidget>
 #include <thread>
 
+#include <Time/Profiler.h>
+
 class IntComparer
 	:public ZMasher::BSTComparator<int>
 {
@@ -81,6 +83,15 @@ ZMasherMain::~ZMasherMain()
 		m_QApplicationThread->join();
 	}
 	delete m_QApplicationThread;
+	
+	#ifdef BENCHMARK
+	Profiler::Instance()->AddTimeStamp(m_TotalFrame, "TotalFrame");
+	Profiler::Instance()->AddTimeStamp(m_RenderFrame, "Render");
+	Profiler::Instance()->AddTimeStamp(m_LogicFrame, "Logic");
+	Profiler::Instance()->AddTimeStamp(m_RenderInternalFrame, "RenderInternal");
+#endif // BENCHMARK
+	m_Renderer.Destroy();
+	m_StateStack.Exit();
 	Profiler::Release();
 }
 
@@ -110,13 +121,6 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
-
-#ifdef BENCHMARK
-	m_TotalFrame = Profiler::Instance()->AddTask("TotalFrame");
-	m_RenderFrame = Profiler::Instance()->AddTask("Render");
-	m_LogicFrame = Profiler::Instance()->AddTask("Logic");
-	m_RenderInternalFrame = Profiler::Instance()->AddTask("RenderInternal");
-#endif // BENCHMARK
 
 	m_Camera = new Camera(Vector2<int>(m_WinVals.m_Resolution.x,
 		m_WinVals.m_Resolution.y));
@@ -175,8 +179,20 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 	}
 	TimerManager::GetInstance()->Update();
 
-
 	m_LoopTimer = TimerManager::GetInstance()->CreateAndStartTimer();
+
+	m_MouseTrackEvent.cbSize = sizeof(m_MouseTrackEvent);
+	m_MouseTrackEvent.dwFlags = TME_LEAVE | TME_HOVER | TME_NONCLIENT;
+	//Retrieves the time, in milliseconds, that the mouse pointer has to stay in the hover rectangle for TrackMouseEvent to generate a WM_MOUSEHOVER message. 
+	//The pvParam parameter must point to a UINT variable that receives the time.
+	UINT hoverTime = 400;
+	SystemParametersInfo(SPI_GETMOUSEHOVERTIME, hoverTime, NULL, 0);
+	m_MouseTrackEvent.dwHoverTime = hoverTime;
+	m_MouseTrackEvent.hwndTrack = m_WinVals.m_WindowHandle;
+#ifdef BENCHMARK
+	Profiler::Instance()->StartBenchmark();
+#endif // BENCHMARK
+
 	return true;
 }
 
@@ -197,18 +213,20 @@ bool ZMasherMain::Update()
 		return false;
 	}
 #endif // BENCHMARK_TEST
+
+	///TrackMouseEvent(&m_MouseTrackEvent);
 	InputManager::Instance()->Update(dt);
 
 #ifdef BENCHMARK
-	Profiler::Instance()->BeginTask(m_TotalFrame);
-	Profiler::Instance()->BeginTask(m_RenderFrame);
+	m_TotalFrame.StartTimeStamp();
+	m_RenderFrame.StartTimeStamp();
 #endif // BENCHMARK
 
 	Render(dt);
 
 #ifdef BENCHMARK
-	Profiler::Instance()->EndTask(m_RenderFrame);
-	Profiler::Instance()->BeginTask(m_LogicFrame);
+	m_RenderFrame.EndTimeStamp();
+	m_LogicFrame.StartTimeStamp();
 #endif // BENCHMARK
 
 	//RECT window_rect;
@@ -217,14 +235,13 @@ bool ZMasherMain::Update()
 	if (!m_StateStack.Update(dt))
 	{
 #ifdef BENCHMARK
-		Profiler::Instance()->EndTask(m_LogicFrame);
 #endif // BENCHMARK
 		//ASSERT(false, "!m_StateStack.Update(dt)");
 		//return false;
 	}
 #ifdef BENCHMARK
-	Profiler::Instance()->EndTask(m_LogicFrame);
-	Profiler::Instance()->EndTask(m_TotalFrame);
+	m_LogicFrame.EndTimeStamp();
+	m_TotalFrame.EndTimeStamp();
 #endif // BENCHMARK
 
 	//SetCursorPos((window_rect.left + window_rect.right)/ 2, (window_rect.top + window_rect.bottom) / 2);
@@ -338,9 +355,9 @@ void ZMasherMain::Render(const float dt)
 	m_Renderer.Render(m_D3DInterface, dt);
 
 #ifdef BENCHMARK
-	Profiler::Instance()->BeginTask(m_RenderInternalFrame);
+	m_RenderInternalFrame.StartTimeStamp();
 	m_D3DInterface.EndScene();
-	Profiler::Instance()->EndTask(m_RenderInternalFrame);
+	m_RenderInternalFrame.EndTimeStamp();
 #else
 	m_D3DInterface.EndScene();
 #endif // BENCHMARK
@@ -364,10 +381,19 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
-	case WM_MOUSELEAVE:
+	case WM_MOUSEHOVER:
+		//m_MouseTrackEvent.dwFlags = TME_LEAVE | TME_HOVER | TME_NONCLIENT;
+		InputManager::Instance()->CursorInsideClientWindow(true);
+		return 0;
+	case WM_NCMOUSEHOVER:
+		//m_MouseTrackEvent.dwFlags = TME_LEAVE | TME_HOVER;
 		InputManager::Instance()->CursorInsideClientWindow(false);
 		return 0;
+	case WM_MOUSELEAVE:
+		//m_MouseTrackEvent.dwFlags = TME_LEAVE | TME_HOVER | TME_NONCLIENT;
+		InputManager::Instance()->CursorInsideClientWindow(false);
 	case WM_NCMOUSELEAVE:
+		//m_MouseTrackEvent.dwFlags = TME_LEAVE | TME_HOVER;
 		InputManager::Instance()->CursorInsideClientWindow(true);
 		return 0;
 	case WM_KILLFOCUS:

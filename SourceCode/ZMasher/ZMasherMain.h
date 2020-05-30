@@ -4,7 +4,7 @@
 #include <ZMasherGfxDX11/ZMAPIStructs.h>
 #include <ZMasherGfxDX11/ZMModel.h>
 #include <ZMasherGfxDX11/ZMRenderer.h>
-#include <Time/Profiler.h>
+#include <Time/Timer.h>
 #include <StateStack.h>
 #define ZMASHER_TITLE_BAR_NAME L"ZMasher"
 
@@ -54,12 +54,12 @@ private:
 	std::thread* m_QApplicationThread;
 	//GameState* m_GameState;
 	StateStack m_StateStack;
-
+	TRACKMOUSEEVENT m_MouseTrackEvent;
 #ifdef BENCHMARK
-	ProfilerTaskID m_TotalFrame;
-	ProfilerTaskID m_LogicFrame;
-	ProfilerTaskID m_RenderFrame;
-	ProfilerTaskID m_RenderInternalFrame;
+	Timer m_TotalFrame;
+	Timer m_LogicFrame;
+	Timer m_RenderFrame;
+	Timer m_RenderInternalFrame;
 #endif // BENCHMMARK
 
 	bool ReadInitFile();

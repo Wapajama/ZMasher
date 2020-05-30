@@ -11,7 +11,7 @@ SphereCollisionComponentManager::~SphereCollisionComponentManager()
 {
 }
 
-SphereCollisionComponent* SphereCollisionComponentManager::AddComponent(	const CollisionType filter, 
+SphereCollisionComponent* SphereCollisionComponentManager::AddComponent(const eCOLLISIONTYPE filter,
 												const float radius, 
 												GameObject game_object,
 												CollisionCallBack callback)

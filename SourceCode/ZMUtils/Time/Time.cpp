@@ -1,42 +1,39 @@
 #include "Time.h"
 
+LARGE_INTEGER Time::g_ClockFrequency;
 
-Time::Time(void)
+Time::Time()
 {
-	myTimeElapsed = 0.0;
+	m_TimeElapsed = 0.0;
+	QueryPerformanceFrequency(&g_ClockFrequency);
 }
 
 
-Time::~Time(void)
+Time::~Time()
 {
 }
 
 double Time::GetHours()
 {
-	return myTimeElapsed / 3600;
+	return m_TimeElapsed / 3600;
 }
 
 double Time::GetMinutes()
 {
-	return myTimeElapsed / 60;
+	return m_TimeElapsed / 60;
 }
 
 double Time::GetSeconds()
 {
-	return myTimeElapsed;
+	return m_TimeElapsed;
 }
 
 double Time::GetMilliseconds()
 {
-	return myTimeElapsed * 1000;
+	return m_TimeElapsed * 1000;
 }
  
 double Time::GetMicroseconds()
 {
 	return GetMilliseconds() * 1000;
-}
-
-void Time::Update(LARGE_INTEGER& aStartCounter, LARGE_INTEGER& aEndCounter, LARGE_INTEGER& aFrequenzy) 
-{
-	myTimeElapsed = (static_cast<double>(aEndCounter.QuadPart - aStartCounter.QuadPart) / static_cast<double>(aFrequenzy.QuadPart));
 }

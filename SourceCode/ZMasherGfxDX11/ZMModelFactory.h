@@ -32,6 +32,7 @@ struct DebugLineInfo
 	ZMasher::Vector3f a;
 	ZMasher::Vector3f b;
 	eColour m_Colour;
+	int id;
 };
 
 #ifndef D3DCOLOR_ARGB
@@ -67,9 +68,7 @@ public:
 									   const float length = 1000.f);//TODO: same as above
 	inline void SetDevice(ID3D11Device* device) { m_Device = device; m_TextureContainer.SetDevice(device); }
 
-	DebugLineInfo* CreateDebugLine(const ZMasher::Vector3f& point_a, const ZMasher::Vector3f& point_b, eColour colour = eColour::RED);
-
-	void RemoveDebugLine(DebugLineInfo* debugLine);
+	int CreateDebugLine(const ZMasher::Vector3f& point_a, const ZMasher::Vector3f& point_b, eColour colour = eColour::RED);
 
 private:
 
@@ -84,7 +83,7 @@ private:
 	//data orient this?
 	GrowArray<ZMModelInstanceNode*> m_ModelInstances;
 	GrowArray<ZMModelNode*> m_ModelNodes;
-	GrowArray<DebugLineInfo*> m_DebugLines;
+	GrowArray<DebugLineInfo> m_DebugLines;
 	TextureContainer m_TextureContainer;
 	GrowArray<Material> m_Materials;
 	ID3D11Device* m_Device;

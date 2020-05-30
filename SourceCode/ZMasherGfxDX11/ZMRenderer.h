@@ -4,9 +4,10 @@
 #include <ZMasherGfxDX11\ZMModelInstanceNode.h>
 #include <Math\ZMMatrix44.h>
 #include <Time/TimerManager.h>
-#include <Time/Profiler.h>
+#include <Time/Timer.h>
 #include <ZMasherGfxDX11\dllHeader.h>
 #include <ZMasherGfxDX11/DebugLine.h>
+#include <GlobalIncludes/project_defines.h>
 
 class Camera;
 class ZMD3DInterface;
@@ -22,9 +23,11 @@ public:
 
 	void Render(ZMD3DInterface& d3dinterface, const float dt);
 
-	void Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerManager* instance, PathManager* path_instance);
+	void Init(ZMD3DInterface& d3dinterface, class Profiler* profiler, TimerManager* instance, PathManager* path_instance);
 
 	void RenderGrid(ZMD3DInterface& d3dinterface);
+
+	void Destroy();
 
 	inline void SetCamera(Camera* camera);
 
@@ -59,7 +62,7 @@ private:
 
 
 #ifdef BENCHMARK
-	ProfilerTaskID m_ModelsTimeStamp;
+	Timer m_ModelsTimeStamp;
 #endif // BENCHMMARK
 
 	float m_Dt;

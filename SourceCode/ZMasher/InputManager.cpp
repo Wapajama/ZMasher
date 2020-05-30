@@ -72,7 +72,7 @@ void InputManager::Update(const float dt)
 		m_DirectInputKeyboard->GetDeviceState(256, static_cast<LPVOID>(m_Keystate));
 	}
 
-	if (m_MouseInsideClientWindow)
+	if (m_MouseInsideClientWindow && m_WindowHasFocus)
 	{
 		POINT cursorPos;
 		GetCursorPos(&cursorPos);

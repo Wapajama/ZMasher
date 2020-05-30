@@ -72,8 +72,17 @@ protected:
 	GrowArray<GameObject> m_DeleteObjects;
 	GrowArray<Component> m_Components;
 	ZMasher::BinarySearchTree<ComponentIndexPair, ComponentComparer> m_LookupSet;
-};
 
+	//class ComponentGroup
+	//{
+	//public:
+	//	ComponentGroup();
+	//	~ComponentGroup();
+
+
+	//};
+	//GrowArray<ComponentGroup> m_ComponentGroups;
+};
 
 COMPONENTMANAGER_TEMPLATE
 COMPONENTMANAGER_DECL::ComponentManager(const int n_components) :	m_DeleteObjects(128),
@@ -141,3 +150,4 @@ void COMPONENTMANAGER_DECL::RemoveComponentWithGameObjectInternal(GameObject obj
 		m_LookupSet.Delete({ object,-1 });
 	}
 }
+

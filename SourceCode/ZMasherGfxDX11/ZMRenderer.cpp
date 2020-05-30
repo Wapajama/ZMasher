@@ -11,6 +11,7 @@
 #include <D3D11.h>
 #include <ZMasherGfxDX11/ZMVertexTypes.h>
 #include <ZMasherGfxDX11/DebugLine.h>
+#include <Time/Profiler.h>
 
 void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
 {
@@ -45,6 +46,13 @@ ZMRenderer::~ZMRenderer(void)
 	ZMModelFactory::Instance()->Release();
 }
 
+void ZMRenderer::Destroy()
+{
+#ifdef BENCHMARK
+	 Profiler::Instance()->AddTimeStamp(m_ModelsTimeStamp, "RenderModels");
+#endif // BENCHMARK
+}
+
 void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 {
 	const float dt_cap = FLT_MAX;
@@ -55,7 +63,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 	}
 	
 #ifdef BENCHMARK
-	Profiler::Instance()->BeginTask(m_ModelsTimeStamp);
+	m_ModelsTimeStamp.Start();
 #endif // BENCHMARK
 
 	for (short i = ZMModelFactory::Instance()->m_ModelInstances.Size()-1; i >= 0; --i)
@@ -73,7 +81,7 @@ void ZMRenderer::Render(ZMD3DInterface& d3dinterface, const float dt)
 		RenderModelHierarchy(d3dinterface, ZMModelFactory::Instance()->m_ModelInstances[i], ZMasher::Matrix44f::Identity());
 	}
 #ifdef BENCHMARK
-	Profiler::Instance()->EndTask(m_ModelsTimeStamp);
+	m_ModelsTimeStamp.EndTimeStamp();
 #endif // BENCHMARK
 }
 
@@ -82,10 +90,6 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerMan
 	Profiler::Create(profiler);
 	TimerManager::Create(instance);
 	PathManager::Create(path_instance);
-
-#ifdef BENCHMARK
-	m_ModelsTimeStamp = Profiler::Instance()->AddTask("RenderModels");
-#endif // BENCHMARK
 
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
@@ -304,11 +308,11 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 														m_Dt});
 	ASSERT(succeded, "shader failed to init!");
 
-	GrowArray<DebugLineInfo*>& debugLines = ZMModelFactory::Instance()->m_DebugLines;
+	GrowArray<DebugLineInfo>& debugLines = ZMModelFactory::Instance()->m_DebugLines;
 	for (int i = 0; i < debugLines.Size(); ++i)
 	{
 		DWORD colour;
-		switch (debugLines[i]->m_Colour)
+		switch (debugLines[i].m_Colour)
 		{
 		case eColour::BLUE:
 			colour = txtBlue;
@@ -333,7 +337,7 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 		colour4f.z = ( ( FLOAT ) b / 255.0f);
 		colour4f.w = ( ( FLOAT ) a / 255.0f);
 
-		m_DebugLine->SetPositions(debugLines[i]->a-m_Camera->GetPosition(), debugLines[i]->b-m_Camera->GetPosition());
+		m_DebugLine->SetPositions(debugLines[i].a-m_Camera->GetPosition(), debugLines[i].b-m_Camera->GetPosition());
 		m_DebugLine->SetColour(colour4f);
 
 		m_DebugLine->Apply(d3dinterface.GetContext());
@@ -344,4 +348,5 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 
 		d3dinterface.GetContext()->Draw( 2, 0 );
 	}
+	debugLines.RemoveAll();
 }

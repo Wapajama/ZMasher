@@ -17,7 +17,10 @@ enum eCOLLISIONTYPE: CollisionType
 {
 	eSphere = 1 << 0,
 	eAABB = 1 << 1,
-	eBlocker = 1 << 2
+	eBlocker = 1 << 2,
+	eTurretBullet = 1 << 3,
+	eTurret = 1 << 4,
+	eEnemy = 1 << 5,
 };
 
 enum eQueryType

@@ -70,7 +70,7 @@ void AIGroup::Allocate(const int size, void* args)
 
 		TransformComponent* tf = GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
 		ModelComponent* m = GameObjectManager::Instance()->MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance(ai_args->modelName.c_str()));
-		SphereCollisionComponent* sp = GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
+		SphereCollisionComponent* sp = GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE(ai_args->collisionType),5, new_object, g_TestCallBack);
 		MomentumComponent* mo = GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 		AIComponent* ai = GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 		ai->m_TargetPos = ai_args->targetPos;

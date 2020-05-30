@@ -1,65 +1,48 @@
 #include "Timer.h"
 
-
-Timer::Timer(void)
+Timer::Timer()
 {
-	myFirstRun = true;
+	m_FirstRun = true;
 	LARGE_INTEGER b;
 	QueryPerformanceCounter(&b);
-
-	myId = b.LowPart;
+	
+	m_Id = b.LowPart;
 }
 
-
-Timer::~Timer(void)
+Timer::~Timer()
 {
 }
 
 void Timer::Start()
 {
-	if(myFirstRun == true)
+	if(m_FirstRun == true)
 	{
-		QueryPerformanceCounter(&myStart);
-		myFirstRun = false;
+		QueryPerformanceCounter(&m_Start);
+		m_FirstRun = false;
 	}
 
-	myIsActive = true;
-}
-
-void Timer::Pause()
-{
-		myIsActive = false;
+	m_IsActive = true;
 }
 
 void Timer::Update()
 {
-	if(myIsActive == true)
+	if(m_IsActive == true)
 	{
-		QueryPerformanceFrequency(&myPerformanceFrequency);
-		QueryPerformanceCounter(&myEnd);
-
-		myTimeSinceStart.Update(myStart, myEnd, myPerformanceFrequency);
-		myTimeSinceLastFrame.Update(myOldEnd, myEnd, myPerformanceFrequency);
-		myOldEnd = myEnd;
+		QueryPerformanceCounter(&m_End);
+		//QueryPerformanceFrequency(&Time::g_ClockFrequency);
+		m_TimeSinceStart.Update(m_Start, m_End);
+		m_TimeSinceLastFrame.Update(m_OldEnd, m_End);
+		m_OldEnd = m_End;
 	}
 }
 
-Time Timer::TimeSinceStart() const
+void Timer::StartTimeStamp()
 {
-	return myTimeSinceStart;
+	QueryPerformanceCounter(&m_TimeStampStart);
 }
 
-Time Timer::TimeSinceLastFrame() const
+void Timer::EndTimeStamp()
 {
-	return myTimeSinceLastFrame;
-}
-
-int Timer::GetId() const
-{
-	return myId;
-}
-
-void Timer::SetID(const int anID)
-{
-	myId = anID;
+	QueryPerformanceCounter(&m_TimeStampEnd);
+	m_TimeStampTime.AppendTime(m_TimeStampStart, m_TimeStampEnd);
 }

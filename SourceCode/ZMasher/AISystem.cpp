@@ -6,6 +6,8 @@
 #include <ZMasher/GameObjectManager.h>
 #include <ZMUtils\Utility\ZMasherUtilities.h>
 
+extern void(*g_TestCallBack)(CollCallbackArgs);
+
 AISystem::AISystem(AIComponentManager* ai,
 				   SphereCollisionComponentManager* sphere_collision,
 				   MomentumComponentManager* momentum,
@@ -26,9 +28,15 @@ AISystem::~AISystem()
 {
 }
 
+
 bool AISystem::Init(void*)
 {
-	m_AIInternalTimeStamp = Profiler::Instance()->AddTask("AISystemInternal");
+	return true;
+}
+
+bool AISystem::Destroy()
+{
+	Profiler::Instance()->AddTimeStamp(m_AIInternalTimeStamp, "AISystemInternal");
 	return true;
 }
 
@@ -41,9 +49,10 @@ AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 		return nullptr;
 	}
 	AIGroup* ag = new AIGroup();
-	m_AIGroups.Add(*ag);
-	m_AIGroups.GetLast().Allocate(count, args);
-	return &m_AIGroups.GetLast();
+	ag->Allocate(count, args);
+	//m_AIGroups.Add(*ag);
+	//m_AIGroups.GetLast().Allocate(count, args);
+	return nullptr;
 }
 
 bool AISystem::IsInAnyOfAIGroups(int i)
@@ -61,21 +70,22 @@ bool AISystem::IsInAnyOfAIGroups(int i)
 
 bool AISystem::Simulate(const float dt)
 {
-	for (int i = 0; i < m_AIGroups.Size(); i++)
-	{
-		do
-		{
-			HitlerBehaviour({m_AIGroups[i].GetCurrentObject(),
-							dt});
-		} while (m_AIGroups[i].Iterate());
-	}
+	m_AIInternalTimeStamp.StartTimeStamp();
+	//for (int i = 0; i < m_AIGroups.Size(); i++)
+	//{
+	//	do
+	//	{
+	//		HitlerBehaviour({m_AIGroups[i].GetCurrentObject(),
+	//						dt});
+	//	} while (m_AIGroups[i].Iterate());
+	//}
 
 	for (short i = 0; i < m_AIMngr->m_Components.Size(); i++)
 	{
-		if (IsInAnyOfAIGroups(i))
-		{
-			continue;
-		}
+		//if (IsInAnyOfAIGroups(i))
+		//{
+		//	continue;
+		//}
 		const GameObject game_object = m_AIMngr->m_Components[i].m_GameObject;
 		if (!GameObjectManager::Instance()->Alive(game_object))
 		{
@@ -95,7 +105,8 @@ bool AISystem::Simulate(const float dt)
 		{
 		case eAIType::ZOLDIER:
 		{
-			// NADA
+			AIObject obj = { transform_comp, nullptr, ai_comp, nullptr, m_MomentumMngr->GetComponent(game_object), game_object };
+			HitlerBehaviour({ &obj,dt });
 		}
 		break;
 		case eAIType::BASIC_TURRET:
@@ -111,6 +122,7 @@ bool AISystem::Simulate(const float dt)
 		}
 	}
 	return true;
+	m_AIInternalTimeStamp.EndTimeStamp();
 }
 
 void AISystem::HitlerBehaviour(const AIBehaviourArgs& a_args)
@@ -150,29 +162,39 @@ void AISystem::HitlerBehaviour(const AIBehaviourArgs& a_args)
 	args->ai->m_LastFramePos = position;
 }
 
+#ifndef _DEBUG
+static float rof = 0.01f;
+#else
+static float rof = 0.1f;
+#endif // !DEBUG
+
+static float shootTimer = 0.f;
+
 void AISystem::BasicTurretBehaviour(const AIBehaviourArgs & args)
 {
 	// Pseudo code
-
-	// If target in sight and we're aiming for it, fire
-	
-
-	// if target dead, scan for new target
-		
-		// Scan for target with collision query
-
-	CollisionQuery* q = GameObjectManager::Instance()->GetCollisionSystem()->GetQuery(args.obj->go, -1);
-
-	if (q &&
-		q->target != NULL_GAME_OBJECT)
+	CollisionQuery* q = m_CollSystem->GetQuery(args.obj->go);
+	if (shootTimer > 0.f)
 	{
-		ZMasher::Matrix44f* targetTransform = m_TransformMngr->GetTransform(q->target);
-
-		FaceDirection((args.obj->tf->m_Transform), targetTransform->GetTranslation().ToVector3f() - args.obj->tf->m_Transform.GetTranslation().ToVector3f(), args.dt);
+		shootTimer -= args.dt;
 	}
+	if (q &&
+		q->target != NULL_GAME_OBJECT &&
+		q->target != q->owner &&
+		GameObjectManager::Instance()->Alive(q->target))
+	{
+		TransformComponent* targetTransform = m_TransformMngr->GetComponent(q->target);
 
-	// If target not dead, rotate towards it
-
+		if (targetTransform)
+		{
+			FaceDirection((args.obj->tf->m_Transform), targetTransform->m_Transform.GetTranslation().ToVector3f() - args.obj->tf->m_Transform.GetTranslation().ToVector3f(), args.dt);
+			if (shootTimer <= 0.f)
+			{
+				SpawnBullet(args);
+				shootTimer = rof;
+			}
+		}
+	}
 }
 
 ZMasher::Vector3f AISystem::Seek(const SteeringArgs& args)
@@ -197,10 +219,10 @@ void AISystem::SpawnBullet(const AIBehaviourArgs & args)
 	GameObject bullet = GameObjectManager::Instance()->CreateGameObject();
 	ZMasher::Matrix44f bulletTransform = args.obj->tf->m_Transform;
 	bulletTransform.SetTranslation(ZMasher::Vector4f(args.obj->tf->m_Transform.GetTranslation()));
-	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + args.obj->tf->m_Transform.GetVectorForward() * 20);
+	bulletTransform.SetTranslation(bulletTransform.GetTranslation() + args.obj->tf->m_Transform.GetVectorForward() * 7);
 	GameObjectManager::Instance()->TransformManager()->AddComponent(bullet, bulletTransform);
 	GameObjectManager::Instance()->BulletCompManager()->AddComponent(bullet, 1.f, 1337, 3);
-	//GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 2, bullet, g_TestCallBack);
+	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eTurretBullet, 2, bullet, g_TestCallBack);
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (args.obj->tf->m_Transform.GetVectorForward()).ToVector3f() * global_bullet_speed);
 } 
 

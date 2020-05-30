@@ -5,7 +5,7 @@
 #include <vcruntime_new.h>
 #include <malloc.h>
 
-#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 1024, SizeType alignment = -1>
+#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32, SizeType alignment = -1>
 #define GROW_ARRAY_DECL GrowArray<Type, SizeType, size, alignment>
 
 GROW_ARRAY_TEMPLATE

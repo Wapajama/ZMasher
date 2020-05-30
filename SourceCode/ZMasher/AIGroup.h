@@ -20,6 +20,8 @@ struct AIObjectArgs
 	float speed;
 
 	int aiType;
+
+	int collisionType;
 };
 
 struct AIObject

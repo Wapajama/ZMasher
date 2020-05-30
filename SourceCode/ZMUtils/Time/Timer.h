@@ -7,29 +7,35 @@ class Timer
 {
 public:
 	Timer(void);
-	~Timer(void);
+	~Timer();
 
-	void		Update				();
-	void		Pause				();
-	void		Start				();
-	Time		TimeSinceLastFrame	() const;
-	Time		TimeSinceStart		() const;
-	int			GetId				() const;
-	void		SetID				(const int anID);
+	void Update();
+	inline void Pause() {m_IsActive = false;}
+	void Start();
+	inline Time TimeSinceLastFrame() const { return m_TimeSinceLastFrame; }
+	inline Time TimeSinceStart() const { return m_TimeSinceStart; } 
+	inline int GetId() const { return m_Id; }
+	inline void SetID(const int id) { m_Id = id; }
+
+	// Will append whatever time it took 
+	void StartTimeStamp();
+	void EndTimeStamp();
+
+	inline Time GetTotalTimeStampTime() { return m_TimeStampTime; };
 
 private:
-	Time			myTimeSinceStart;
-	Time			myTimeSinceLastFrame;
-	LARGE_INTEGER	myStart;
-	LARGE_INTEGER	myEnd;
-	LARGE_INTEGER	myOldEnd;
-	LARGE_INTEGER	myPerformanceFrequency;
-	bool			myIsActive;
-	bool			myFirstRun;
-	int				myId;
+	Time m_TimeSinceStart;
+	Time m_TimeSinceLastFrame;
+	Time m_TimeStampTime;
+	LARGE_INTEGER m_Start;
+	LARGE_INTEGER m_End;
+	LARGE_INTEGER m_OldEnd;
 
-
-//	friend class TimerManager;
+	LARGE_INTEGER m_TimeStampStart;
+	LARGE_INTEGER m_TimeStampEnd;
+	bool m_IsActive;
+	bool m_FirstRun;
+	int	m_Id;
 };
 
 #endif

@@ -8,7 +8,7 @@ public:
 
 	virtual bool Init(void* arguments){return true;};
 	virtual bool Simulate(const float dt)=0{return false;};
-	
+	virtual bool Destroy(){return true;}
 private:
 
 };

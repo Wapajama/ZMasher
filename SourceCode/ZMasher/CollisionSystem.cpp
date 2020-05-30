@@ -5,7 +5,7 @@
 #include <ZMasher\TransformComponentManager.h>
 #include <ZMasher\GameObjectManager.h>
 #include <ZMasherGfxDX11\ZMModelFactory.h>
-
+#define COLL_N_TIMERS 10
 CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collision_comp_manager,
 								 AABBComponentManager* aabb_component_manager,
 								 MomentumComponentManager* momentum_comp_manager,
@@ -18,9 +18,13 @@ CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collisi
 	, m_DebugLines(1024)
 	, m_Queries(1024)
 	, m_SphereQueries(1024)
+	, m_TimeStamps(128)
 {
-	m_SingleCollisionTimeStamp = Profiler::Instance()->AddTask("SingleCollision");
 	m_DebugLines.Resize(1024 * 128);
+	for (int i = 0; i < COLL_N_TIMERS; i++)
+	{
+		m_TimeStamps.Add(Timer());
+	}
 }
 
 static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
@@ -70,46 +74,94 @@ CollisionSystem::~CollisionSystem()
 {
 }
 
+static GrowArray<std::string> indexes;
+
+void CollisionSystem::Destroy()
+{
+	Profiler::Instance()->AddTimeStamp(m_SingleCollisionTimeStamp, "SingleCollision");
+	Profiler::Instance()->AddTimeStamp(m_QueriesTimeStamp, "Collision Queries");
+	Profiler::Instance()->AddTimeStamp(m_SimulatePhysicsTimeStamp, "Simulate Physics");
+	Profiler::Instance()->AddTimeStamp(m_DrawDebugLinesTimeStamp, "Draw Debug Lines collisionManager");
+	
+	for (int i = 0; i < COLL_N_TIMERS; i++)
+	{
+		indexes.Add(("CollisionID: " + std::to_string(i)));
+		Profiler::Instance()->AddTimeStamp(m_TimeStamps[i], indexes.GetLast().c_str());
+	}
+}
+
 bool CollisionSystem::Simulate(const float dt)
 {
 	m_CollInfos.RemoveAll();
 
+	m_SimulatePhysicsTimeStamp.StartTimeStamp();
 	SimulatePhysics(dt);
+	m_SimulatePhysicsTimeStamp.EndTimeStamp();
+
+	m_QueriesTimeStamp.StartTimeStamp();
 	ResolveQueries();
+	m_QueriesTimeStamp.EndTimeStamp();
 
 	//BRUTEFOOOOOOOOOOOOOOOOOOOORCE
 	//TODO: Optimize this, might be a major task
 	for (int i = 0; i < m_SphereCollisionCompManager->m_Components.Size(); ++i)
 	{
+		m_TimeStamps[0].StartTimeStamp();
 		SphereCollisionComponent& sphereA = m_SphereCollisionCompManager->m_Components[i];
+		m_TimeStamps[0].EndTimeStamp();
+
 		const GameObject object_a = sphereA.m_GameObject;
+		m_TimeStamps[1].StartTimeStamp();
 		if (!GameObjectManager::Instance()->Alive(object_a))
 		{
+			m_TimeStamps[1].EndTimeStamp();
 			continue;
 		}
+		m_TimeStamps[1].EndTimeStamp();
+
+		m_TimeStamps[2].StartTimeStamp();
 		ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(object_a);
-		Profiler::Instance()->BeginTask(m_SingleCollisionTimeStamp);
+		m_TimeStamps[2].EndTimeStamp();
+		
 		for (int j = i; j < m_SphereCollisionCompManager->m_Components.Size(); ++j)
 		{
 			SphereCollisionComponent& sphereB = m_SphereCollisionCompManager->m_Components[j];
 			const GameObject object_b = sphereB.m_GameObject;
+			m_TimeStamps[3].StartTimeStamp();
 			if (object_a == object_b ||
 				!GameObjectManager::Instance()->Alive(object_b))
 			{
+				m_TimeStamps[3].EndTimeStamp();
 				continue;
 			}
+			m_TimeStamps[3].EndTimeStamp();
+			m_TimeStamps[4].StartTimeStamp();
 			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
+			m_TimeStamps[4].EndTimeStamp();
+
+			if (transformA == nullptr ||
+				transformB == nullptr)
+			{
+				continue;
+			}
+
 			ZMasher::Vector4f ta = transformA->GetTranslation();
 			ZMasher::Vector4f tb = transformB->GetTranslation();
-			if (transformA &&
-				transformB &&
-				SphereVsSphereTest(sphereA.m_Radius,
-					sphereB.m_Radius,
-					ta,tb))
+			m_SingleCollisionTimeStamp.StartTimeStamp();
+			const bool collisionResult = SphereVsSphereTest(sphereA.m_Radius,
+															sphereB.m_Radius,
+															ta, tb);
+			m_SingleCollisionTimeStamp.EndTimeStamp();
+			if (collisionResult)
 			{
+				m_TimeStamps[5].StartTimeStamp();
 				MomentumComponent* mom_a = m_MomentumCompManager->GetComponent(object_a);
+				m_TimeStamps[5].EndTimeStamp();
+				m_TimeStamps[6].StartTimeStamp();
 				MomentumComponent* mom_b = m_MomentumCompManager->GetComponent(object_b);
+				m_TimeStamps[6].EndTimeStamp();
 
+				m_TimeStamps[7].StartTimeStamp();
 				(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, mom_a, mom_b });
 				sphereA.collInfoIndex = m_CollInfos.Size();
 				sphereB.collInfoIndex = m_CollInfos.Size();
@@ -118,18 +170,25 @@ bool CollisionSystem::Simulate(const float dt)
 					object_b,
 					ta.ToVector3f(),
 					tb.ToVector3f() });
+				m_TimeStamps[7].EndTimeStamp();
 
 				ZMasher::Vector3f diffv = ta.ToVector3f() - tb.ToVector3f();
 				const float diff = diffv.Length() - (sphereA.m_Radius + sphereB.m_Radius);
 
+				m_TimeStamps[8].StartTimeStamp();
 				ZombieCollisionFeedback(transformA, transformB, diff);
 				ZombieCollisionFeedback(transformB, transformA, diff);
+				m_TimeStamps[8].EndTimeStamp();
 			}
 		}
+		m_TimeStamps[9].StartTimeStamp();
 		QuerySphereAgainstAllAABBS(sphereA, transformA);
-		Profiler::Instance()->EndTask(m_SingleCollisionTimeStamp);
+		m_TimeStamps[9].EndTimeStamp();
+		
 	}
+	m_DrawDebugLinesTimeStamp.StartTimeStamp();
 	DrawDebugLines();
+	m_DrawDebugLinesTimeStamp.EndTimeStamp();
 	return true;
 }
 
@@ -148,7 +207,8 @@ void CollisionSystem::ResolveQueries()
 			for (int o = 0; o < m_SphereCollisionCompManager->m_Components.Size(); o++)
 			{
 				SphereCollisionComponent s = m_SphereCollisionCompManager->m_Components[o];
-				if (s.m_GameObject == m_Queries[i].owner)
+				if (s.m_GameObject == m_Queries[i].owner ||
+					s.m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet)
 				{
 					continue;
 				}
@@ -195,11 +255,11 @@ void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent&
 
 void CollisionSystem::DrawDebugLines()
 {
-	for (int i = 0; i < m_DebugLines.Size(); ++i)
-	{
-		ZMModelFactory::Instance()->RemoveDebugLine(m_DebugLines[i]);
-	}
-	m_DebugLines.RemoveAll();
+	//for (int i = 0; i < m_DebugLines.Size(); ++i)
+	//{
+	//	ZMModelFactory::Instance()->RemoveDebugLine(m_DebugLines[i]);
+	//}
+	//m_DebugLines.RemoveAll();
 
 	DrawSpheres();
 	DrawAABBs();
@@ -214,55 +274,55 @@ void CollisionSystem::DrawAABBs()
 		const float x = aabb.r[0];
 		const float y = aabb.r[1];
 		const float z = aabb.r[2];
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, y, z),
 			pos + ZMasher::Vector3f(x, y, -z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, y, z),
 			pos + ZMasher::Vector3f(x, -y, z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, y, z),
 			pos + ZMasher::Vector3f(-x, y, z),
 			eColour::BLUE));
 
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, -y, -z),
 			pos + ZMasher::Vector3f(-x, -y, z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, -y, -z),
 			pos + ZMasher::Vector3f(-x, y, -z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, -y, -z),
 			pos + ZMasher::Vector3f(x, -y, -z),
 			eColour::BLUE));
 
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, -y, z),
 			pos + ZMasher::Vector3f(-x, -y, z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, -y, z),
 			pos + ZMasher::Vector3f(x, -y, -z),
 			eColour::BLUE));
 
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, y, -z),
 			pos + ZMasher::Vector3f(x, y, -z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, y, -z),
 			pos + ZMasher::Vector3f(-x, y, z),
 			eColour::BLUE));
 
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(-x, y, z),
 			pos + ZMasher::Vector3f(-x, -y, z),
 			eColour::BLUE));
-		m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(
+		(ZMModelFactory::Instance()->CreateDebugLine(
 			pos + ZMasher::Vector3f(x, y, -z),
 			pos + ZMasher::Vector3f(x, -y, -z),
 			eColour::BLUE));
@@ -295,9 +355,9 @@ void CollisionSystem::DrawSpheres()
 
 void CollisionSystem::DrawSphere(const float radius, const ZMasher::Vector3f pos)
 {
-	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(radius, 0, 0), pos + ZMasher::Vector3f(-radius, 0, 0), eColour::RED));
-	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, radius, 0), pos + ZMasher::Vector3f(0, -radius, 0), eColour::RED));
-	m_DebugLines.Add(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, 0, radius), pos + ZMasher::Vector3f(0, 0, -radius), eColour::RED));
+	(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(radius, 0, 0), pos + ZMasher::Vector3f(-radius, 0, 0), eColour::RED));
+	(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, radius, 0), pos + ZMasher::Vector3f(0, -radius, 0), eColour::RED));
+	(ZMModelFactory::Instance()->CreateDebugLine(pos + ZMasher::Vector3f(0, 0, radius), pos + ZMasher::Vector3f(0, 0, -radius), eColour::RED));
 }
 
 CollisionInfoStruct* CollisionSystem::GetCollisionInfo(const int index)

@@ -33,14 +33,44 @@ GameplayState::~GameplayState()
 
 void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
 {
-	//GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
-	//GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
-	return; 
+	if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eEnemy &&
+		args.b->m_CollisionFilter == eCOLLISIONTYPE::eEnemy)
+	{
+		return;
+	}
+
+	if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet &&
+		args.b->m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet)
+	{
+		return;
+	}
+
+	if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet)
+	{
+		GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
+		if (args.b->m_CollisionFilter == eCOLLISIONTYPE::eEnemy)
+		{
+			GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
+		}
+	}
+	else if (args.b->m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet)
+	{
+		GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
+		if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eEnemy)
+		{
+			GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
+		}
+	}
 };
 
-#define NUMBER_OF_ENEMIES 309
+#ifndef _DEBUG
+#define NUMBER_OF_ENEMIES 600
+#define NUMBER_OF_BOXES 50
+#else
+#define NUMBER_OF_ENEMIES 200
+#define NUMBER_OF_BOXES 30 
+#endif // !_DEBUG
 
-#define NUMBER_OF_BOXES 100
 
 const float ai_range = 300.f;
 bool GameplayState::Init(const char* args)
@@ -58,7 +88,7 @@ bool GameplayState::Init(const char* args)
 	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::BASIC_TURRET);
-	GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eSphere, new_object, 30, transform.GetTranslation().ToVector3f());
+	GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eTurret, new_object, 100, transform.GetTranslation().ToVector3f());
 	SpawnEnemy(true);
 
 	for (int i = 0; i < NUMBER_OF_BOXES; ++i)
@@ -78,6 +108,7 @@ void GameplayState::SpawnEnemy(bool random_x)
 	args.aiType = eAIType::ZOLDIER;
 	args.radius = 5;
 	args.speed = 4;
+	args.collisionType = eCOLLISIONTYPE::eEnemy;
 
 	AIGroup* g = GameObjectManager::Instance()->GetAISystem()->CreateAIs(&args, NUMBER_OF_ENEMIES);
 } 
@@ -113,7 +144,7 @@ bool GameplayState::Update(const float dt)
 	{
 		if(lazy_timer < GUN_COOLDOWN)
 		{
-			ShootBullet();
+			//ShootBullet();
 			lazy_timer = GUN_COOLDOWN;
 		}
 	}
@@ -125,23 +156,29 @@ bool GameplayState::Update(const float dt)
 	{
 		if(lazy_timer < GUN_COOLDOWN)
 		{
-			ShootBullet();
+			//ShootBullet();
 			lazy_timer = GUN_COOLDOWN;
 		}
 	}
 #endif // BENCHMARK
 
-	if (GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs() < NUMBER_OF_ENEMIES)
+	if (GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs() < (NUMBER_OF_ENEMIES/2))
 	{
-		const short n_ais = GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs();
-		for (int i = 0; i < NUMBER_OF_ENEMIES - n_ais; i++)
-		{
+		//const short n_ais = GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs();
+		//for (int i = 0; i < NUMBER_OF_ENEMIES - n_ais; i++)
+		//{
 			SpawnEnemy();
-		}
+		//}
 	}
 
 	GameObjectManager::Instance()->Update(dt);
 
+	return true;
+}
+
+bool GameplayState::Destroy()
+{
+	GameObjectManager::Instance()->Destroy();
 	return true;
 }
 

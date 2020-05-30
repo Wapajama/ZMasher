@@ -8,7 +8,7 @@
 struct SphereCollisionComponent
 {
 	//DONT CHANGE THE ORDER OF THE VARIABLES
-	CollisionType m_CollisionFilter;
+	eCOLLISIONTYPE m_CollisionFilter;
 	float m_Radius;
 	GameObject m_GameObject;
 	CollisionCallBack m_CollisionCallback = nullptr;
@@ -24,7 +24,7 @@ public:
 	SphereCollisionComponentManager();
 	~SphereCollisionComponentManager();
 
-	SphereCollisionComponent* AddComponent(	const CollisionType filter,
+	SphereCollisionComponent* AddComponent(	const eCOLLISIONTYPE filter,
 						const float radius, 
 						GameObject game_object,
 						CollisionCallBack callback);
