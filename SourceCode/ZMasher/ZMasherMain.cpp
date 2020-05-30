@@ -89,6 +89,7 @@ ZMasherMain::~ZMasherMain()
 	Profiler::Instance()->AddTimeStamp(m_RenderFrame, "Render");
 	Profiler::Instance()->AddTimeStamp(m_LogicFrame, "Logic");
 	Profiler::Instance()->AddTimeStamp(m_RenderInternalFrame, "RenderInternal");
+	Profiler::Instance()->AddTimeStamp(m_NullTimeStamp, "NullStamp");
 #endif // BENCHMARK
 	m_Renderer.Destroy();
 	m_StateStack.Exit();
@@ -198,6 +199,11 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 
 bool ZMasherMain::Update()
 {
+#ifdef BENCHMARK
+	m_NullTimeStamp.StartTimeStamp();
+	m_NullTimeStamp.EndTimeStamp();
+#endif // BENCHMARK
+
 	if (HandleWinMsg() == false)
 	{
 		return false;

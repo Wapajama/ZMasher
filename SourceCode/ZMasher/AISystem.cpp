@@ -36,7 +36,10 @@ bool AISystem::Init(void*)
 
 bool AISystem::Destroy()
 {
+#ifdef BENCHMARK
 	Profiler::Instance()->AddTimeStamp(m_AIInternalTimeStamp, "AISystemInternal");
+#endif // BENCHMARK
+
 	return true;
 }
 
@@ -50,8 +53,6 @@ AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 	}
 	AIGroup* ag = new AIGroup();
 	ag->Allocate(count, args);
-	//m_AIGroups.Add(*ag);
-	//m_AIGroups.GetLast().Allocate(count, args);
 	return nullptr;
 }
 
@@ -70,22 +71,10 @@ bool AISystem::IsInAnyOfAIGroups(int i)
 
 bool AISystem::Simulate(const float dt)
 {
-	m_AIInternalTimeStamp.StartTimeStamp();
-	//for (int i = 0; i < m_AIGroups.Size(); i++)
-	//{
-	//	do
-	//	{
-	//		HitlerBehaviour({m_AIGroups[i].GetCurrentObject(),
-	//						dt});
-	//	} while (m_AIGroups[i].Iterate());
-	//}
+	START_TIME_STAMP(m_AIInternalTimeStamp);
 
 	for (short i = 0; i < m_AIMngr->m_Components.Size(); i++)
 	{
-		//if (IsInAnyOfAIGroups(i))
-		//{
-		//	continue;
-		//}
 		const GameObject game_object = m_AIMngr->m_Components[i].m_GameObject;
 		if (!GameObjectManager::Instance()->Alive(game_object))
 		{
@@ -112,7 +101,6 @@ bool AISystem::Simulate(const float dt)
 		case eAIType::BASIC_TURRET:
 		{
 			AIObject obj = { transform_comp, nullptr, ai_comp, nullptr, m_MomentumMngr->GetComponent(game_object), game_object };
-			//BasicTurretBehaviour({transform_comp, ai_comp, m_MomentumMngr->GetComponent(game_object), game_object});
 			BasicTurretBehaviour({ &obj, dt });
 		}
 			break;
@@ -121,8 +109,8 @@ bool AISystem::Simulate(const float dt)
 			break;
 		}
 	}
+	END_TIME_STAMP(m_AIInternalTimeStamp);
 	return true;
-	m_AIInternalTimeStamp.EndTimeStamp();
 }
 
 void AISystem::HitlerBehaviour(const AIBehaviourArgs& a_args)
@@ -226,12 +214,6 @@ void AISystem::SpawnBullet(const AIBehaviourArgs & args)
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(bullet, 10, (args.obj->tf->m_Transform.GetVectorForward()).ToVector3f() * global_bullet_speed);
 } 
 
-//void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
-//{
-//	//GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
-//	//GameObjectManager::Instance()->Destroy(args.b->m_GameObject);
-//	return; 
-//};
 
 void AISystem::AddNewZoldier()
 {
@@ -263,12 +245,6 @@ void AISystem::FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vecto
 	const float angle = ZMasher::AngleBetweenVectors(origin, target);
 	const ZMasher::Vector4f temp_pos = transform.GetTranslation();
 	transform.SetTranslation(ZMasher::Vector4f(0, 0, 0, temp_pos.w));
-	if (angle > 0.01 || angle < -0.01)
-	{
-		//std::cout << "FaceDirection angle: " << angle << std::endl;
-	}
 	transform *= ZMasher::Matrix44f::CreateRotationMatrixY(angle > 0.f ? min(angle, dt*3) : max(angle, -dt*3));
-	//transform *= ZMasher::Matrix44f::CreateRotationMatrixY(angle < 0.f ? angle + M_PI * 2: angle);
-	//transform *= ZMasher::Matrix44f::CreateRotationMatrixY(angle);
 	transform.SetTranslation(temp_pos);
 }

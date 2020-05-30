@@ -4,6 +4,7 @@
 #include <ZMUtils/Math/ZMVector.h>
 #include <CollisionDefines.h>
 #include <Time/Timer.h>
+#include <GlobalIncludes/project_defines.h>
 
 class SphereCollisionComponentManager;
 class AABBComponentManager;
@@ -28,7 +29,6 @@ public:
 
 	CollisionInfoStruct* GetCollisionInfo(const int index);
 	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
-	//void CreateQuery(eCOLLISIONTYPE type, struct AABBCollisionComponent* component);
 
 	CollisionQuery* GetQuery(GameObject owner, int id = 0);
 
@@ -52,10 +52,13 @@ private:
 	AABBComponentManager* m_AABBComponentManager;
 	MomentumComponentManager* m_MomentumCompManager;
 	TransformComponentManager* m_TransformCompManager;
+#ifdef BENCHMARK
 	Timer m_SingleCollisionTimeStamp;
 	Timer m_QueriesTimeStamp;
 	Timer m_SimulatePhysicsTimeStamp;
 	Timer m_DrawDebugLinesTimeStamp;
 
 	GrowArray<Timer> m_TimeStamps;
+#endif // BENCHMARK
+
 };

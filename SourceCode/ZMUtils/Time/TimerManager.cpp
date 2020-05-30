@@ -26,6 +26,7 @@ void TimerManager::Create(TimerManager* instance)
 
 TimerManager::TimerManager(void):m_Timers(1024)
 {
+	QueryPerformanceFrequency(&Time::g_ClockFrequency);
 	m_MainTimer.Start();
 }
 

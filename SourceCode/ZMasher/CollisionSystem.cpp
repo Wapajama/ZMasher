@@ -18,13 +18,19 @@ CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collisi
 	, m_DebugLines(1024)
 	, m_Queries(1024)
 	, m_SphereQueries(1024)
+#ifdef BENCHMARK
 	, m_TimeStamps(128)
+#endif // BENCHMARK
+
 {
 	m_DebugLines.Resize(1024 * 128);
+#ifdef BENCHMARK
 	for (int i = 0; i < COLL_N_TIMERS; i++)
 	{
 		m_TimeStamps.Add(Timer());
 	}
+#endif // BENCHMARK
+
 }
 
 static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
@@ -78,66 +84,69 @@ static GrowArray<std::string> indexes;
 
 void CollisionSystem::Destroy()
 {
+#ifdef BENCHMARK
 	Profiler::Instance()->AddTimeStamp(m_SingleCollisionTimeStamp, "SingleCollision");
 	Profiler::Instance()->AddTimeStamp(m_QueriesTimeStamp, "Collision Queries");
 	Profiler::Instance()->AddTimeStamp(m_SimulatePhysicsTimeStamp, "Simulate Physics");
 	Profiler::Instance()->AddTimeStamp(m_DrawDebugLinesTimeStamp, "Draw Debug Lines collisionManager");
-	
+
 	for (int i = 0; i < COLL_N_TIMERS; i++)
 	{
 		indexes.Add(("CollisionID: " + std::to_string(i)));
 		Profiler::Instance()->AddTimeStamp(m_TimeStamps[i], indexes.GetLast().c_str());
 	}
+#endif // BENCHMARK
+
 }
 
 bool CollisionSystem::Simulate(const float dt)
 {
 	m_CollInfos.RemoveAll();
 
-	m_SimulatePhysicsTimeStamp.StartTimeStamp();
+	START_TIME_STAMP(m_SimulatePhysicsTimeStamp);
 	SimulatePhysics(dt);
-	m_SimulatePhysicsTimeStamp.EndTimeStamp();
+	END_TIME_STAMP(m_SimulatePhysicsTimeStamp);
 
-	m_QueriesTimeStamp.StartTimeStamp();
+	START_TIME_STAMP(m_QueriesTimeStamp);
 	ResolveQueries();
-	m_QueriesTimeStamp.EndTimeStamp();
+	END_TIME_STAMP(m_QueriesTimeStamp);
 
 	//BRUTEFOOOOOOOOOOOOOOOOOOOORCE
 	//TODO: Optimize this, might be a major task
 	for (int i = 0; i < m_SphereCollisionCompManager->m_Components.Size(); ++i)
 	{
-		m_TimeStamps[0].StartTimeStamp();
+		START_TIME_STAMP(m_TimeStamps[0]);
 		SphereCollisionComponent& sphereA = m_SphereCollisionCompManager->m_Components[i];
-		m_TimeStamps[0].EndTimeStamp();
+		END_TIME_STAMP(m_TimeStamps[0]);
 
 		const GameObject object_a = sphereA.m_GameObject;
-		m_TimeStamps[1].StartTimeStamp();
+		START_TIME_STAMP(m_TimeStamps[1]);
 		if (!GameObjectManager::Instance()->Alive(object_a))
 		{
-			m_TimeStamps[1].EndTimeStamp();
+			END_TIME_STAMP(m_TimeStamps[1]);
 			continue;
 		}
-		m_TimeStamps[1].EndTimeStamp();
+		END_TIME_STAMP(m_TimeStamps[1]);
 
-		m_TimeStamps[2].StartTimeStamp();
+		START_TIME_STAMP(m_TimeStamps[2]);
 		ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(object_a);
-		m_TimeStamps[2].EndTimeStamp();
+		END_TIME_STAMP(m_TimeStamps[2]);
 		
 		for (int j = i; j < m_SphereCollisionCompManager->m_Components.Size(); ++j)
 		{
 			SphereCollisionComponent& sphereB = m_SphereCollisionCompManager->m_Components[j];
 			const GameObject object_b = sphereB.m_GameObject;
-			m_TimeStamps[3].StartTimeStamp();
+			START_TIME_STAMP(m_TimeStamps[3]);
 			if (object_a == object_b ||
 				!GameObjectManager::Instance()->Alive(object_b))
 			{
-				m_TimeStamps[3].EndTimeStamp();
+				END_TIME_STAMP(m_TimeStamps[3]);
 				continue;
 			}
-			m_TimeStamps[3].EndTimeStamp();
-			m_TimeStamps[4].StartTimeStamp();
+			END_TIME_STAMP(m_TimeStamps[3]);
+			START_TIME_STAMP(m_TimeStamps[4]);
 			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
-			m_TimeStamps[4].EndTimeStamp();
+			END_TIME_STAMP(m_TimeStamps[4]);
 
 			if (transformA == nullptr ||
 				transformB == nullptr)
@@ -147,21 +156,21 @@ bool CollisionSystem::Simulate(const float dt)
 
 			ZMasher::Vector4f ta = transformA->GetTranslation();
 			ZMasher::Vector4f tb = transformB->GetTranslation();
-			m_SingleCollisionTimeStamp.StartTimeStamp();
+			START_TIME_STAMP(m_SingleCollisionTimeStamp);
 			const bool collisionResult = SphereVsSphereTest(sphereA.m_Radius,
 															sphereB.m_Radius,
 															ta, tb);
-			m_SingleCollisionTimeStamp.EndTimeStamp();
+			END_TIME_STAMP(m_SingleCollisionTimeStamp);
 			if (collisionResult)
 			{
-				m_TimeStamps[5].StartTimeStamp();
+				START_TIME_STAMP(m_TimeStamps[5]);
 				MomentumComponent* mom_a = m_MomentumCompManager->GetComponent(object_a);
-				m_TimeStamps[5].EndTimeStamp();
-				m_TimeStamps[6].StartTimeStamp();
+				END_TIME_STAMP(m_TimeStamps[5]);
+				START_TIME_STAMP(m_TimeStamps[6]);
 				MomentumComponent* mom_b = m_MomentumCompManager->GetComponent(object_b);
-				m_TimeStamps[6].EndTimeStamp();
+				END_TIME_STAMP(m_TimeStamps[6]);
 
-				m_TimeStamps[7].StartTimeStamp();
+				START_TIME_STAMP(m_TimeStamps[7]);
 				(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, mom_a, mom_b });
 				sphereA.collInfoIndex = m_CollInfos.Size();
 				sphereB.collInfoIndex = m_CollInfos.Size();
@@ -170,25 +179,25 @@ bool CollisionSystem::Simulate(const float dt)
 					object_b,
 					ta.ToVector3f(),
 					tb.ToVector3f() });
-				m_TimeStamps[7].EndTimeStamp();
+				END_TIME_STAMP(m_TimeStamps[7]);
 
 				ZMasher::Vector3f diffv = ta.ToVector3f() - tb.ToVector3f();
 				const float diff = diffv.Length() - (sphereA.m_Radius + sphereB.m_Radius);
 
-				m_TimeStamps[8].StartTimeStamp();
+				START_TIME_STAMP(m_TimeStamps[8]);
 				ZombieCollisionFeedback(transformA, transformB, diff);
 				ZombieCollisionFeedback(transformB, transformA, diff);
-				m_TimeStamps[8].EndTimeStamp();
+				END_TIME_STAMP(m_TimeStamps[8]);
 			}
 		}
-		m_TimeStamps[9].StartTimeStamp();
+		START_TIME_STAMP(m_TimeStamps[9]);
 		QuerySphereAgainstAllAABBS(sphereA, transformA);
-		m_TimeStamps[9].EndTimeStamp();
+		END_TIME_STAMP(m_TimeStamps[9]);
 		
 	}
-	m_DrawDebugLinesTimeStamp.StartTimeStamp();
+	START_TIME_STAMP(m_DrawDebugLinesTimeStamp);
 	DrawDebugLines();
-	m_DrawDebugLinesTimeStamp.EndTimeStamp();
+	END_TIME_STAMP(m_DrawDebugLinesTimeStamp);
 	return true;
 }
 
@@ -255,12 +264,6 @@ void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent&
 
 void CollisionSystem::DrawDebugLines()
 {
-	//for (int i = 0; i < m_DebugLines.Size(); ++i)
-	//{
-	//	ZMModelFactory::Instance()->RemoveDebugLine(m_DebugLines[i]);
-	//}
-	//m_DebugLines.RemoveAll();
-
 	DrawSpheres();
 	DrawAABBs();
 }
@@ -420,32 +423,3 @@ CollisionQuery* CollisionSystem::GetQuery(GameObject owner, int id)
 	}
 	return nullptr;
 }
-
-// If the object died, make sure to clean up the components
-//if (!GameObjectManager::Instance()->Alive(sphereA.m_GameObject))
-//{
-//	TransformComponent* trans = m_TransformCompManager->GetComponent(object_a);
-//	MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
-//	if (trans)
-//	{
-//		GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);
-//	}
-//	if (mom)
-//	{
-//		GameObjectManager::Instance()->Destroy(mom->m_GameObject, false);
-//	}
-//	
-//}
-//if (!GameObjectManager::Instance()->Alive(sphereB.m_GameObject))
-//{
-//	TransformComponent* trans = m_TransformCompManager->GetComponent(object_b);
-//	MomentumComponent* mom = &m_MomentumCompManager->m_Components[i];
-//	if (trans)
-//	{
-//		GameObjectManager::Instance()->Destroy(trans->m_GameObject, false);
-//	}
-//	if (mom)
-//	{
-//		GameObjectManager::Instance()->Destroy(mom->m_GameObject, false);
-//	}
-//}

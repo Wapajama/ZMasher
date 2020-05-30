@@ -11,6 +11,15 @@
 
 #define BENCHMARK
 
+#ifdef BENCHMARK
+#define START_TIME_STAMP(ts) ts.StartTimeStamp() 
+#define END_TIME_STAMP(ts) ts.EndTimeStamp() 
+#else
+#define START_TIME_STAMP(ts)
+#define END_TIME_STAMP(ts)
+#endif // BENCHMARK
+
+
 #ifndef ZMASHER_DX12
 #define ZMASHER_DX11  
 #endif // !ZMASHER_DX12

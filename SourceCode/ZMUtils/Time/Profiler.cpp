@@ -13,8 +13,6 @@
 Profiler::Profiler()
 	:
 	m_TimeStamps(1024)
-	//m_TimeStampStack(32)
-	//, m_Tasks(32)
 {
 #ifdef BENCHMARK
 	m_NumberOfFrames = 0;
@@ -34,22 +32,6 @@ void Profiler::StartBenchmark()
 	m_TimerIndex = TimerManager::GetInstance()->CreateAndStartTimer();
 }
 
-//ProfilerTaskID Profiler::AddTask(const char* name)
-//{
-//#ifdef BENCHMARK
-//	for (short i = 0; i < m_Tasks.Size(); i++)
-//	{
-//		if (strcmp(m_Tasks[i].m_Name.c_str(), name) == 0)
-//		{
-//			return{ -1 };
-//		}
-//	}
-//	m_Tasks.Add({ name, 0 });
-//	return{ static_cast<int>(m_Tasks.Size() - 1) };
-//#endif // BENCHMARK
-//	return { -1 };
-//}
-
 bool Profiler::IterateFrame(const float dt)
 {
 #ifdef BENCHMARK
@@ -64,29 +46,6 @@ bool Profiler::IterateFrame(const float dt)
 	return false;
 #endif // BENCHMARK
 }
-
-//void Profiler::BeginTask(ProfilerTaskID id)
-//{
-//#ifdef BENCHMARK
-//	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
-//	const float start_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds();
-//	m_TimeStampStack.Add({ start_time, id });
-//#endif // BENCHMARK
-//}
-//
-//void Profiler::EndTask(ProfilerTaskID)
-//{
-//#ifdef BENCHMARK
-//	if (m_TimeStampStack.Size() > 0)
-//	{
-//		TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
-//		const float end_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds() - m_TimeStampStack.GetLast().m_ElapsedTime;
-//		m_Tasks[m_TimeStampStack.GetLast().m_ID.m_TaskID].m_TotalTime += end_time;
-//		m_TimeStampStack.RemoveLast();
-//	}
-//#endif // BENCHMARK
-//
-//}
 
 void Profiler::FinishBenchmark()
 {
@@ -120,61 +79,12 @@ void Profiler::FinishBenchmark()
 
 	fout << std::endl;
 
-	fout << "--- Total time per task ---" << std::endl;
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
 	const double total_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds();
 
-	//for (int i = 0; i < m_Tasks.Size(); i++)
-	//{
-	//	m_Tasks[i].m_TotalTime *= 1000.0; // Converting to miliseconds.
-	//}
-	//for (int i = 0; i < m_Tasks.Size(); i++)
-	//{
-	//	for (int j = i +1; j + 1 < m_Tasks.Size(); j++)
-	//	{
-	//		if (m_Tasks[i].m_TotalTime < m_Tasks[j].m_TotalTime)
-	//		{
-	//			ProfilerTask task = m_Tasks[i];
-	//			m_Tasks[i] = m_Tasks[j];
-	//			m_Tasks[j] = task;
-	//		}
-	//	}
-	//}
-	//for (short i = 1; i < m_Tasks.Size(); i++)
-	//{
-	//	if (m_Tasks[i].m_TotalTime == 0.f)
-	//	{
-	//		continue;
-	//	}
-	//	fout << "Task :" 
-	//		<< m_Tasks[i].m_TotalTime
-	//		<< " " << time_unit
-	//		<< " (" << (m_Tasks[i].m_TotalTime / total_time) * 0.1f
-	//		<< "\% of total)"
-	//		<< "Name:\""
-	//		<< m_Tasks[i].m_Name.c_str() 
-	//		<< "\""
-	//		<< std::endl;
-	//}
-	//fout << std::endl;
-	//fout << "--- Avarage time per frame ---" << std::endl;
-	//const double n_Frames = static_cast<double>(m_NumberOfFrames);
-	//for (short i = 1; i < m_Tasks.Size(); i++)
-	//{
-	//	fout << "Task :" 
-	//		<< m_Tasks[i].m_TotalTime / n_Frames
-	//		<< " " << time_unit
-	//		<< " (" << (m_Tasks[i].m_TotalTime / total_time) * 0.1f
-	//		<< "\% of total)"
-	//		<< "Name:\""
-	//		<< m_Tasks[i].m_Name.c_str() 
-	//		<< "\""
-	//		<< std::endl;
-	//}
-
 	for (int i = 0; i < m_TimeStamps.Size(); i++)
 	{
-		for (int j = i +1; j + 1 < m_TimeStamps.Size(); j++)
+		for (int j = i +1; j < m_TimeStamps.Size(); j++)
 		{
 			if (m_TimeStamps[i].GetTime() < m_TimeStamps[j].GetTime())
 			{
@@ -185,16 +95,13 @@ void Profiler::FinishBenchmark()
 		}
 	}
 
+	fout << "--- Total time per task ---" << std::endl;
 	for (short i = 1; i < m_TimeStamps.Size(); i++)
 	{
-		//if (m_TimeStamps[i].GetTime() == 0.0)
-		//{
-		//	continue;
-		//}
 		fout << "Task :" 
 			<< m_TimeStamps[i].GetTime()
 			<< " " << time_unit
-			<< " (" << (m_TimeStamps[i].GetTime() / total_time) * 0.1f
+			<< " (" << (m_TimeStamps[i].GetTime() / total_time) * 0.1f // 0.1 bc GetTime: ms, total_time: s, to %
 			<< "\% of total)"
 			<< "Name:\""
 			<< m_TimeStamps[i].m_Name
@@ -211,6 +118,35 @@ void Profiler::FinishBenchmark()
 			<< m_TimeStamps[i].GetTime() / n_Frames
 			<< " " << time_unit
 			<< " (" << (m_TimeStamps[i].GetTime() / total_time) * 0.1f
+			<< "\% of total)"
+			<< "Name:\""
+			<< m_TimeStamps[i].m_Name
+			<< "\""
+			<< std::endl;
+	}
+
+	fout << std::endl;
+
+	for (int i = 0; i < m_TimeStamps.Size(); i++)
+	{
+		for (int j = i +1; j < m_TimeStamps.Size(); j++)
+		{
+			if (m_TimeStamps[i].m_TimeStamp.GetAverageTimeStamp() < m_TimeStamps[j].m_TimeStamp.GetAverageTimeStamp())
+			{
+				TaggedTimeStamp task = m_TimeStamps[i];
+				m_TimeStamps[i] = m_TimeStamps[j];
+				m_TimeStamps[j] = task;
+			}
+		}
+	}
+
+	fout << "--- Avarage time per TimeStamp ---" << std::endl;
+	for (short i = 1; i < m_TimeStamps.Size(); i++)
+	{
+		fout << "Task :" 
+			<< m_TimeStamps[i].m_TimeStamp.GetAverageTimeStamp()
+			<< " " << time_unit
+			<< " (" << (m_TimeStamps[i].m_TimeStamp.GetAverageTimeStamp() / (total_time/n_Frames)) * 0.1f
 			<< "\% of total)"
 			<< "Name:\""
 			<< m_TimeStamps[i].m_Name
@@ -261,7 +197,6 @@ void Profiler::FinishBenchmark()
 		&pi             
 	);
 
-	//int retCode = system(args.c_str());
 #endif // BENCHMARK
 
 }

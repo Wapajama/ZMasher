@@ -1,6 +1,7 @@
 #include "Timer.h"
 
 Timer::Timer()
+	:m_TimeStamps(0)
 {
 	m_FirstRun = true;
 	LARGE_INTEGER b;
@@ -29,7 +30,6 @@ void Timer::Update()
 	if(m_IsActive == true)
 	{
 		QueryPerformanceCounter(&m_End);
-		//QueryPerformanceFrequency(&Time::g_ClockFrequency);
 		m_TimeSinceStart.Update(m_Start, m_End);
 		m_TimeSinceLastFrame.Update(m_OldEnd, m_End);
 		m_OldEnd = m_End;
@@ -45,4 +45,5 @@ void Timer::EndTimeStamp()
 {
 	QueryPerformanceCounter(&m_TimeStampEnd);
 	m_TimeStampTime.AppendTime(m_TimeStampStart, m_TimeStampEnd);
+	++m_TimeStamps;
 }

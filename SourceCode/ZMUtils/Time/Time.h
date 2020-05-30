@@ -11,17 +11,19 @@ public:
 	Time();
 	~Time();
 
-	double GetHours();
-	double GetMinutes();
-	double GetSeconds();
-	double GetMilliseconds();
-	double GetMicroseconds();
-	inline void Update(LARGE_INTEGER& startCounter, LARGE_INTEGER& endCounter){ m_TimeElapsed = COUNTER_TO_DOUBLE_TIME(startCounter, endCounter);}
-	inline void AppendTime(LARGE_INTEGER& startCounter, LARGE_INTEGER& endCounter){m_TimeElapsed += COUNTER_TO_DOUBLE_TIME(startCounter, endCounter);}
+	inline double GetHours() { return m_TimeElapsed / 3600;}
+	inline double GetMinutes() { return m_TimeElapsed / 60; }
+	inline double GetSeconds() { return m_TimeElapsed; }
+	inline double GetMilliseconds() { return m_TimeElapsed * 1000; }
+	inline double GetMicroseconds() { return GetMilliseconds() * 1000; }
 
-	static LARGE_INTEGER g_ClockFrequency;
+	inline void Update(LARGE_INTEGER& startCounter, LARGE_INTEGER& endCounter){ m_TimeElapsed = COUNTER_TO_DOUBLE_TIME(startCounter, endCounter);}
+	inline void AppendTime(LARGE_INTEGER& startCounter, LARGE_INTEGER& endCounter){ m_TimeElapsed += COUNTER_TO_DOUBLE_TIME(startCounter, endCounter);}
+
 private:
-	double	m_TimeElapsed;
+	double m_TimeElapsed;
+	static LARGE_INTEGER g_ClockFrequency;
+	friend class TimerManager;
 };
 
 #endif

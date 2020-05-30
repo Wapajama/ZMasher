@@ -52,7 +52,7 @@ private:
 	class Camera* m_Camera;//TODO: redo design of this 
 	ZMRenderer m_Renderer;
 	std::thread* m_QApplicationThread;
-	//GameState* m_GameState;
+
 	StateStack m_StateStack;
 	TRACKMOUSEEVENT m_MouseTrackEvent;
 #ifdef BENCHMARK
@@ -60,6 +60,8 @@ private:
 	Timer m_LogicFrame;
 	Timer m_RenderFrame;
 	Timer m_RenderInternalFrame;
+	// as a reference for knowing how much time is spent on the timer alone
+	Timer m_NullTimeStamp; 
 #endif // BENCHMMARK
 
 	bool ReadInitFile();

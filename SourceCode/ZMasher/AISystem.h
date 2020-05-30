@@ -5,6 +5,7 @@
 #include <Time/Timer.h>
 #include <ZMasher/GameObject.h>
 #include <ZMasher/AIGroup.h>
+#include <GlobalIncludes/project_defines.h>
 
 class AISystem
 	:public BaseSystem
@@ -38,7 +39,10 @@ private:
 	void HitlerBehaviour(const AIBehaviourArgs& args);
 	void BasicTurretBehaviour(const AIBehaviourArgs& args);
 
+#ifdef BENCHMARK
 	Timer m_AIInternalTimeStamp;
+#endif // BENCHMARK
+
 
 	void FaceDirection(ZMasher::Matrix44f& transform, const ZMasher::Vector3f& direction, const float dt);
 

@@ -17,9 +17,7 @@ void GameObjectManager::Update(const float dt)
 	UpdateAllComponentManagers();//removes dead components,TODO: name change?
 
 #ifdef BENCHMARK
-	//m_BulletsTimeStamp);
 	m_BulletSystem.Simulate(dt);
-	//m_BulletsTimeStamp);
 
 	m_CollisionTimeStamp.StartTimeStamp();
 	m_CollisionSystem.Simulate(dt);
