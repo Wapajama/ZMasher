@@ -46,8 +46,49 @@ public:
 };
 
 
-// Each componentmanager can only contain one single type of component
+#define COMPONENTGROUP_TEMPLATE template<typename Component>
+#define COMPONENTGROUP_DECL ComponentGroup<Component>
 
+COMPONENTGROUP_TEMPLATE
+class ComponentGroup
+{
+public:
+	ComponentGroup(const int startIndex, const int count, GrowArray<Component>& components);
+	~ComponentGroup();
+
+	inline bool Iterate() { return ++m_CurrentIndex >= m_Count ? false : true; }
+	inline void Reset() { m_CurrentIndex = 0; }
+	inline Component& Current() { return m_Components[m_CurrentIndex]; }
+
+	__forceinline const int StartIndex() { return m_StartIndex; }
+	__forceinline const int Count() { return m_Count; }
+	inline bool IsIndexInGroup(const int index) { return index >= m_StartIndex && index < m_StartIndex + m_Count;}
+
+private:
+	const int m_StartIndex;
+	const int m_Count;
+	int m_CurrentIndex;
+	// TODO: Refactor this to disable the component group from acccessing the entire component list
+	// e.g through returning a sub-array of the original array
+	GrowArray<Component>& m_Components;
+};
+
+COMPONENTGROUP_TEMPLATE
+COMPONENTGROUP_DECL::ComponentGroup(const int startIndex, const int count, GrowArray<Component>& components)
+	: m_StartIndex(startIndex)
+	, m_Count(count)
+	, m_Components(components)
+	, m_CurrentIndex(0)
+{
+}
+
+COMPONENTGROUP_TEMPLATE
+COMPONENTGROUP_DECL::~ComponentGroup()
+{
+}
+
+
+// Each componentmanager can only contain one single type of component
 COMPONENTMANAGER_TEMPLATE
 class ComponentManager
 	:public IComponentManager
@@ -66,22 +107,23 @@ public:
 
 	__forceinline int Count() {return m_Components.Size();}
 
+
+	// Creates [count] uninitialized components
+	ComponentGroup<Component> CreateComponentGroup(const int count);
+	// Creates [count] components initialized with [component]
+	ComponentGroup<Component> CreateComponentGroup(const int count, const Component& component);
+	// Creates a ComponentGroup of componets initialized with [components], [repeat] amount of times
+	ComponentGroup<Component> CreateComponentGroup(const GrowArray<Component>& components, const int repeat = 1);
+
 protected:
 	void RemoveComponentWithGameObjectInternal(GameObject object);
 
+	inline bool IsInComponentGroup(const int index);
 	GrowArray<GameObject> m_DeleteObjects;
 	GrowArray<Component> m_Components;
 	ZMasher::BinarySearchTree<ComponentIndexPair, ComponentComparer> m_LookupSet;
 
-	//class ComponentGroup
-	//{
-	//public:
-	//	ComponentGroup();
-	//	~ComponentGroup();
-
-
-	//};
-	//GrowArray<ComponentGroup> m_ComponentGroups;
+	GrowArray<ComponentGroup<Component>*> m_ComponentGroups;
 };
 
 COMPONENTMANAGER_TEMPLATE
@@ -113,6 +155,19 @@ bool COMPONENTMANAGER_DECL::Update()
 }
 
 COMPONENTMANAGER_TEMPLATE
+ComponentGroup<Component> COMPONENTMANAGER_DECL::CreateComponentGroup(const int count)
+{
+	ComponentGroup<Component> group(m_Components.Size(), count, m_Components);
+	Component component;
+	for (int i = 0; i < count; i++)
+	{
+		this->AddComponent(component);
+	}
+	m_ComponentGroups.Add(group);
+	return group;
+}
+
+COMPONENTMANAGER_TEMPLATE
 Component* COMPONENTMANAGER_DECL::GetComponent(GameObject object)
 {
 	auto comp = m_LookupSet.Find({ object, -1 });
@@ -128,6 +183,19 @@ void COMPONENTMANAGER_DECL::RemoveComponentWithGameObject(GameObject object, boo
 {
 	m_DeleteObjects.Add(object);
 	// if true, call derived componentmanagerclass?
+}
+
+COMPONENTMANAGER_TEMPLATE
+inline bool COMPONENTMANAGER_DECL::IsInComponentGroup(const int index)
+{
+	for (int i = 0; i < m_ComponentGroups.Size(); ++i)
+	{
+		if (m_ComponentGroups[i].IsIndexInGroup(i))
+		{
+			return true;
+		}
+	}
+	return false
 }
 
 COMPONENTMANAGER_TEMPLATE

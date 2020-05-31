@@ -84,7 +84,7 @@ ZMasherMain::~ZMasherMain()
 	}
 	delete m_QApplicationThread;
 	
-	#ifdef BENCHMARK
+#ifdef BENCHMARK
 	Profiler::Instance()->AddTimeStamp(m_TotalFrame, "TotalFrame");
 	Profiler::Instance()->AddTimeStamp(m_RenderFrame, "Render");
 	Profiler::Instance()->AddTimeStamp(m_LogicFrame, "Logic");

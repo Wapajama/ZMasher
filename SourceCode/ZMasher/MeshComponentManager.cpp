@@ -52,34 +52,20 @@ bool MeshComponentManager::Update()
 
 bool MeshComponentManager::Update(TransformComponentManager* transform_manager)
 {
-	for (short i = 0; i < m_Components.Size(); i++)
+	for (int i = 0; i < m_Components.Size(); ++i)
 	{
 		TransformComponent* transform_comp = transform_manager->GetComponent(m_Components[i].m_GameObject);
-		if (transform_comp == nullptr)
-		{
-			GameObjectManager::Instance()->Destroy(m_Components[i].m_GameObject);
-			m_Components[i].m_InstanceNode->MarkForDelete();
-			continue;
-		}
-		if (!GameObjectManager::Instance()->Alive(m_Components[i].m_GameObject))
-		{
-			m_Components[i].m_InstanceNode->MarkForDelete();
-			continue;
-		}
-		if (!GameObjectManager::Instance()->Alive(m_Components[i].m_GameObject))
-		{
-			GameObjectManager::Instance()->Destroy((*transform_comp).m_GameObject);
-			m_Components[i].m_InstanceNode->MarkForDelete();
-		}
-		if (transform_comp != nullptr &&
+#ifdef _DEBUG
+		ASSERT(transform_comp, "MeshManager: GameObject doesn't have a transform component!");
+#endif // _DEBUG
+		if (transform_comp == nullptr ||
+			!GameObjectManager::Instance()->Alive(m_Components[i].m_GameObject) ||
 			!GameObjectManager::Instance()->Alive((*transform_comp).m_GameObject))
 		{
 			GameObjectManager::Instance()->Destroy(m_Components[i].m_GameObject);
 			m_Components[i].m_InstanceNode->MarkForDelete();
+			continue;
 		}
-#ifdef _DEBUG
-		ASSERT(transform_comp, "MeshManager: GameObject doesn't have a transform component!");
-#endif // _DEBUG
 		m_Components[i].m_InstanceNode->SetTransform(transform_comp->m_Transform);
 		
 	}
