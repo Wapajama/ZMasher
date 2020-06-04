@@ -22,6 +22,7 @@ struct AIObjectArgs
 	int aiType;
 
 	int collisionType;
+
 };
 
 struct AIObject

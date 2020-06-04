@@ -15,5 +15,5 @@ ComponentCollection::~ComponentCollection()
 
 bool ComponentCollection::Iterate()
 {
-	return ++m_CurrentIndex >= m_Count;
+	return ++m_CurrentIndex < m_Count;
 }

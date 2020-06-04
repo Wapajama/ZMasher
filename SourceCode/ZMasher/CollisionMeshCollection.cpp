@@ -21,5 +21,5 @@ CollisionMeshCollection::~CollisionMeshCollection()
 
 bool CollisionMeshCollection::Iterate()
 {
-	return IterationResults(MeshCollection::Iterate(), IterationResults(m_SphereGroup.Iterate(), m_MomentumGroup.Iterate()));	
+	return IterationResults(MeshCollection::Iterate(), IterationResults(m_SphereGroup.Iterate(), m_MomentumGroup.Iterate()));
 }

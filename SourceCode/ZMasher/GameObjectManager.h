@@ -24,6 +24,7 @@ public:
 	void Destroy();
 
 	GameObject CreateGameObject();
+	GrowArray<GameObject> CreateGameObjects(const int count);
 	bool Alive(GameObject game_object);
 	void Destroy(GameObject game_object, bool remove_everywhere = true);
 
@@ -67,7 +68,7 @@ private:
 
 	// Will increase the size of the array by one, representing the game object
 	// the value of the element will indicate its generation
-	GrowArray<GO_GEN_TYPE, int> m_GameObjects;
+	GrowArray<GO_GEN_TYPE, int, 1024*1024> m_GameObjects;
 #ifdef BENCHMARK
 	Timer m_CollisionTimeStamp;
 	Timer m_AITimeStamp;

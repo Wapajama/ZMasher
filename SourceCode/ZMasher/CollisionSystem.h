@@ -5,6 +5,7 @@
 #include <CollisionDefines.h>
 #include <Time/Timer.h>
 #include <GlobalIncludes/project_defines.h>
+#include <BaseSystem.h>
 
 class SphereCollisionComponentManager;
 class AABBComponentManager;
@@ -17,6 +18,7 @@ namespace ZMasher
 }
 
 class CollisionSystem
+	: public BaseSystem
 {
 public:
 	CollisionSystem(SphereCollisionComponentManager* sphere_collision_comp_manager,
@@ -25,14 +27,16 @@ public:
 					TransformComponentManager* transform_comp_manager);
 	~CollisionSystem();
 
-	bool Simulate(const float dt);
+	bool Init(void* args)override {return true;}
+
+	bool Simulate(const float dt)override;
 
 	CollisionInfoStruct* GetCollisionInfo(const int index);
 	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
 
 	CollisionQuery* GetQuery(GameObject owner, int id = 0);
 
-	void Destroy();
+	bool Destroy()override;
 
 private:
 

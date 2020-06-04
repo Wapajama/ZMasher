@@ -4,7 +4,6 @@ GameObjectManager::GameObjectManager()
 	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
 	, m_CollisionSystem(&m_SphereCollisionCompManager, &m_AABBComponentManager, &m_MomentumComponentManager, &m_TransformManager)
 	, m_AISystem(&m_AICompManager, &m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager, &m_CollisionSystem)
-	, m_GameObjects(1024)
 {
 }
 
@@ -94,6 +93,17 @@ GameObject GameObjectManager::CreateGameObject()
 		ASSERT(new_GameObject.m_ID < (static_cast<GO_ID_TYPE>(1) << GAMEOBJECT_ID_BITS),"Too many game objects!");
 	}
 	return new_GameObject;
+}
+
+GrowArray<GameObject> GameObjectManager::CreateGameObjects(const int count)
+{
+	GrowArray<GameObject> array;
+	for (int i = 0; i < count; i++)
+	{
+		GameObject g = this->CreateGameObject();
+		array.Add(g);
+	}
+	return array;
 }
 
 bool GameObjectManager::Alive(GameObject game_object)

@@ -13,6 +13,7 @@ class GrowArray
 {
 public:
 	GrowArray(SizeType init_size = size);
+	GrowArray(const GrowArray<Type>& copy);
 	~GrowArray();
 
 	__forceinline Type& operator[](SizeType index);
@@ -53,6 +54,16 @@ private:
 	SizeType m_CurrentSize;
 	SizeType m_CurrentMaxSize;
 };
+
+GROW_ARRAY_TEMPLATE
+GROW_ARRAY_DECL::GrowArray(const GrowArray<Type>& copy)
+{
+	this->Resize(copy.Size());
+	for (SizeType i = 0; i < copy.Size(); i++)
+	{
+		this->Add(copy[i]);
+	}
+}
 
 GROW_ARRAY_TEMPLATE
 GROW_ARRAY_DECL::GrowArray(SizeType init_size) :m_Data(nullptr)
@@ -191,7 +202,7 @@ inline void GROW_ARRAY_DECL::Resize(const SizeType size, const bool copy_previou
 	}
 	if (size < m_CurrentSize)
 	{
-		DEBUG_MSG("Resizing to lower size that data size, loss of data");
+		DEBUG_MSG("Resizing to lower size than current size, loss of data");
 	}
 #endif
 

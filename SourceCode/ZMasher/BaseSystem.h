@@ -13,9 +13,7 @@ public:
 	virtual bool Simulate(const float dt)=0{return false;};
 	virtual bool Destroy(){return true;}
 
-
-
-private:
+protected:
 
 	static GrowArray<ComponentCollection*> m_ComponentCollections;
 };
