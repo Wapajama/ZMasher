@@ -28,7 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABBComponentManager.h" />
-    <ClInclude Include="AICollection.h" />
     <ClInclude Include="AIComponentManager.h" />
     <ClInclude Include="AIGroup.h" />
     <ClInclude Include="AISystem.h" />
@@ -37,14 +36,9 @@
     <ClInclude Include="BulletComponentManager.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CameraState.h" />
-    <ClInclude Include="CollisionCollection.h" />
     <ClInclude Include="CollisionDefines.h" />
-    <ClInclude Include="CollisionMeshCollection.h" />
-    <ClInclude Include="ComponentCollection.h" />
     <ClInclude Include="DebugLineComponentManager.h" />
     <ClInclude Include="GameObjectLookup.h" />
-    <ClInclude Include="GraphicsSystem.h" />
-    <ClInclude Include="MeshCollection.h" />
     <ClInclude Include="ModelViewerState.h" />
     <ClInclude Include="MomentumComponentManager.h" />
     <ClInclude Include="SphereCollisionComponentManager.h" />
@@ -59,13 +53,11 @@
     <ClInclude Include="MeshComponentManager.h" />
     <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="StateStack.h" />
-    <ClInclude Include="TransformCollection.h" />
     <ClInclude Include="TransformComponentManager.h" />
     <ClInclude Include="ZMasherMain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBComponentManager.cpp" />
-    <ClCompile Include="AICollection.cpp" />
     <ClCompile Include="AIComponentManager.cpp" />
     <ClCompile Include="AIGroup.cpp" />
     <ClCompile Include="AISystem.cpp" />
@@ -74,12 +66,7 @@
     <ClCompile Include="BulletComponentManager.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="CameraState.cpp" />
-    <ClCompile Include="CollisionCollection.cpp" />
-    <ClCompile Include="CollisionMeshCollection.cpp" />
-    <ClCompile Include="ComponentCollection.cpp" />
     <ClCompile Include="DebugLineComponentManager.cpp" />
-    <ClCompile Include="GraphicsSystem.cpp" />
-    <ClCompile Include="MeshCollection.cpp" />
     <ClCompile Include="ModelViewerState.cpp" />
     <ClCompile Include="MomentumComponentManager.cpp" />
     <ClCompile Include="SphereCollisionComponentManager.cpp" />
@@ -93,7 +80,6 @@
     <ClCompile Include="MeshComponentManager.cpp" />
     <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="StateStack.cpp" />
-    <ClCompile Include="TransformCollection.cpp" />
     <ClCompile Include="TransformComponentManager.cpp" />
     <ClCompile Include="ZMasherMain.cpp" />
   </ItemGroup>
