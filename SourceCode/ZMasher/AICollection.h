@@ -22,8 +22,6 @@ public:
 
 	bool Iterate()override;
 
-	inline AIComponent& CurrentAI() { return m_AIGroup.Current(); }
-
 private:
 	ComponentGroup<AIComponent> m_AIGroup;
 

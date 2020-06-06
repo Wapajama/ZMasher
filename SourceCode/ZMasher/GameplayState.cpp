@@ -110,7 +110,7 @@ void GameplayState::SpawnEnemy(bool random_x)
 	args.speed = 4;
 	args.collisionType = eCOLLISIONTYPE::eEnemy;
 
-	AICollection* g = GameObjectManager::Instance()->GetAISystem()->CreateAIs(&args, NUMBER_OF_ENEMIES);
+	AIGroup* g = GameObjectManager::Instance()->GetAISystem()->CreateAIs(&args, NUMBER_OF_ENEMIES);
 } 
 
 void GameplayState::SpawnAABB()
@@ -167,7 +167,7 @@ bool GameplayState::Update(const float dt)
 		//const short n_ais = GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs();
 		//for (int i = 0; i < NUMBER_OF_ENEMIES - n_ais; i++)
 		//{
-			//SpawnEnemy();
+			SpawnEnemy();
 		//}
 	}
 

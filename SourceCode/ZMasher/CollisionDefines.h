@@ -15,13 +15,12 @@ typedef void(*CollisionCallBack)(CollCallbackArgs args);
 typedef unsigned short CollisionType;
 enum eCOLLISIONTYPE: CollisionType
 {
-	eUNINITIALIZED = 1 << 0,
-	eSphere = 1 << 1,
-	eAABB = 1 << 2,
-	eBlocker = 1 << 3,
-	eTurretBullet = 1 << 4,
-	eTurret = 1 << 5,
-	eEnemy = 1 << 6,
+	eSphere = 1 << 0,
+	eAABB = 1 << 1,
+	eBlocker = 1 << 2,
+	eTurretBullet = 1 << 3,
+	eTurret = 1 << 4,
+	eEnemy = 1 << 5,
 };
 
 enum eQueryType

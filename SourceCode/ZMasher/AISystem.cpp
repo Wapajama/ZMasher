@@ -5,8 +5,6 @@
 #include <ZMasher/TransformComponentManager.h>
 #include <ZMasher/GameObjectManager.h>
 #include <ZMUtils\Utility\ZMasherUtilities.h>
-#include <AICollection.h>
-#include <ZMModelFactory.h>
 
 extern void(*g_TestCallBack)(CollCallbackArgs);
 
@@ -20,6 +18,7 @@ AISystem::AISystem(AIComponentManager* ai,
 	, m_MomentumMngr(momentum)
 	, m_TransformMngr(transform)
 	, m_CollSystem(coll_system)
+	, m_AIGroups(1024)
 {
 
 }
@@ -45,56 +44,28 @@ bool AISystem::Destroy()
 }
 
 const float ai_range = 300.f;
-extern void(*g_TestCallBack)(CollCallbackArgs);
-AICollection* AISystem::CreateAIs(AIObjectArgs* args, int count)
+
+AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 {
-	AIComponent aiTemplate;
-	aiTemplate.m_Type = static_cast<eAIType>(args->aiType);
-	aiTemplate.m_TargetPos = args->targetPos;
-
-	SphereCollisionComponent sphereTemplate;
-	sphereTemplate.m_Radius = args->radius;
-	sphereTemplate.m_CollisionCallback = g_TestCallBack;
-	sphereTemplate.m_CollisionFilter = static_cast<eCOLLISIONTYPE>(args->collisionType);
-
-	MomentumComponent momTemplate;
-	momTemplate.m_Weight = 5;
-
-	GrowArray<GameObject> objects = GameObjectManager::Instance()->CreateGameObjects(count);
-
-	ComponentGroup<AIComponent>* aiGroup = GameObjectManager::Instance()->AICompManager()->CreateComponentGroup(count, aiTemplate, objects);
-	ComponentGroup<SphereCollisionComponent>* sphereGroup = GameObjectManager::Instance()->SphereCollisionCompManager()->CreateComponentGroup(count, sphereTemplate, objects);
-	ComponentGroup<MomentumComponent>* momGroup = GameObjectManager::Instance()->MomentumCompManager()->CreateComponentGroup(count, objects);
-	ComponentGroup<ModelComponent>* modelGroup = GameObjectManager::Instance()->MeshCompManager()->CreateComponentGroup(count, objects);
-	ComponentGroup<TransformComponent>* transformGroup = GameObjectManager::Instance()->TransformManager()->CreateComponentGroup(count, objects);
-
-	AICollection* coll = new AICollection(	*aiGroup,
-											*sphereGroup,
-											*momGroup,
-											*modelGroup,
-											*transformGroup,
-											count);
-	coll->Reset();
-	do
+	if (count == 0)
 	{
-		ZMasher::Vector4f position(0, 1, 0.f, 1.f);
-		ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
-		transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-ai_range, ai_range), 0, ZMasher::GetRandomFloat(-ai_range, ai_range), 0.f));
-		coll->CurrentTransform().m_Transform = transform;
-		ModelComponent modelTemplate;
-		coll->CurrentMesh().m_InstanceNode = ZMModelFactory::Instance()->LoadModelInstance(args->modelName.c_str());		
+		return nullptr;
 	}
-	while (coll->Iterate());
-	coll->Reset();
-
-	m_ComponentCollections.Add(coll);
-
-	return coll;
+	AIGroup* ag = new AIGroup();
+	ag->Allocate(count, args);
+	return nullptr;
 }
 
 bool AISystem::IsInAnyOfAIGroups(int i)
 {
-	
+	for (int i = 0; i < m_AIGroups.Size(); i++)
+	{
+		if (i >= m_AIGroups[i].GetAIFirst() &&
+			i <= m_AIGroups[i].GetAILast())
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -244,6 +215,9 @@ void AISystem::SpawnBullet(const AIBehaviourArgs & args)
 } 
 
 
+void AISystem::AddNewZoldier()
+{
+}
 
 void AISystem::ClampMaxSpeed(ZMasher::Vector3f& steering, const class AIType* type)
 {

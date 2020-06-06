@@ -22,9 +22,6 @@ public:
 
 	bool Iterate()override;
 
-	inline SphereCollisionComponent& CurrentSphere() { return m_SphereGroup.Current(); }
-	inline MomentumComponent& CurrentMomentum() { return m_MomentumGroup.Current(); }
-
 private:
 
 	ComponentGroup<SphereCollisionComponent> m_SphereGroup;

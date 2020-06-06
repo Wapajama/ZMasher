@@ -53,17 +53,15 @@ COMPONENTGROUP_TEMPLATE
 class ComponentGroup
 {
 public:
-	ComponentGroup(const int startIndex, const int count, GrowArray<Component, int>& components);
+	ComponentGroup(const int startIndex, const int count, GrowArray<Component>& components);
 	~ComponentGroup();
 
 	inline bool Iterate() { return ++m_CurrentIndex >= m_Count ? false : true; }
-	inline void Reset() { m_Current>Index = 0; }
-	inline Component& Current() { return m_Components[m_CurrentIndex + m_StartIndex]; }
-	inline Component& Get(const int i) { return m_Components[i]; }
+	inline void Reset() { m_CurrentIndex = 0; }
+	inline Component& Current() { return m_Components[m_CurrentIndex]; }
+
 	__forceinline const int StartIndex() { return m_StartIndex; }
 	__forceinline const int Count() { return m_Count; }
-
-	// for the component manager to know if a component is inside of this group
 	inline bool IsIndexInGroup(const int index) { return index >= m_StartIndex && index < m_StartIndex + m_Count;}
 
 private:
@@ -72,11 +70,11 @@ private:
 	int m_CurrentIndex;
 	// TODO: Refactor this to disable the component group from acccessing the entire component list
 	// e.g through returning a sub-array of the original array
-	GrowArray<Component, int>& m_Components;
+	GrowArray<Component>& m_Components;
 };
 
 COMPONENTGROUP_TEMPLATE
-COMPONENTGROUP_DECL::ComponentGroup(const int startIndex, const int count, GrowArray<Component, int>& components)
+COMPONENTGROUP_DECL::ComponentGroup(const int startIndex, const int count, GrowArray<Component>& components)
 	: m_StartIndex(startIndex)
 	, m_Count(count)
 	, m_Components(components)
@@ -111,18 +109,18 @@ public:
 
 
 	// Creates [count] uninitialized components
-	ComponentGroup<Component>* CreateComponentGroup(const int count, const GrowArray<GameObject>& game_objects);
+	ComponentGroup<Component> CreateComponentGroup(const int count);
 	// Creates [count] components initialized with [component]
-	ComponentGroup<Component>* CreateComponentGroup(const int count, const Component& component, const GrowArray<GameObject>& game_objects);
+	ComponentGroup<Component> CreateComponentGroup(const int count, const Component& component);
 	// Creates a ComponentGroup of componets initialized with [components], [repeat] amount of times
-	ComponentGroup<Component>* CreateComponentGroup(const GrowArray<Component>& components, const GrowArray<GameObject>& game_objects);
+	ComponentGroup<Component> CreateComponentGroup(const GrowArray<Component>& components, const int repeat = 1);
 
 protected:
 	void RemoveComponentWithGameObjectInternal(GameObject object);
 
 	inline bool IsInComponentGroup(const int index);
 	GrowArray<GameObject> m_DeleteObjects;
-	GrowArray<Component, int> m_Components;
+	GrowArray<Component> m_Components;
 	ZMasher::BinarySearchTree<ComponentIndexPair, ComponentComparer> m_LookupSet;
 
 	GrowArray<ComponentGroup<Component>*> m_ComponentGroups;
@@ -142,7 +140,6 @@ COMPONENTMANAGER_DECL::~ComponentManager()
 COMPONENTMANAGER_TEMPLATE
 void COMPONENTMANAGER_DECL::AddComponent(Component component, GameObject object)
 {
-	component.m_GameObject = object;
 	m_Components.Add(component);
 	m_LookupSet.Insert({ object, m_Components.Size() - 1 });
 }
@@ -153,30 +150,18 @@ bool COMPONENTMANAGER_DECL::Update()
 	for (int i = 0; i < m_DeleteObjects.Size(); i++)
 	{
 		this->RemoveComponentWithGameObjectInternal(m_DeleteObjects[i]);
-	}
-	m_DeleteObjects.RemoveAll();
+	}	
 	return true;
 }
 
 COMPONENTMANAGER_TEMPLATE
-ComponentGroup<Component>* COMPONENTMANAGER_DECL::CreateComponentGroup(const int count, const GrowArray<GameObject>& game_objects)
+ComponentGroup<Component> COMPONENTMANAGER_DECL::CreateComponentGroup(const int count)
 {
-	return CreateComponentGroup(count, Component(), game_objects);
-}
-
-COMPONENTMANAGER_TEMPLATE
-ComponentGroup<Component>* COMPONENTMANAGER_DECL::CreateComponentGroup(const int count, const Component& component, const GrowArray<GameObject>& game_objects)
-{
-	ASSERT(game_objects.Size() == count, "Component count and game object count must match!");
-	if (game_objects.Size() != count)
-	{
-		return nullptr;
-	}
-	// TODO: fix better memory allocation for this...?
-	ComponentGroup<Component>* group = new ComponentGroup<Component>(m_Components.Size(), count, m_Components);
+	ComponentGroup<Component> group(m_Components.Size(), count, m_Components);
+	Component component;
 	for (int i = 0; i < count; i++)
 	{
-		this->AddComponent(component, game_objects[i]);
+		this->AddComponent(component);
 	}
 	m_ComponentGroups.Add(group);
 	return group;

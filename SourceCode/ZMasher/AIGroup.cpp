@@ -42,6 +42,12 @@ void AIGroup::Allocate(const int size, void* args)
 		return;
 	}
 
+	//gFirs
+	//	meshFirst
+	//	aiFirst,
+	//	sphereFir
+	//	momFirst,
+
 	meshFirst = GameObjectManager::Instance()->MeshCompManager()->Count();
 	aiFirst = GameObjectManager::Instance()->AICompManager()->Count();
 	sphereFirst = GameObjectManager::Instance()->SphereCollisionCompManager()->Count();
@@ -68,6 +74,7 @@ void AIGroup::Allocate(const int size, void* args)
 		MomentumComponent* mo = GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 		AIComponent* ai = GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::ZOLDIER);
 		ai->m_TargetPos = ai_args->targetPos;
+		//CollisionQuery* q = GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eSphere, new_object, ai_args->radius * 20, transform.GetTranslation().ToVector3f());
 		m_AIObjects.Add({ tf, m, ai, sp, mo, new_object });
 	}
 

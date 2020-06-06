@@ -17,7 +17,6 @@ public:
 
 	bool Iterate()override;
 
-	inline ModelComponent& CurrentMesh() { return m_MeshGroup.Current(); }
 private:
 	ComponentGroup<ModelComponent> m_MeshGroup;
 };

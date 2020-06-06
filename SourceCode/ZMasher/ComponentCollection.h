@@ -1,7 +1,7 @@
 #pragma once
 
 // Component Collection Enum Data Type
-#define CCEDATA_TYPE int
+#define CCEDATA_TYPE __int64
 
 enum class ComponentCollectionType : CCEDATA_TYPE
 {

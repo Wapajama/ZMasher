@@ -22,9 +22,8 @@ public:
 	bool Destroy()override;
 	bool Simulate(const float dt);
 
-	class AICollection* CreateAIs(AIObjectArgs* args, int count);
+	AIGroup* CreateAIs(AIObjectArgs* args, int count);
 private:
-
 	struct AIBehaviourArgs
 	{
 		AIObject* obj;
@@ -54,6 +53,8 @@ private:
 		ZMasher::Vector3f m_ToTarget;
 	};
 
+	void AddNewZoldier();
+
 	ZMasher::Vector3f Seek(const SteeringArgs& args);
 	ZMasher::Vector3f Arrive(const SteeringArgs& args);
 	void SpawnBullet(const AIBehaviourArgs & args);
@@ -65,4 +66,6 @@ private:
 	class MomentumComponentManager* m_MomentumMngr;
 	class TransformComponentManager* m_TransformMngr;
 	class CollisionSystem* m_CollSystem;
+	GrowArray<AIGroup> m_AIGroups;
+
 };

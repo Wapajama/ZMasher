@@ -9,10 +9,10 @@ public:
 	TransformCollection(const ComponentGroup<TransformComponent>& transformGroup, const int count);
 	~TransformCollection();
 
-	inline virtual ComponentCollectionType GetType()const override{ return ComponentCollectionType::TransformComponent; };
+	inline virtual ComponentCollectionType GetType()const override
+	{ return ComponentCollectionType::TransformComponent; };
 
 	bool Iterate()override;
-	inline TransformComponent& CurrentTransform() { return m_TransformGroup.Current(); }
 
 protected:
 
