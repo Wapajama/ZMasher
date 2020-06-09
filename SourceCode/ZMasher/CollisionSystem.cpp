@@ -33,9 +33,9 @@ CollisionSystem::CollisionSystem(SphereCollisionComponentManager* sphere_collisi
 
 }
 
-static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
-	const float* r,
-	const ZMasher::Vector4f& pos_aabb)
+static float SqDistToAABB(const ZMasher::Vector4f& __restrict pos_a,
+						  const float* r,
+						  const ZMasher::Vector4f& __restrict pos_aabb)
 {
 	float p[3] = { pos_a.x, pos_a.y, pos_a.z };
 	float b[3] = { pos_aabb.x, pos_aabb.y, pos_aabb.z };
@@ -50,7 +50,7 @@ static float SqDistToAABB(const ZMasher::Vector4f& pos_a,
 }
 
 static bool SphereVsSphereTest(float r_a, float r_b,
-	const ZMasher::Vector4f& pos_a, const ZMasher::Vector4f& pos_b)
+							   const ZMasher::Vector4f& __restrict pos_a, const ZMasher::Vector4f& __restrict pos_b)
 {
 	using namespace ZMasher;
 	Vector4f d = pos_a - pos_b;
@@ -61,15 +61,15 @@ static bool SphereVsSphereTest(float r_a, float r_b,
 	return dist2 <= radSum * radSum;
 }
 
-static bool SphereVsAABBTest(float r_a, float* r_b,
-	const ZMasher::Vector4f& pos_sphere, const ZMasher::Vector4f& pos_aabb, float& sqDistRef)
+static bool SphereVsAABBTest(float r_a, float* __restrict r_b,
+							 const ZMasher::Vector4f& pos_sphere, const ZMasher::Vector4f& pos_aabb, float & __restrict sqDistRef)
 {
 	const float sqDist = SqDistToAABB(pos_sphere, r_b, pos_aabb);
 	sqDistRef = sqDist;
 	return sqDist <= r_a * r_a;
 }
 
-static void ZombieCollisionFeedback(ZMasher::Matrix44f* transformA, ZMasher::Matrix44f* transformB, const float diff)
+static void ZombieCollisionFeedback(ZMasher::Matrix44f* __restrict transformA, ZMasher::Matrix44f* __restrict transformB, const float diff)
 {
 	ZMasher::Vector4f dir = (transformA->GetTranslation() - transformB->GetTranslation()).GetNormal()*(diff*0.5f);
 	dir.y = 0; // don't want them to get pushed over or under
@@ -98,7 +98,8 @@ void CollisionSystem::Destroy()
 #endif // BENCHMARK
 
 }
-
+#define START_TIME_STAMP(ts)
+#define END_TIME_STAMP(ts)
 bool CollisionSystem::Simulate(const float dt)
 {
 	m_CollInfos.RemoveAll();
@@ -115,85 +116,55 @@ bool CollisionSystem::Simulate(const float dt)
 	//TODO: Optimize this, might be a major task
 	for (int i = 0; i < m_SphereCollisionCompManager->m_Components.Size(); ++i)
 	{
-		START_TIME_STAMP(m_TimeStamps[0]);
-		SphereCollisionComponent& sphereA = m_SphereCollisionCompManager->m_Components[i];
-		END_TIME_STAMP(m_TimeStamps[0]);
+		SphereCollisionComponent sphereA = m_SphereCollisionCompManager->m_Components[i];
 
 		const GameObject object_a = sphereA.m_GameObject;
-		START_TIME_STAMP(m_TimeStamps[1]);
 		if (!GameObjectManager::Instance()->Alive(object_a))
 		{
-			END_TIME_STAMP(m_TimeStamps[1]);
 			continue;
 		}
-		END_TIME_STAMP(m_TimeStamps[1]);
+		const ZMasher::Matrix44f transformA = *m_TransformCompManager->GetTransform(object_a);
 
-		START_TIME_STAMP(m_TimeStamps[2]);
-		ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(object_a);
-		END_TIME_STAMP(m_TimeStamps[2]);
-		
-		for (int j = i; j < m_SphereCollisionCompManager->m_Components.Size(); ++j)
+		for (int j = i+1; j < m_SphereCollisionCompManager->m_Components.Size(); ++j)
 		{
-			SphereCollisionComponent& sphereB = m_SphereCollisionCompManager->m_Components[j];
+			const SphereCollisionComponent sphereB = m_SphereCollisionCompManager->m_Components[j];
 			const GameObject object_b = sphereB.m_GameObject;
-			START_TIME_STAMP(m_TimeStamps[3]);
-			if (object_a == object_b ||
+			if (!GameObjectManager::Instance()->Alive(object_a) ||
 				!GameObjectManager::Instance()->Alive(object_b))
 			{
-				END_TIME_STAMP(m_TimeStamps[3]);
-				continue;
-			}
-			END_TIME_STAMP(m_TimeStamps[3]);
-			START_TIME_STAMP(m_TimeStamps[4]);
-			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(object_b);
-			END_TIME_STAMP(m_TimeStamps[4]);
-
-			if (transformA == nullptr ||
-				transformB == nullptr)
-			{
 				continue;
 			}
 
-			ZMasher::Vector4f ta = transformA->GetTranslation();
-			ZMasher::Vector4f tb = transformB->GetTranslation();
-			START_TIME_STAMP(m_SingleCollisionTimeStamp);
+			const ZMasher::Matrix44f transformB = *m_TransformCompManager->GetTransform(object_b);
+
 			const bool collisionResult = SphereVsSphereTest(sphereA.m_Radius,
 															sphereB.m_Radius,
-															ta, tb);
-			END_TIME_STAMP(m_SingleCollisionTimeStamp);
+															transformA.GetTranslation(), transformB.GetTranslation());
 			if (collisionResult)
 			{
-				START_TIME_STAMP(m_TimeStamps[5]);
-				MomentumComponent* mom_a = m_MomentumCompManager->GetComponent(object_a);
-				END_TIME_STAMP(m_TimeStamps[5]);
-				START_TIME_STAMP(m_TimeStamps[6]);
-				MomentumComponent* mom_b = m_MomentumCompManager->GetComponent(object_b);
-				END_TIME_STAMP(m_TimeStamps[6]);
-
-				START_TIME_STAMP(m_TimeStamps[7]);
-				(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, mom_a, mom_b });
-				sphereA.collInfoIndex = m_CollInfos.Size();
-				sphereB.collInfoIndex = m_CollInfos.Size();
-				m_CollInfos.Add(
-					{ object_a,
-					object_b,
-					ta.ToVector3f(),
-					tb.ToVector3f() });
-				END_TIME_STAMP(m_TimeStamps[7]);
-
-				ZMasher::Vector3f diffv = ta.ToVector3f() - tb.ToVector3f();
+				const MomentumComponent mom_a = *m_MomentumCompManager->GetComponent(object_a);
+				const MomentumComponent mom_b = *m_MomentumCompManager->GetComponent(object_b);
+				
+				ZMasher::Vector3f diffv =  transformA.GetTranslation().ToVector3f() - transformB.GetTranslation().ToVector3f();
 				const float diff = diffv.Length() - (sphereA.m_Radius + sphereB.m_Radius);
 
-				START_TIME_STAMP(m_TimeStamps[8]);
-				ZombieCollisionFeedback(transformA, transformB, diff);
-				ZombieCollisionFeedback(transformB, transformA, diff);
-				END_TIME_STAMP(m_TimeStamps[8]);
+				ZMasher::Matrix44f* mPointerA = m_TransformCompManager->GetTransform(object_a);
+				ZMasher::Matrix44f* mPointerB = m_TransformCompManager->GetTransform(object_b);
+				ZombieCollisionFeedback(mPointerA, mPointerB, diff);
+				ZombieCollisionFeedback(mPointerB, mPointerA, diff);
+
+				if (sphereA.m_CollisionCallback)
+				{
+					(*sphereA.m_CollisionCallback)({ &sphereA, &sphereB, &mom_a, &mom_b });
+				}
+				if (sphereB.m_CollisionCallback)
+				{
+					(*sphereB.m_CollisionCallback)({ &sphereB, &sphereA, &mom_b, &mom_a });
+				}
 			}
 		}
-		START_TIME_STAMP(m_TimeStamps[9]);
-		QuerySphereAgainstAllAABBS(sphereA, transformA);
-		END_TIME_STAMP(m_TimeStamps[9]);
-		
+		QuerySphereAgainstAllAABBS(sphereA);
+
 	}
 	START_TIME_STAMP(m_DrawDebugLinesTimeStamp);
 	DrawDebugLines();
@@ -211,7 +182,6 @@ void CollisionSystem::ResolveQueries()
 		{
 		case eSPHERE:
 		{
-			
 			SphereQueryArgs* args = reinterpret_cast<SphereQueryArgs*>(m_Queries[i].args);
 			for (int o = 0; o < m_SphereCollisionCompManager->m_Components.Size(); o++)
 			{
@@ -221,6 +191,7 @@ void CollisionSystem::ResolveQueries()
 				{
 					continue;
 				}
+				if (m_TransformCompManager->GetTransform(s.m_GameObject) == nullptr) continue;
 				ZMasher::Vector4f pos = m_TransformCompManager->GetTransform(s.m_GameObject)->GetTranslation();
 				if (SphereVsSphereTest(args->r, s.m_Radius, args->position, pos))
 				{
@@ -241,8 +212,12 @@ void CollisionSystem::ResolveQueries()
 	}
 }
 
-void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent& sphere, ZMasher::Matrix44f* transform)
+void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent& sphere)
 {
+	if (!GameObjectManager::Instance()->Alive(sphere.m_GameObject))
+	{
+		return;
+	}
 	for (int i = 0; i < m_AABBComponentManager->m_Components.Size(); i++)
 	{
 		AABBCollisionComponent& aabb = m_AABBComponentManager->m_Components[i];
@@ -251,12 +226,17 @@ void CollisionSystem::QuerySphereAgainstAllAABBS(const SphereCollisionComponent&
 		{
 			continue;
 		}
-		ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(aabb_object);
+		if (m_TransformCompManager->GetTransform(aabb_object) == nullptr) continue;
+		ZMasher::Matrix44f transformA = *m_TransformCompManager->GetTransform(sphere.m_GameObject);
+		ZMasher::Matrix44f transformB = *m_TransformCompManager->GetTransform(aabb_object);
+
 		float sqDist = 0.f;
-		if (SphereVsAABBTest(sphere.m_Radius, aabb.r, transform->GetTranslation(), transformB->GetTranslation(), sqDist))
+		if (SphereVsAABBTest(sphere.m_Radius, aabb.r, transformA.GetTranslation(), transformB.GetTranslation(), sqDist))
 		{
+			ZMasher::Matrix44f* transformA = m_TransformCompManager->GetTransform(sphere.m_GameObject);
+			ZMasher::Matrix44f* transformB = m_TransformCompManager->GetTransform(aabb_object);
 			// Sphere and box are intersecting, separate them.
-			ZombieCollisionFeedback(transform, transformB, sqrt(sqDist) - sphere.m_Radius);
+			ZombieCollisionFeedback(transformA, transformB, sqrt(sqDist) - sphere.m_Radius);
 		}
 
 	}
@@ -337,6 +317,7 @@ void CollisionSystem::DrawSpheres()
 	for (int i = 0; i < m_SphereCollisionCompManager->m_Components.Size(); ++i)
 	{
 		SphereCollisionComponent sphere = m_SphereCollisionCompManager->m_Components[i];
+		if(m_TransformCompManager->GetTransform(sphere.m_GameObject) == nullptr)continue;
 		ZMasher::Vector3f pos = m_TransformCompManager->GetTransform(sphere.m_GameObject)->GetTranslation().ToVector3f();
 		const float radius = sphere.m_Radius;
 		DrawSphere(radius, pos);

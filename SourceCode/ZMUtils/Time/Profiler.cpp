@@ -81,7 +81,23 @@ void Profiler::FinishBenchmark()
 
 	TimerManager::GetInstance()->GetTimer(m_TimerIndex).Update();
 	const double total_time = TimerManager::GetInstance()->GetTimer(m_TimerIndex).TimeSinceStart().GetSeconds();
+	const double n_Frames = static_cast<double>(m_NumberOfFrames);
+	fout << "--- Summary --- " << std::endl;
+	fout << "Total: "
+		<< total_time
+		<< " " << "s"
+		<< std::endl;
 
+	fout << "Avarage FPS: "
+		<< 1.f / (total_time / n_Frames)
+		<< " FPS"
+		<< std::endl;
+
+	fout << "Avarage n gameobjects: "
+		<< m_AvgGameObjects
+		<< std::endl;
+
+	fout << std::endl;
 	for (int i = 0; i < m_TimeStamps.Size(); i++)
 	{
 		for (int j = i +1; j < m_TimeStamps.Size(); j++)
@@ -111,7 +127,6 @@ void Profiler::FinishBenchmark()
 
 	fout << std::endl;
 	fout << "--- Avarage time per frame ---" << std::endl;
-	const double n_Frames = static_cast<double>(m_NumberOfFrames);
 	for (short i = 1; i < m_TimeStamps.Size(); i++)
 	{
 		fout << "Task :" 
@@ -155,21 +170,6 @@ void Profiler::FinishBenchmark()
 	}
 
 	fout << std::endl;
-
-	fout << "--- Summary --- " << std::endl;
-	fout << "Total: "
-		<< total_time
-		<< " " << "s"
-		<< std::endl;
-
-	fout << "Avarage FPS: "
-		<< 1.f / (total_time / n_Frames)
-		<< " FPS"
-		<< std::endl;
-
-	fout << "Avarage n gameobjects: "
-		<< m_AvgGameObjects
-		<< std::endl;
 
 	fout.flush();
 	fout.close();

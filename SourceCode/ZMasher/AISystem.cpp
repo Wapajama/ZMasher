@@ -23,7 +23,7 @@ AISystem::AISystem(AIComponentManager* ai,
 
 }
 
-
+const float ai_range = AI_RANGE;
 AISystem::~AISystem()
 {
 }
@@ -43,7 +43,7 @@ bool AISystem::Destroy()
 	return true;
 }
 
-const float ai_range = 300.f;
+
 
 AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 {

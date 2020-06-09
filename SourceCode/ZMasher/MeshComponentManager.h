@@ -26,4 +26,6 @@ public:
 	bool Update(class TransformComponentManager* transform_manager);//extract this to a render system instead
 	void Destroy()override;
 	ModelComponent* AddComponent(GameObject game_object, ZMModelInstanceNode* instance_node);
+
+	void RemoveComponentWithGameObject(GameObject object, bool directly = false)override;
 };

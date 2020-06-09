@@ -4,10 +4,10 @@
 #include <GameObject.h>
 struct CollCallbackArgs
 {
-	class SphereCollisionComponent* a;
-	SphereCollisionComponent* b;
-	class MomentumComponent* x;
-	MomentumComponent* y;
+	const class SphereCollisionComponent* __restrict a;
+	const SphereCollisionComponent* __restrict b;
+	const class MomentumComponent* __restrict x;
+	const MomentumComponent* __restrict y;
 };
 
 typedef void(*CollisionCallBack)(CollCallbackArgs args);

@@ -1,8 +1,7 @@
 #include "AIComponentManager.h"
 #include <ZMasher\GameObjectManager.h>
 
-AIComponentManager::AIComponentManager() :
-	ComponentManager(1024)
+AIComponentManager::AIComponentManager()
 {
 }
 

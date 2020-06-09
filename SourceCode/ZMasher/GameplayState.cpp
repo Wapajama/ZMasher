@@ -64,19 +64,19 @@ void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args)
 };
 
 #ifndef _DEBUG
-#define NUMBER_OF_ENEMIES 600
-#define NUMBER_OF_BOXES 50
+#define NUMBER_OF_ENEMIES 2500
+#define NUMBER_OF_BOXES 150
 #else
 #define NUMBER_OF_ENEMIES 200
 #define NUMBER_OF_BOXES 30 
 #endif // !_DEBUG
 
 
-const float ai_range = 300.f;
+const float ai_range = AI_RANGE;
 bool GameplayState::Init(const char* args)
 {	
 	GameObjectManager::Create();
-	m_Camera->SetPosition(ZMasher::Vector3f(0, 100, 0));
+	m_Camera->SetPosition(ZMasher::Vector3f(ai_range, 75, ai_range*0.5f-150));
 
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	transform.SetTranslation(ZMasher::Vector4f( ZMasher::Vector3f(ai_range, 1, ai_range*0.5f), 1.f));
@@ -88,7 +88,7 @@ bool GameplayState::Init(const char* args)
 	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::BASIC_TURRET);
-	GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eTurret, new_object, 100, transform.GetTranslation().ToVector3f());
+	GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eTurret, new_object, 300, transform.GetTranslation().ToVector3f());
 	SpawnEnemy(true);
 
 	for (int i = 0; i < NUMBER_OF_BOXES; ++i)

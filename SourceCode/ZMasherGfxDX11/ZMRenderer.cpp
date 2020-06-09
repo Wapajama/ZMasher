@@ -246,31 +246,55 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 	m_Terrain->GetModelNode()->GetModel()->SetRenderVars(d3dinterface.GetContext());//TODO: replace this with lazy update
 
 	ZMasher::Matrix44f current_transform;
-	current_transform = m_Terrain->GetTransform();
+	const float length = 500.f;
+	for (byte i = 0; i < 4; i++)
+	{
+		current_transform = m_Terrain->GetTransform();
+		if (i==0)
+		{
+			current_transform.m_Vectors[3].x = -length;
+			current_transform.m_Vectors[3].z = length;
+		}
+		else if (i==1)
+		{
+			current_transform.m_Vectors[3].x = length;
+			current_transform.m_Vectors[3].z = length;
+		}
+		else if (i==2)
+		{
+			current_transform.m_Vectors[3].x = -length;
+			current_transform.m_Vectors[3].z = -length;
+		}
+		else if (i==3)
+		{
+			current_transform.m_Vectors[3].x = length;
+			current_transform.m_Vectors[3].z = -length;
+		}
 
-	SetXMMatrix(modelWorldMatrix, current_transform);
+		SetXMMatrix(modelWorldMatrix, current_transform);
 
-	DirectX::XMVECTOR cam_pos;
-	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
-	cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
-	cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
-	cam_pos.m128_f32[3] = 1.f;
+		DirectX::XMVECTOR cam_pos;
+		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
+		cam_pos.m128_f32[3] = 1.f;
 
-	const bool succeded = m_TerrainShader->SetShaderVars(d3dinterface.GetContext(),
-														{modelWorldMatrix,
-														cameraWorldMatrix,
-														projectionMatrix,
-														cam_pos, 
-														m_Dt});
-	ASSERT(succeded, "shader failed to init!");
-	ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_TerrainShader);
-	Material* material = m_Terrain->GetModelNode()->GetModel()->GetMaterial();
+		const bool succeded = m_TerrainShader->SetShaderVars(d3dinterface.GetContext(),
+															 { modelWorldMatrix,
+															 cameraWorldMatrix,
+															 projectionMatrix,
+															 cam_pos,
+															 m_Dt });
+		ASSERT(succeded, "shader failed to init!");
+		ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_TerrainShader);
+		Material* material = m_Terrain->GetModelNode()->GetModel()->GetMaterial();
 
-	model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
-		
-	m_TerrainShader->Apply(d3dinterface.GetContext());
+		model_shader->SetShaderResource(eTextureType::ALBEDO, material->GetTexture(eTextureType::ALBEDO));
 
-	d3dinterface.GetContext()->DrawIndexed(m_Terrain->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
+		m_TerrainShader->Apply(d3dinterface.GetContext());
+
+		d3dinterface.GetContext()->DrawIndexed(m_Terrain->GetModelNode()->GetModel()->GetIndexCount(), 0, 0);
+	}
 }
 
 void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)

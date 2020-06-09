@@ -10,7 +10,7 @@
 //#endif // WIN64
 
 #define BENCHMARK
-
+#define AI_RANGE 1000.f
 #ifdef BENCHMARK
 #define START_TIME_STAMP(ts) ts.StartTimeStamp() 
 #define END_TIME_STAMP(ts) ts.EndTimeStamp() 

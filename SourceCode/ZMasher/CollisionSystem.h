@@ -42,16 +42,17 @@ private:
 	void DrawAABBs();
 	void DrawSpheres();
 	void DrawSphere(const float radius, const ZMasher::Vector3f pos);
-	void QuerySphereAgainstAllAABBS(const struct SphereCollisionComponent& sphere, ZMasher::Matrix44f* transform);
+	void QuerySphereAgainstAllAABBS(const struct SphereCollisionComponent& sphere);
 	void ResolveQueries();
 
 	GrowArray<CollisionInfoStruct> m_CollInfos;
 	GrowArray<CollisionQuery> m_Queries;
 	GrowArray<SphereQueryArgs> m_SphereQueries;
-	SphereCollisionComponentManager* m_SphereCollisionCompManager;
-	AABBComponentManager* m_AABBComponentManager;
-	MomentumComponentManager* m_MomentumCompManager;
-	TransformComponentManager* m_TransformCompManager;
+	SphereCollisionComponentManager* const m_SphereCollisionCompManager;
+	AABBComponentManager* const m_AABBComponentManager;
+	MomentumComponentManager* const m_MomentumCompManager;
+	TransformComponentManager* const m_TransformCompManager;
+
 #ifdef BENCHMARK
 	Timer m_SingleCollisionTimeStamp;
 	Timer m_QueriesTimeStamp;

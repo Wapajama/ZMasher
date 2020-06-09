@@ -4,7 +4,6 @@ GameObjectManager::GameObjectManager()
 	: m_BulletSystem(&m_BulletCompManager, &m_TransformManager)
 	, m_CollisionSystem(&m_SphereCollisionCompManager, &m_AABBComponentManager, &m_MomentumComponentManager, &m_TransformManager)
 	, m_AISystem(&m_AICompManager, &m_SphereCollisionCompManager, &m_MomentumComponentManager, &m_TransformManager, &m_CollisionSystem)
-	, m_GameObjects(1024)
 {
 }
 
@@ -109,7 +108,7 @@ void GameObjectManager::UpdateAllComponentManagers()
 	}
 }
 
-void GameObjectManager::Destroy(GameObject game_Object, bool remove_everywhere)
+void GameObjectManager::Destroy(GameObject game_Object, bool immediately)
 {
 	if (!Alive(game_Object))
 	{
@@ -119,11 +118,6 @@ void GameObjectManager::Destroy(GameObject game_Object, bool remove_everywhere)
 	const GO_ID_TYPE go_id = game_Object.Index();
 	++m_GameObjects[go_id];
 	m_FreeIndexes.Add(go_id);
-	
-	if (!remove_everywhere)
-	{
-		return;
-	}
 
 	//go through all componentmanagers and remove the gameobject
 	for (int i = 0; i < m_ComponentManagers.Size(); i++)

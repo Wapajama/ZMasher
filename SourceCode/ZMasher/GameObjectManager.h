@@ -1,3 +1,4 @@
+
 #pragma once
 #include "TransformComponentManager.h"
 #include "MeshComponentManager.h"
@@ -25,7 +26,7 @@ public:
 
 	GameObject CreateGameObject();
 	bool Alive(GameObject game_object);
-	void Destroy(GameObject game_object, bool remove_everywhere = true);
+	void Destroy(GameObject game_object, bool immediately = false);
 
 	inline MeshComponentManager* MeshCompManager() { return &m_MeshManager; }
 	inline TransformComponentManager* TransformManager() { return &m_TransformManager; }
@@ -36,8 +37,6 @@ public:
 	inline AABBComponentManager* AABBCompManager() {return &m_AABBComponentManager;}
 	inline CollisionSystem* GetCollisionSystem() {return &m_CollisionSystem;}
 	inline AISystem* GetAISystem() { return &m_AISystem; }
-
-protected:
 
 private:
 	GameObjectManager();
@@ -67,7 +66,7 @@ private:
 
 	// Will increase the size of the array by one, representing the game object
 	// the value of the element will indicate its generation
-	GrowArray<GO_GEN_TYPE, int> m_GameObjects;
+	GrowArray<GO_GEN_TYPE, int, MAX_GAME_OBJS> m_GameObjects;
 #ifdef BENCHMARK
 	Timer m_CollisionTimeStamp;
 	Timer m_AITimeStamp;

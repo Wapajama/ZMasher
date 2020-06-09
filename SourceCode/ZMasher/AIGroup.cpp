@@ -28,7 +28,7 @@ bool AIGroup::Iterate()
 	return true;
 }
 
-const float ai_range = 300.f;
+const float ai_range = AI_RANGE;
 void AIGroup::Allocate(const int size, void* args)
 {
 	AIObjectArgs* ai_args = nullptr;

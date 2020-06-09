@@ -86,6 +86,18 @@ bool MeshComponentManager::Update(TransformComponentManager* transform_manager)
 	return true;
 }
 
+void MeshComponentManager::RemoveComponentWithGameObject(GameObject object, bool directly)
+{
+	if (directly)
+	{
+		if (ModelComponent* mesh = this->GetComponent(object))
+		{
+			mesh->m_InstanceNode->MarkForDelete();
+		}
+	}
+	this->ComponentManager<ModelComponent>::RemoveComponentWithGameObject(object, directly);
+}
+
 void MeshComponentManager::Destroy()
 {
 

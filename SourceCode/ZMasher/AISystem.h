@@ -7,6 +7,7 @@
 #include <ZMasher/AIGroup.h>
 #include <GlobalIncludes/project_defines.h>
 
+
 class AISystem
 	:public BaseSystem
 {
