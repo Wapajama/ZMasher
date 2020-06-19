@@ -160,6 +160,5 @@ bool BaseShader::Create(const char* source_file, ID3D11Device* device)
 	{
 		return false;
 	}
-
 	return true;
 }

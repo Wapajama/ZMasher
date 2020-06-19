@@ -31,7 +31,7 @@ static void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const 
 		return false;\
 	}\
 
-struct MatrixBufferType
+struct __declspec(align(16)) MatrixBufferType
 {
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;

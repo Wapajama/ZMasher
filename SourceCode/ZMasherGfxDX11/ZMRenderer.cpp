@@ -13,28 +13,28 @@
 #include <ZMasherGfxDX11/DebugLine.h>
 #include <Time/Profiler.h>
 
-void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
-{
-	matrix.r[0].m128_f32[0] = other.m_Elements[0][0];
-	matrix.r[0].m128_f32[1] = other.m_Elements[0][1];
-	matrix.r[0].m128_f32[2] = other.m_Elements[0][2];
-	matrix.r[0].m128_f32[3] = other.m_Elements[0][3];
-							  
-	matrix.r[1].m128_f32[0] = other.m_Elements[1][0];
-	matrix.r[1].m128_f32[1] = other.m_Elements[1][1];
-	matrix.r[1].m128_f32[2] = other.m_Elements[1][2];
-	matrix.r[1].m128_f32[3] = other.m_Elements[1][3];
-							  
-	matrix.r[2].m128_f32[0] = other.m_Elements[2][0];
-	matrix.r[2].m128_f32[1] = other.m_Elements[2][1];
-	matrix.r[2].m128_f32[2] = other.m_Elements[2][2];
-	matrix.r[2].m128_f32[3] = other.m_Elements[2][3];
-							  
-	matrix.r[3].m128_f32[0] = other.m_Elements[3][0];
-	matrix.r[3].m128_f32[1] = other.m_Elements[3][1];
-	matrix.r[3].m128_f32[2] = other.m_Elements[3][2];
-	matrix.r[3].m128_f32[3] = other.m_Elements[3][3];
-}
+//void SetXMMatrix(DirectX::XMMATRIX& matrix, const ZMasher::Matrix44f& other)
+//{
+//	matrix.r[0].m128_f32[0] = other.m_Elements[0][0];
+//	matrix.r[0].m128_f32[1] = other.m_Elements[0][1];
+//	matrix.r[0].m128_f32[2] = other.m_Elements[0][2];
+//	matrix.r[0].m128_f32[3] = other.m_Elements[0][3];
+//							  
+//	matrix.r[1].m128_f32[0] = other.m_Elements[1][0];
+//	matrix.r[1].m128_f32[1] = other.m_Elements[1][1];
+//	matrix.r[1].m128_f32[2] = other.m_Elements[1][2];
+//	matrix.r[1].m128_f32[3] = other.m_Elements[1][3];
+//							  
+//	matrix.r[2].m128_f32[0] = other.m_Elements[2][0];
+//	matrix.r[2].m128_f32[1] = other.m_Elements[2][1];
+//	matrix.r[2].m128_f32[2] = other.m_Elements[2][2];
+//	matrix.r[2].m128_f32[3] = other.m_Elements[2][3];
+//							  
+//	matrix.r[3].m128_f32[0] = other.m_Elements[3][0];
+//	matrix.r[3].m128_f32[1] = other.m_Elements[3][1];
+//	matrix.r[3].m128_f32[2] = other.m_Elements[3][2];
+//	matrix.r[3].m128_f32[3] = other.m_Elements[3][3];
+//}
 
 ZMRenderer::ZMRenderer(void)
 {
@@ -93,34 +93,28 @@ void ZMRenderer::Init(ZMD3DInterface& d3dinterface, Profiler* profiler, TimerMan
 
 	ZMModelFactory::Instance()->Create();
 	ZMModelFactory::Instance()->SetDevice(d3dinterface.GetDevice());
-
 	m_Shader = new ModelShader();
 	m_Shader->SetVertexType(&g_PosUVNorm);
 	const bool succeeded = m_Shader->Create("PBRShader.fx", d3dinterface.GetDevice());
 	ASSERT(succeeded, "model shader failed to init!");
-
 	m_SkyboxShader = new ModelShader();
 	m_SkyboxShader->SetVertexType(&g_PosUVNorm);
 	const bool succeeded_skybox = m_SkyboxShader->Create("Skybox.fx", d3dinterface.GetDevice());
 	ASSERT(succeeded_skybox, "skybox shader failed to init!");
-
 	m_Skybox = ZMModelFactory::Instance()->LoadSkyBox((PathManager::Instance()->GetDataPath() + "cubemaps/Skybox001.dds").c_str());
 
 	m_TerrainShader = new ModelShader();
 	m_TerrainShader->SetVertexType(&g_PosUVNorm);
 	const bool succeeded_flatTerrain = m_TerrainShader->Create("FlatTerrain.fx", d3dinterface.GetDevice());
 	ASSERT(succeeded_flatTerrain, "terrain shader failed to init!");
-
 	m_DebugLineShader = new DebugLineShader();
 	m_DebugLineShader->SetVertexType(&g_PosCol);
 	const bool succeeded_debugLine = m_DebugLineShader->Create("Color.fx", d3dinterface.GetDevice());
 	ASSERT(succeeded_debugLine, "debugLine shader failed to init!");
-
 	m_Terrain = ZMModelFactory::Instance()->Load2DTerrain((PathManager::Instance()->GetDataPath()+ "maps/grass.dds").c_str());
 
 	m_DebugLine = new DebugLine();
 	m_DebugLine->Create(d3dinterface.GetDevice());
-	
 }
 
 void ZMRenderer::RenderGrid(ZMD3DInterface& d3dinterface)
@@ -149,13 +143,21 @@ void ZMRenderer::RenderModelHierarchy(ZMD3DInterface& d3dinterface, ZMModelInsta
 
 		const ZMasher::Matrix44f current_transform =  model->GetTransform()* parent_orientation;
 
-		SetXMMatrix(modelWorldMatrix, current_transform);
+		current_transform.Get(modelWorldMatrix);
 
 		DirectX::XMVECTOR cam_pos;
+#ifndef _XM_NO_INTRINSICS_
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 		cam_pos.m128_f32[3] = 1.f;
+#else
+		cam_pos.vector4_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.vector4_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.vector4_f32[2] = m_Camera->GetPosition().z;
+		cam_pos.vector4_f32[3] = 1.f;
+#endif // !_XM_NO_INTRINSICS_
+
 
 		ModelShader* model_shader = reinterpret_cast<ModelShader*>(m_Shader);
 		Material* material = model->GetModelNode()->GetModel()->GetMaterial();
@@ -203,15 +205,23 @@ void ZMRenderer::RenderSkybox(ZMD3DInterface& d3dinterface)
 	ZMasher::Matrix44f current_transform; 
 	current_transform = m_Skybox->GetTransform();
 
-	SetXMMatrix(modelWorldMatrix, current_transform);
+	current_transform.Get(modelWorldMatrix);
 
 	if (m_Camera != nullptr)
 	{
 		DirectX::XMVECTOR cam_pos;
+#ifndef _XM_NO_INTRINSICS_
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 		cam_pos.m128_f32[3] = 1.f;
+#else
+		cam_pos.vector4_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.vector4_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.vector4_f32[2] = m_Camera->GetPosition().z;
+		cam_pos.vector4_f32[3] = 1.f;
+#endif // !_XM_NO_INTRINSICS_
+
 		const bool succeded = m_SkyboxShader->SetShaderVars(d3dinterface.GetContext(),
 		{ modelWorldMatrix,
 		cameraWorldMatrix,
@@ -271,13 +281,21 @@ void ZMRenderer::Render2DTerrain(ZMD3DInterface& d3dinterface)
 			current_transform.m_Vectors[3].z = -length;
 		}
 
-		SetXMMatrix(modelWorldMatrix, current_transform);
+		current_transform.Get(modelWorldMatrix);
 
 		DirectX::XMVECTOR cam_pos;
+#ifndef _XM_NO_INTRINSICS_
 		cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 		cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 		cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 		cam_pos.m128_f32[3] = 1.f;
+#else
+		cam_pos.vector4_f32[0] = m_Camera->GetPosition().x;
+		cam_pos.vector4_f32[1] = m_Camera->GetPosition().y;
+		cam_pos.vector4_f32[2] = m_Camera->GetPosition().z;
+		cam_pos.vector4_f32[3] = 1.f;
+#endif // !_XM_NO_INTRINSICS_
+
 
 		const bool succeded = m_TerrainShader->SetShaderVars(d3dinterface.GetContext(),
 															 { modelWorldMatrix,
@@ -310,19 +328,22 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 	cameraWorldMatrix = DirectX::XMMATRIX(&view_matrix.m_Elements[0][0]);
 	m_Camera->GetProjectionMatrix(projectionMatrix);
 
+	ZMasher::Matrix44f current_transform;
+	current_transform = m_Terrain->GetTransform();
+	current_transform.Get(modelWorldMatrix);
+
 	DirectX::XMVECTOR cam_pos;
+#ifndef _XM_NO_INTRINSICS_
 	cam_pos.m128_f32[0] = m_Camera->GetPosition().x;
 	cam_pos.m128_f32[1] = m_Camera->GetPosition().y;
 	cam_pos.m128_f32[2] = m_Camera->GetPosition().z;
 	cam_pos.m128_f32[3] = 1.f;
-
-	// REPLACE THIS
-	ZMasher::Matrix44f current_transform;
-	current_transform = m_Terrain->GetTransform();
-
-	SetXMMatrix(modelWorldMatrix, current_transform);
-	// -- REPLACE THIS
-
+#else 
+	cam_pos.vector4_f32[0] = m_Camera->GetPosition().x;
+	cam_pos.vector4_f32[1] = m_Camera->GetPosition().y;
+	cam_pos.vector4_f32[2] = m_Camera->GetPosition().z;
+	cam_pos.vector4_f32[3] = 1.f;
+#endif // !
 
 	const bool succeded = m_DebugLineShader->SetShaderVars(d3dinterface.GetContext(),
 														{modelWorldMatrix,

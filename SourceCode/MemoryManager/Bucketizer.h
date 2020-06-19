@@ -129,12 +129,10 @@ namespace ZMasher
 		if (tmp_blk.m_Data)
 		{
 			char dbgMsg[128];
-			sprintf_s(dbgMsg, "\nB4 Bucketizer reallocate memcpy, size: %i", size);
-			//OutputDebugStringA(dbgMsg);
+			//sprintf_s(dbgMsg, "\nB4 Bucketizer reallocate memcpy, size: %i", size);
 			memcpy(tmp_blk.m_Data, blk.m_Data, min(size, blk.m_Size));
 			GetAllocator(blk.m_Size).Deallocate(blk);
-			sprintf_s(dbgMsg, "\nAF Bucketizer reallocate memcpy" );
-			//OutputDebugStringA(dbgMsg);
+			//sprintf_s(dbgMsg, "\nAF Bucketizer reallocate memcpy" );
 			blk = tmp_blk;
 		}
 		ASSERT(tmp_blk.m_Data, "Bucketizer, Cant realloc!");

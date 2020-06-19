@@ -7,7 +7,9 @@ const GO_ID_TYPE GAMEOBJECT_ID_MASK = (1i64 << GAMEOBJECT_ID_BITS) - 1i64;
 
 const GO_ID_TYPE GAMEOBJECT_GEN_BITS = 16i64;
 const GO_ID_TYPE GAMEOBJECT_GEN_MASK = (1i64 << GAMEOBJECT_GEN_BITS) - 1i64;
-#define MAX_GAME_OBJS 1024*64
+#define MAX_GAME_OBJS (1024*64) - 1
+#define MAX_COMPONENTS (1024*64) - 1
+#define GAME_OBJS_INDEX __int32 // For referencing game objects in a list
 
 struct GameObject
 {
@@ -28,20 +30,20 @@ struct GameObject
 		};
 	};
 
-	bool operator==(const GameObject& game_object)const
+	inline bool operator==(const GameObject& game_object)const
 	{
 		return this->m_ID == game_object.m_ID;
 	}
-	bool operator!=(const GameObject game_object)const
+	inline bool operator!=(const GameObject& game_object)const
 	{
 		return (!((*this) == game_object));
 	}
 
-	GO_ID_TYPE Index() const
+	inline GO_ID_TYPE Index() const
 	{
 		return m_ID & GAMEOBJECT_ID_MASK;
 	}
-	GO_GEN_TYPE Generation() const
+	inline GO_GEN_TYPE Generation() const
 	{
 		return (m_ID >> GAMEOBJECT_ID_BITS) & GAMEOBJECT_GEN_MASK;
 	}

@@ -138,7 +138,6 @@ namespace ZMasher
 		blk = this->STACK_ALLOCATOR_DECL::Allocate(size);
 		if (blk.m_Data)
 		{
-			OutputDebugStringA("\nStackollator reallocate memcpy");
 			memcpy(blk.m_Data, temp_data, size);
 		}
 		this->STACK_ALLOCATOR_DECL::Deallocate(blk);

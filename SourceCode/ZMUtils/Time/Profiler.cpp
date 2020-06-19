@@ -70,11 +70,18 @@ void Profiler::FinishBenchmark()
 	fout.open(file_name);
 	const char* time_unit = "ms";
 
+#ifdef __CLANG
+	std::string compiler = "CLANG";
+#else
+	std::string compiler = "DEFAULT - MSVC";
+#endif // __CLANG
+
+
 	//overall time
 #ifdef _DEBUG
-	fout << "----- Benchmark Results DEBUG -------" << std::endl;
+	fout << "----- Benchmark Results DEBUG (COMPILER: " << compiler << ") -------" << std::endl;
 #else
-	fout << "----- Benchmark Results -------" << std::endl;
+	fout << "----- Benchmark Results (COMPILER: " << compiler << ") -------" << std::endl;
 #endif // DEBUG
 
 	fout << std::endl;

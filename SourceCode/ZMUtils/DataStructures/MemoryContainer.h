@@ -1,7 +1,7 @@
 #pragma once
 #include "GrowArray.h"
 
-#define MEM_CONTAINER_TEMPLATE template <typename DataType, int size, typename index_type = short>
+#define MEM_CONTAINER_TEMPLATE template <typename DataType, int size, typename index_type>
 #define MEM_CONTAINER_DECL MemoryContainer<DataType, size, index_type>
 MEM_CONTAINER_TEMPLATE
 class MemoryContainer

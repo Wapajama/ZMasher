@@ -254,7 +254,6 @@ namespace ZMasher
 
 	inline Vector4f::Vector4f(const Vector4f& copy)
 	{
-		//m_Data = copy.m_Data;
 		x = copy.x;
 		y = copy.y;
 		z = copy.z;
@@ -263,7 +262,6 @@ namespace ZMasher
 
 	inline Vector4f::Vector4f(const Vector3f& vector3, const float aw)
 	{
-		//m_Data = vector3.m_Data;
 		x = vector3.x;
 		y = vector3.y;
 		z = vector3.z;
@@ -278,10 +276,13 @@ namespace ZMasher
 		w = aw;
 	}
 
-	inline Vector4f::Vector4f(const __m128& data)
-	{
-		//m_Data = data;
-	}
+#ifndef _XM_NO_INTRINSICS_
+	//inline Vector4f::Vector4f(const __m128& data)
+	//{
+	//	//m_Data = data;
+	//}
+#endif // !_XM_NO_INTRINSICS_
+
 
 	inline Vector4f::Vector4f(float* arrayPtr)
 	{
@@ -421,66 +422,13 @@ namespace ZMasher
 	ZM_ALWAYS_INLINE const float Length2(const Vector3f& operand)
 	{
 		return ((operand.x * operand.x) +
-			(operand.y * operand.y) +
+				(operand.y * operand.y) +
 				(operand.z * operand.z));
 	}
 
 	ZM_ALWAYS_INLINE const float Length(const Vector3f& operand)
 	{
 		return sqrt(ZMasher::Length2(operand));
-	}
-
-#define SET_W_TO_ZERO //m_Data.m128_f32[3] = CAST(0)//else it will create garbage data
-
-	inline Vector3f::Vector3f()
-	{
-		x = CAST(0);
-		y = CAST(0);
-		z = CAST(0);
-		SET_W_TO_ZERO;
-	}
-
-	inline Vector3f::Vector3f(const Vector3f& copy)
-	{
-		//m_Data = copy.m_Data;
-		this->x = copy.x;
-		this->y = copy.y;
-		this->z = copy.z;
-	}
-
-	inline Vector3f::Vector3f(const Vector4f& vector4)
-	{
-		//m_Data = vector4.m_Data;
-		x = vector4.x;
-		y = vector4.y;
-		z = vector4.z;
-
-	}
-
-	inline Vector3f::Vector3f(const float ax, const float ay, const float az)
-	{
-		x = ax;
-		y = ay;
-		z = az;
-		SET_W_TO_ZERO;
-	}
-
-	//inline Vector3f::Vector3f(const __m128& data)
-	//{
-	//	m_Data = data;
-	//}
-
-	inline Vector3f::Vector3f(float* arrayPtr)
-	{
-		assert(arrayPtr != nullptr && "Vector3f: Constructorargument is null!");
-		x = arrayPtr[0];
-		y = arrayPtr[1];
-		z = arrayPtr[2];
-		SET_W_TO_ZERO;
-	}
-
-	inline Vector3f::~Vector3f()
-	{
 	}
 
 	inline const Vector3f Vector3f::operator+(const Vector3f& operand)const

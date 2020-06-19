@@ -24,10 +24,10 @@ void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
 {
 	//The first thing to do is to create the FBX Manager which is the object allocator for almost all the classes in the SDK
 #ifdef NEW_OP_OVERRIDE
-	FbxSetMallocHandler(ZMAlloc);
-	FbxSetFreeHandler(ZMFree);
-	FbxSetReallocHandler(ZMRealloc);
-	FbxSetCallocHandler(ZMCalloc);  
+	//FbxSetMallocHandler(ZMAlloc);
+	//FbxSetFreeHandler(ZMFree);
+	//FbxSetReallocHandler(ZMRealloc);
+	//FbxSetCallocHandler(ZMCalloc);  
 #endif // NEW_OP_OVERRIDE
 
 

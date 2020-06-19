@@ -212,7 +212,10 @@ namespace ZMasher
 				ASSERT(tmp_blk.m_Data, "FreeBlkList, failed to realloc!");
 				if (tmp_blk.m_Data != nullptr)
 				{
+#ifdef DEBUG
 					OutputDebugStringA("\nFreeBlkList reallocate memcpy");
+#endif // DEBUG
+
 					memcpy(tmp_blk.m_Data, blk.m_Data, min(blk.m_Size, size));
 
 					this->FREE_BLK_LIST_DECL::Deallocate(blk);

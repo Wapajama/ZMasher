@@ -5,15 +5,12 @@
 #include <DataStructures\BinarySearchTree.h>
 #include <ZMasher\CollisionDefines.h>
 
-struct SphereCollisionComponent
+struct __declspec(align(16)) SphereCollisionComponent
 {
-	//DONT CHANGE THE ORDER OF THE VARIABLES
-	eCOLLISIONTYPE m_CollisionFilter;
 	float m_Radius;
+	eCOLLISIONTYPE m_CollisionFilter;
 	GameObject m_GameObject;
 	CollisionCallBack m_CollisionCallback = nullptr;
-	//index for the collision info array in the collision system. -1 if nothing, else > 0
-	int collInfoIndex = -1;
 };
 
 
@@ -37,4 +34,3 @@ private:
 
 	friend class CollisionSystem;
 };
-

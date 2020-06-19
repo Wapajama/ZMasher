@@ -44,7 +44,7 @@ public:
 
 	virtual void RemoveComponentWithGameObject(GameObject object, bool directly = false)=0;
 };
-#define MAX_COMPONENTS 1024*64
+
 #define COMPONENTINDEXTYPE_NULL UINT16_MAX // INT32_MAX
 typedef unsigned short ComponentIndexType;
 COMPONENTMANAGER_TEMPLATE
@@ -73,20 +73,9 @@ protected:
 		ComponentIndexType index;
 	};
 
-	GrowArray<ComponentIndex, int, MAX_GAME_OBJS> m_Indices;
-	GrowArray<Component, int, MAX_COMPONENTS> m_Components;
-	GrowArray<GameObject, int, MAX_GAME_OBJS> m_DeleteObjs;
-	// ZMasher::BinarySearchTree<ComponentIndexPair, ComponentComparer> m_LookupSet;
-
-	//class ComponentGroup
-	//{
-	//public:
-	//	ComponentGroup();
-	//	~ComponentGroup();
-
-
-	//};
-	//GrowArray<ComponentGroup> m_ComponentGroups;
+	GrowArray<ComponentIndex, GAME_OBJS_INDEX, MAX_GAME_OBJS> m_Indices;
+	GrowArray<Component, GAME_OBJS_INDEX, MAX_COMPONENTS> m_Components;
+	GrowArray<GameObject, GAME_OBJS_INDEX, MAX_GAME_OBJS> m_DeleteObjs;
 };
 
 COMPONENTMANAGER_TEMPLATE
@@ -109,29 +98,14 @@ COMPONENTMANAGER_DECL::~ComponentManager()
 COMPONENTMANAGER_TEMPLATE
 void COMPONENTMANAGER_DECL::AddComponent(Component component, GameObject object)
 {
-	//if (m_FreeList == COMPONENTINDEXTYPE_NULL)
-	//{
 	GO_ID_TYPE id = m_Indices[object.Index()].index;
 	m_Indices[object.Index()].index = m_Components.Size();
 	m_Components.Add(component);
-	//}
-	//else
-	//{
-	//	m_Indices[object.Index()].index = m_FreeList;
-	//	m_FreeList = m_Indices[object.Index()].next;
-	//	m_Components[m_FreeList] = component;
-	//}
-	// m_LookupSet.Insert({ object, m_Components.Size() - 1 });
 }
 
 COMPONENTMANAGER_TEMPLATE
 bool COMPONENTMANAGER_DECL::Update()
 {
-	//for (int i = 0; i < m_DeleteObjects.Size(); i++)
-	//{
-	//	this->RemoveComponentWithGameObjectInternal(m_DeleteObjects[i]);
-	//}
-
 	for (int i = 0; i < m_DeleteObjs.Size(); i++)
 	{
 		this->RemoveComponentWithGameObject(m_DeleteObjs[i], true);
@@ -143,12 +117,6 @@ bool COMPONENTMANAGER_DECL::Update()
 COMPONENTMANAGER_TEMPLATE
 Component* COMPONENTMANAGER_DECL::GetComponent(GameObject object)
 {
-	//auto comp = m_LookupSet.Find({ object, -1 });
-	//if (comp == nullptr)
-	//{
-	//	return nullptr;
-	//}
-	//return &m_Components[comp->value.index];
 	if (m_Indices[object.Index()].index == COMPONENTINDEXTYPE_NULL)
 	{
 		return nullptr;
@@ -181,8 +149,6 @@ void COMPONENTMANAGER_DECL::RemoveComponentWithGameObject(GameObject object, boo
 	{
 		m_DeleteObjs.Add(object);
 	}
-
-
 
 	//GameObject temp = m_Components.GetLast().m_GameObject;
 	//m_Components.RemoveCyclic(m_Indices[object.Index()].index);

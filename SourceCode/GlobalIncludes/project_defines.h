@@ -8,8 +8,8 @@
 //#elif
 //typedef size_t ZM_Mem_Size;
 //#endif // WIN64
-
-#define BENCHMARK
+//#define _XM_NO_INTRINSICS_
+//#define BENCHMARK
 #define AI_RANGE 1000.f
 #ifdef BENCHMARK
 #define START_TIME_STAMP(ts) ts.StartTimeStamp() 
@@ -28,4 +28,4 @@
 
 #endif
 
-#define NEW_OP_OVERRIDE
+//#define NEW_OP_OVERRIDE

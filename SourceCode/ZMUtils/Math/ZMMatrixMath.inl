@@ -579,7 +579,7 @@ namespace ZMasher
 		det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
 
 		if (det == 0)
-			return false;
+			return inv;
 
 		det = 1.0 / det;
 

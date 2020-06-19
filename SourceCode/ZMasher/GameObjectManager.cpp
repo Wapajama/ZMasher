@@ -95,11 +95,6 @@ GameObject GameObjectManager::CreateGameObject()
 	return new_GameObject;
 }
 
-bool GameObjectManager::Alive(GameObject game_object)
-{
-	return m_GameObjects[game_object.Index()] == game_object.Generation();
-}
-
 void GameObjectManager::UpdateAllComponentManagers()
 {
 	for (short i = 0; i < m_ComponentManagers.Size(); i++)

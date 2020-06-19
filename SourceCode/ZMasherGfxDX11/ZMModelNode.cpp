@@ -1,9 +1,8 @@
 #include "ZMModelNode.h"
 
-ZMModelNode::ZMModelNode(ZMModel* model):
-m_Model(model)
+ZMModelNode::ZMModelNode(ZMModel* model)
 {
-	m_Transform = ZMasher::Matrix44f::Identity();
+	m_Model = model;
 }
 
 ZMModelNode::~ZMModelNode()

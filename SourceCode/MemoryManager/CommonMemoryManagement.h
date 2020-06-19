@@ -17,7 +17,7 @@
 
 #ifdef WIN32
 typedef int MemSizeType;
-#elif defined(WIN64)
+#else
 typedef int64_t MemSizeType;
 #endif // WIN32
 

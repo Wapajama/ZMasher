@@ -55,16 +55,32 @@ public:
 	void Destroy()override;
 	bool Update()override;
 
-	TransformComponent* AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform);//will return false if invalid input, eg already exists, invalid transform etc
+	TransformComponent* AddComponent(GameObject game_object, const ZMasher::Matrix44f& transform);// Will return false if invalid input, eg already exists, invalid transform etc
 	
 	ZMasher::Matrix44f* GetTransform(GameObject game_object);
 
-protected:
-private:
+	//inline void UpdateTranslation(GameObject game_object);
 
+	inline ZMasher::Vector4f GetTranslation(GameObject game_object);
+
+	// GrowArray<ZMasher::Vector4f, int, MAX_GAME_OBJS> m_Translations;
+
+	//GrowArray<float, int, MAX_GAME_OBJS> m_TranslationsX;
+	//GrowArray<float, int, MAX_GAME_OBJS> m_TranslationsY;
+	//GrowArray<float, int, MAX_GAME_OBJS> m_TranslationsZ;
+
+private:
 #ifdef BENCHMARK
 	Timer m_GetTransformTimeStamp;
 #endif // BENCHMARK
-
 };
+//
+//inline void TransformComponentManager::UpdateTranslation(GameObject game_object)
+//{
+//	this->GetTranslation(game_object) = this->GetTransform(game_object)->GetTranslation();
+//}
 
+inline ZMasher::Vector4f TransformComponentManager::GetTranslation(GameObject game_object)
+{
+	return this->GetTransform(game_object)->GetTranslation();
+}

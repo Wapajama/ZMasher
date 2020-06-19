@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math.h>
-#include <dvec.h>
+// #include <dvec.h>
 #include <Windows.h>
 #include <assert.h>
 
@@ -16,17 +16,15 @@ namespace ZMasher
 	class Vector3f
 	{
 	public:
-		inline Vector3f();
-		inline Vector3f(const Vector3f& copy);
-		inline explicit Vector3f(const Vector4f&);
-		//inline explicit Vector3f(const __m128& data);
-		inline explicit Vector3f(const float x, const float y, const float z);
-		inline explicit Vector3f(float* arrayPtr);
-		inline ~Vector3f();
+		Vector3f();
+		Vector3f(const Vector3f& copy);
+		Vector3f(const Vector4f& vector4);
+		Vector3f(const float ax, const float ay, const float az);
+		Vector3f(float* arrayPtr);
+		~Vector3f();
 
 		union
 		{
-			//__m128 m_Data;
 			struct
 			{
 				float x;
@@ -59,8 +57,5 @@ namespace ZMasher
 		inline void Normalize();
 		inline const Vector3f GetNormal()const;
 		inline const float Length()const;
-
 	};
-
-
 }

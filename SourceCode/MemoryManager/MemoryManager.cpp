@@ -28,7 +28,6 @@ namespace ZMasher
 	}
 	MemoryManager::~MemoryManager()
 	{
-		//m_Allocator->~Allocator();
 		FreeMalloc(m_Allocator);
 		m_Allocator = nullptr;
 	}
@@ -43,10 +42,8 @@ namespace ZMasher
 		{
 			return nullptr;
 		}
-
 		Blk data = m_Allocator->Allocate(size);
 		m_Lookup.Insert(data);
-
 		ASSERT(data.m_Data, "Can't allocate!");
 		return data.m_Data;
 	}

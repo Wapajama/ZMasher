@@ -45,26 +45,6 @@ public:
 		return one == two;
 	}
 };
-
-//ZMasher::BinarySearchTree<int, IntComparer> test;
-//void BinaryTreeTest()
-//{
-//	int derp = 0;
-//	for (int i = 0; i < 100000; i++)
-//	{
-//		derp= ZMasher::GetRandomInt(-100000, 100000);
-//		test.Insert(derp);
-//	}
-//	test.TestIfCorrect();
-//	ZMasher::BSTNode<int, IntComparer>* test_node = test.Find(derp);
-//	test_node =nullptr;
-//	while(test_node == nullptr)
-//	{
-//		test_node = test.Find(ZMasher::GetRandomInt(-1000, 1000));
-//	}
-//	test.TestIfCorrect();
-//}
-
 using namespace ZMasher;
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -84,7 +64,7 @@ ZMasherMain::~ZMasherMain()
 	}
 	delete m_QApplicationThread;
 	
-	#ifdef BENCHMARK
+#ifdef BENCHMARK
 	Profiler::Instance()->AddTimeStamp(m_TotalFrame, "TotalFrame");
 	Profiler::Instance()->AddTimeStamp(m_RenderFrame, "Render");
 	Profiler::Instance()->AddTimeStamp(m_LogicFrame, "Logic");
@@ -165,12 +145,11 @@ bool ZMasherMain::Init(ZMasherInitInfo info)
 
 	} else
 	{
-		InitWindowClass();
-		CreateWinApiWindow();
+		this->InitWindowClass();
+		this->CreateWinApiWindow();
 
 		const bool test = CreateD3D();
 		ASSERT(test, "D3D Failed to init!");
-
 		m_Renderer.Init(m_D3DInterface, Profiler::Instance(), TimerManager::GetInstance(), PathManager::Instance());
 		m_Renderer.SetCamera(m_Camera);
 
@@ -213,7 +192,7 @@ bool ZMasherMain::Update()
 #ifdef DEBUG
 	float dt = 0.064f;//min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.032f); 
 #else
-	float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.032f); 
+	float dt = min(static_cast<float>(TimerManager::GetInstance()->GetMainTimer().TimeSinceLastFrame().GetSeconds()), 0.128f); 
 #endif // DEBUG
 
 
@@ -288,7 +267,6 @@ bool ZMasherMain::ReadInitFile()
 	m_WinVals.m_ScreenNear = initReader.GetFloatValue("ScreenNear");
 	m_WinVals.m_VSync = initReader.GetBoolValue("vsync");
 
-	//std::wstring w_TitlebarName = 
 	m_WinVals.m_TitleBarName = reinterpret_cast<LPCSTR>(initReader.GetStringValue("titlebarname"));
 	const Vector2i res = initReader.GetVec2IValue("resolution");
 	m_WinVals.m_Resolution.x = res.x;
@@ -298,7 +276,6 @@ bool ZMasherMain::ReadInitFile()
 
 void ZMasherMain::InitWindowClass()
 {
-	//this works on Windows 7 and windows 8
 	m_WinVals.m_ExtWindowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	m_WinVals.m_ExtWindowClass.lpfnWndProc = ZMasherWinProc;
 	m_WinVals.m_ExtWindowClass.cbClsExtra = 0;
@@ -318,35 +295,26 @@ void ZMasherMain::InitWindowClass()
 void ZMasherMain::CreateWinApiWindow()
 {
 	POINT windowDims = m_WinVals.m_Resolution;
-
 	RECT windowRect = { 0, 0, windowDims.x,windowDims.y };
-
 	DWORD windowStyleEx = WS_EX_CLIENTEDGE;
 	DWORD windowStyle = WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX;
 
 	AdjustWindowRectEx(&windowRect, windowStyle, false, windowStyleEx);
 
-	if (m_WinVals.m_WindowHandle == 0)
-	{
-		m_WinVals.m_WindowHandle = CreateWindowEx(windowStyleEx,
-			m_WinVals.m_TitleBarName,
-			m_WinVals.m_TitleBarName,
-			windowStyle,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			windowDims.x,
-			windowDims.y,
-			NULL,
-			NULL,
-			m_WinVals.m_ExtWindowClass.hInstance,
-			NULL);
-	}
+	m_WinVals.m_WindowHandle = CreateWindowEx(windowStyleEx,
+		m_WinVals.m_TitleBarName,
+		m_WinVals.m_TitleBarName,
+		windowStyle,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		windowDims.x,
+		windowDims.y,
+		NULL,
+		NULL,
+		m_WinVals.m_ExtWindowClass.hInstance,
+		NULL);
 
-
-	//when does this return false? 
-	//It sure as hell isn't when it failed to open the window :p
-	ShowWindow(m_WinVals.m_WindowHandle, 1);
-
+	ShowWindow(m_WinVals.m_WindowHandle,1);
 }
 
 bool ZMasherMain::CreateD3D()
@@ -372,7 +340,6 @@ void ZMasherMain::Render(const float dt)
 #else
 	m_D3DInterface.EndScene();
 #endif // BENCHMARK
-
 }
 
 LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
@@ -386,9 +353,7 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 		{
 			SendMessage(hwnd, WM_CLOSE, 0, 0);
 		}
-
 		return 0;
-
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -413,9 +378,7 @@ LRESULT CALLBACK ZMasherWinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM l
 	case WM_SETFOCUS:
 		InputManager::Instance()->ClientInFocus(true);
 		return 0;
-
 	}
-
 	return DefWindowProc(hwnd, message, wparam, lparam);
 }
 

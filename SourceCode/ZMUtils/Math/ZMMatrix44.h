@@ -1,9 +1,9 @@
 #pragma once
 
-#include <dvec.h>
+//#include <dvec.h>
 #include "ZMVector.h"
-#include <D3D11.h>
-
+#include "project_defines.h"
+#include <DirectXMath.h>
 
 namespace ZMasher
 {
@@ -85,16 +85,19 @@ namespace ZMasher
 			m44 = array[15];
 		}
 
-		inline Matrix44f(const __m128& x,
-				  const __m128& y,
-				  const __m128& z,
-				  const __m128& w)
-		{
-			//m_Data[0] = x;
-			//m_Data[1] = y;
-			//m_Data[2] = z;
-			//m_Data[3] = w;
-		}
+#ifndef _XM_NO_INTRINSICS_
+		//inline Matrix44f(const __m128& x,
+		//				 const __m128& y,
+		//				 const __m128& z,
+		//				 const __m128& w)
+		//{
+		//	//m_Data[0] = x;
+		//	//m_Data[1] = y;
+		//	//m_Data[2] = z;
+		//	//m_Data[3] = w;
+		//}
+#endif // _XM_NO_INTRINSICS_
+
 
 		inline ~Matrix44f() {}
 
@@ -108,7 +111,9 @@ namespace ZMasher
 				float m31, m32, m33, m34;
 				float m41, m42, m43, m44;
 			};
-			//__m128 m_Data[4];//used for SIMD operations
+#ifndef _XM_NO_INTRINSICS_
+			//__m128 m_Data[4];//used for SIMD operations  
+#endif // !_XM_NO_INTRINSICS_
 			Vector4f m_Vectors[4];
 			float m_Elements[4][4];//used for pros B)
 			float m_ElementsSingle[16];
@@ -144,7 +149,97 @@ namespace ZMasher
 		inline float& operator[](const int index);
 
 		//utility
+		
+		inline void Get(DirectX::XMMATRIX& matrix) const
+		{
+#ifdef _XM_NO_INTRINSICS_
+			matrix.m[0][0] = this->m_Elements[0][0];
+			matrix.m[0][1] = this->m_Elements[0][1];
+			matrix.m[0][2] = this->m_Elements[0][2];
+			matrix.m[0][3] = this->m_Elements[0][3];
 
+			matrix.m[1][0] = this->m_Elements[1][0];
+			matrix.m[1][1] = this->m_Elements[1][1];
+			matrix.m[1][2] = this->m_Elements[1][2];
+			matrix.m[1][3] = this->m_Elements[1][3];
+
+			matrix.m[2][0] = this->m_Elements[2][0];
+			matrix.m[2][1] = this->m_Elements[2][1];
+			matrix.m[2][2] = this->m_Elements[2][2];
+			matrix.m[2][3] = this->m_Elements[2][3];
+
+			matrix.m[3][0] = this->m_Elements[3][0];
+			matrix.m[3][1] = this->m_Elements[3][1];
+			matrix.m[3][2] = this->m_Elements[3][2];
+			matrix.m[3][3] = this->m_Elements[3][3];
+#else
+			matrix.r[0].m128_f32[0] = this->m_Elements[0][0];
+			matrix.r[0].m128_f32[1] = this->m_Elements[0][1];
+			matrix.r[0].m128_f32[2] = this->m_Elements[0][2];
+			matrix.r[0].m128_f32[3] = this->m_Elements[0][3];
+				   
+			matrix.r[1].m128_f32[0] = this->m_Elements[1][0];
+			matrix.r[1].m128_f32[1] = this->m_Elements[1][1];
+			matrix.r[1].m128_f32[2] = this->m_Elements[1][2];
+			matrix.r[1].m128_f32[3] = this->m_Elements[1][3];
+				   
+			matrix.r[2].m128_f32[0] = this->m_Elements[2][0];
+			matrix.r[2].m128_f32[1] = this->m_Elements[2][1];
+			matrix.r[2].m128_f32[2] = this->m_Elements[2][2];
+			matrix.r[2].m128_f32[3] = this->m_Elements[2][3];
+				   
+			matrix.r[3].m128_f32[0] = this->m_Elements[3][0];
+			matrix.r[3].m128_f32[1] = this->m_Elements[3][1];
+			matrix.r[3].m128_f32[2] = this->m_Elements[3][2];
+			matrix.r[3].m128_f32[3] = this->m_Elements[3][3];
+#endif // __CLANG
+
+		}
+		inline void Set(const DirectX::XMMATRIX& matrix)
+		{
+#ifdef _XM_NO_INTRINSICS_
+			this->m_Elements[0][0] = matrix.m[0][0];
+			this->m_Elements[0][1] = matrix.m[0][1];
+			this->m_Elements[0][2] = matrix.m[0][2];
+			this->m_Elements[0][3] = matrix.m[0][3];
+
+			this->m_Elements[1][0] = matrix.m[1][0];
+			this->m_Elements[1][1] = matrix.m[1][1];
+			this->m_Elements[1][2] = matrix.m[1][2];
+			this->m_Elements[1][3] = matrix.m[1][3];
+
+			this->m_Elements[2][0] = matrix.m[2][0];
+			this->m_Elements[2][1] = matrix.m[2][1];
+			this->m_Elements[2][2] = matrix.m[2][2];
+			this->m_Elements[2][3] = matrix.m[2][3];
+
+			this->m_Elements[3][0] = matrix.m[3][0];
+			this->m_Elements[3][1] = matrix.m[3][1];
+			this->m_Elements[3][2] = matrix.m[3][2];
+			this->m_Elements[3][3] = matrix.m[3][3];
+#else
+			this->m_Elements[0][0] = matrix.r[0].m128_f32[0];
+			this->m_Elements[0][1] = matrix.r[0].m128_f32[1];
+			this->m_Elements[0][2] = matrix.r[0].m128_f32[2];
+			this->m_Elements[0][3] = matrix.r[0].m128_f32[3];
+											
+			this->m_Elements[1][0] = matrix.r[1].m128_f32[0];
+			this->m_Elements[1][1] = matrix.r[1].m128_f32[1];
+			this->m_Elements[1][2] = matrix.r[1].m128_f32[2];
+			this->m_Elements[1][3] = matrix.r[1].m128_f32[3];
+											
+			this->m_Elements[2][0] = matrix.r[2].m128_f32[0];
+			this->m_Elements[2][1] = matrix.r[2].m128_f32[1];
+			this->m_Elements[2][2] = matrix.r[2].m128_f32[2];
+			this->m_Elements[2][3] = matrix.r[2].m128_f32[3];
+											
+			this->m_Elements[3][0] = matrix.r[3].m128_f32[0];
+			this->m_Elements[3][1] = matrix.r[3].m128_f32[1];
+			this->m_Elements[3][2] = matrix.r[3].m128_f32[2];
+			this->m_Elements[3][3] = matrix.r[3].m128_f32[3];
+#endif // __CLANG
+
+		}
 		inline void SetTranslation(const Vector4f& operand);
 		inline Vector4f GetTranslation()const;
 

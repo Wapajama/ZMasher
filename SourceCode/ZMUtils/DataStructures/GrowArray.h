@@ -4,11 +4,12 @@
 #include <immintrin.h>
 #include <vcruntime_new.h>
 #include <malloc.h>
-
-#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32, SizeType alignment = -1>
+//#include <debugapi.h>
+#define GROW_ARRAY_CLASS_TEMPLATE template<typename Type, typename SizeType = short, SizeType size = 32, SizeType alignment = -1>
+#define GROW_ARRAY_TEMPLATE template<typename Type, typename SizeType, SizeType size, SizeType alignment>
 #define GROW_ARRAY_DECL GrowArray<Type, SizeType, size, alignment>
 
-GROW_ARRAY_TEMPLATE
+GROW_ARRAY_CLASS_TEMPLATE
 class GrowArray
 {
 public:
@@ -47,6 +48,8 @@ public:
 	inline bool InsideBounds(SizeType index)const;
 
 	__forceinline bool Empty();
+
+	__forceinline void Prefetch(SizeType index)const;
 
 private:
 	Type* m_Data;
@@ -265,4 +268,10 @@ GROW_ARRAY_TEMPLATE
 __forceinline bool GROW_ARRAY_DECL::Empty()
 {
 	return m_CurrentSize == 0;
+}
+
+GROW_ARRAY_TEMPLATE
+__forceinline void GROW_ARRAY_DECL::Prefetch(SizeType index)const
+{
+	m_Data[index];
 }

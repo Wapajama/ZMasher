@@ -33,4 +33,6 @@ bool ModelShader::Create(const char* source_file, ID3D11Device* device)
 	HRESULT infoResult = BaseShader::Create(source_file, device);
 
 	RETURNF_IF_FAILED(infoResult);
+
+	return true;
 }

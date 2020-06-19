@@ -25,7 +25,7 @@ public:
 	void Destroy();
 
 	GameObject CreateGameObject();
-	bool Alive(GameObject game_object);
+	inline bool Alive(GameObject game_object);
 	void Destroy(GameObject game_object, bool immediately = false);
 
 	inline MeshComponentManager* MeshCompManager() { return &m_MeshManager; }
@@ -76,3 +76,8 @@ private:
 #endif // BENCHMARK
 
 };
+
+inline bool GameObjectManager::Alive(GameObject game_object)
+{
+	return m_GameObjects[game_object.Index()] == game_object.Generation();
+}

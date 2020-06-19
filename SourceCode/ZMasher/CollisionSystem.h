@@ -27,6 +27,7 @@ public:
 
 	bool Simulate(const float dt);
 
+
 	CollisionInfoStruct* GetCollisionInfo(const int index);
 	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
 
@@ -42,7 +43,9 @@ private:
 	void DrawAABBs();
 	void DrawSpheres();
 	void DrawSphere(const float radius, const ZMasher::Vector3f pos);
-	void QuerySphereAgainstAllAABBS(const struct SphereCollisionComponent& sphere);
+	void QuerySphereAgainstSphere(int j, const GameObject & __restrict object_a, struct SphereCollisionComponent & __restrict sphereA);
+	void SphereCollision(GameObject object_a, GameObject object_b, const SphereCollisionComponent& sphereA, const SphereCollisionComponent& sphereB);
+	void QuerySphereAgainstAllAABBS(const SphereCollisionComponent& sphere);
 	void ResolveQueries();
 
 	GrowArray<CollisionInfoStruct> m_CollInfos;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math.h>
-#include <dvec.h>
+//#include <dvec.h>
 #include <assert.h>
 
 #define CAST(variable) static_cast<float>(variable)
@@ -18,7 +18,9 @@ namespace ZMasher
 		inline Vector4f();
 		inline Vector4f(const Vector4f& copy);
 		inline explicit Vector4f(const Vector3f& vector3, const float aw = 0.f);
-		inline explicit Vector4f(const __m128& data);
+#ifndef _XM_NO_INTRINSICS_
+		//inline explicit Vector4f(const __m128& data);
+#endif // !_XM_NO_INTRINSICS_
 		inline explicit Vector4f(const float x, const float y, const float z, const float w);
 		inline explicit Vector4f(float* arrayPtr);
 		inline ~Vector4f();
