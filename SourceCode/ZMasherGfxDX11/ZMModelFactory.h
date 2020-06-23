@@ -8,6 +8,7 @@
 #include <ZMasherGfxDX11\TextureContainer.h>
 #include <ZMasherGfxDX11\Material.h>
 #include <ZMasherGfxDX11\dllHeader.h>
+#include <GameObject.h>
 
 class ZMModelInstance;
 class ZMModel;
@@ -24,7 +25,18 @@ enum eColour
 {
 	RED,
 	GREEN,
-	BLUE
+	BLUE,
+	YELLOW,
+	ORANGE,
+	WHITE,
+	BLACK,
+	GREY,
+	BLUE2,
+	PINK,
+	TUR,
+	GREEN2,
+	GREY2,
+	N_COLOURS
 };
 
 struct DebugLineInfo
@@ -81,9 +93,9 @@ private:
 	ZMModel* AddModel();
 
 	//data orient this?
-	GrowArray<ZMModelInstanceNode*> m_ModelInstances;
+	GrowArray<ZMModelInstanceNode*, int, MAX_GAME_OBJS> m_ModelInstances;
 	GrowArray<ZMModelNode*> m_ModelNodes;
-	GrowArray<DebugLineInfo> m_DebugLines;
+	GrowArray<DebugLineInfo, int, 1024*1024> m_DebugLines;
 	TextureContainer m_TextureContainer;
 	GrowArray<Material> m_Materials;
 	ID3D11Device* m_Device;

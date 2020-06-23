@@ -17,6 +17,7 @@ SphereCollisionComponent* SphereCollisionComponentManager::AddComponent(const eC
 												CollisionCallBack callback)
 {
 	ComponentManager::AddComponent({radius, filter, game_object, callback }, game_object);
+	GameObjectManager::Instance()->GetCollisionSystem()->AddGameObject(game_object);
 	return &m_Components.GetLast();
 }
 

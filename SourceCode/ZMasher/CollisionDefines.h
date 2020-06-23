@@ -8,6 +8,8 @@ struct CollCallbackArgs
 	const SphereCollisionComponent* __restrict b;
 	const class MomentumComponent* __restrict x;
 	const MomentumComponent* __restrict y;
+	const class AABBCollisionComponent* aa;
+	const AABBCollisionComponent* ab;
 };
 
 typedef void(*CollisionCallBack)(CollCallbackArgs args);

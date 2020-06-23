@@ -17,9 +17,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-GameplayState::GameplayState(Camera* camera) 
+GameplayState::GameplayState(Camera* camera)
 	: m_Camera(camera),
-	m_RotationX(0), 
+	m_RotationX(0),
 	m_RotationY(0),
 	m_SpeedModifier(1.f)
 {
@@ -30,9 +30,18 @@ GameplayState::~GameplayState()
 {
 }
 
-
-void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args) 
+void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args)
 {
+
+	if (!args.b)
+	{
+		if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eTurretBullet)
+		{
+			GameObjectManager::Instance()->Destroy(args.a->m_GameObject);
+		}
+		return;
+	}
+
 	if (args.a->m_CollisionFilter == eCOLLISIONTYPE::eEnemy &&
 		args.b->m_CollisionFilter == eCOLLISIONTYPE::eEnemy)
 	{
@@ -64,28 +73,27 @@ void(*g_TestCallBack)(CollCallbackArgs) = [](CollCallbackArgs args)
 };
 
 #ifndef _DEBUG
-#define NUMBER_OF_ENEMIES 2500
-#define NUMBER_OF_BOXES 150
+#define NUMBER_OF_ENEMIES 300
+#define NUMBER_OF_BOXES 30
 #else
 #define NUMBER_OF_ENEMIES 200
-#define NUMBER_OF_BOXES 30 
+#define NUMBER_OF_BOXES 10
 #endif // !_DEBUG
-
 
 const float ai_range = AI_RANGE;
 bool GameplayState::Init(const char* args)
-{	
+{
 	GameObjectManager::Create();
-	m_Camera->SetPosition(ZMasher::Vector3f(ai_range, 75, ai_range*0.5f-150));
+	
 
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
-	transform.SetTranslation(ZMasher::Vector4f( ZMasher::Vector3f(ai_range, 1, ai_range*0.5f), 1.f));
+	transform.SetTranslation(ZMasher::Vector4f(ZMasher::Vector3f(0, 1, 0), 1.f));
 	//transform.RotateY(M_PI_2);
 
 	GameObject new_object = GameObjectManager::Instance()->CreateGameObject();
 	GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
 	GameObjectManager::Instance()->MeshCompManager()->AddComponent(new_object, ZMModelFactory::Instance()->LoadModelInstance((PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model").c_str()));
-	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere,5, new_object, g_TestCallBack);
+	GameObjectManager::Instance()->SphereCollisionCompManager()->AddComponent(eCOLLISIONTYPE::eSphere, 5, new_object, g_TestCallBack);
 	GameObjectManager::Instance()->MomentumCompManager()->AddComponent(new_object, 4);
 	GameObjectManager::Instance()->AICompManager()->AddComponent(new_object, eAIType::BASIC_TURRET);
 	GameObjectManager::Instance()->GetCollisionSystem()->CreateQuery(eCOLLISIONTYPE::eTurret, new_object, 300, transform.GetTranslation().ToVector3f());
@@ -99,11 +107,10 @@ bool GameplayState::Init(const char* args)
 	return true;
 }
 
-
 void GameplayState::SpawnEnemy(bool random_x)
 {
 	AIObjectArgs args;
-	args.targetPos = ZMasher::Vector3f(ai_range, 1, ai_range*0.5f);
+	args.targetPos = ZMasher::Vector3f(0, 1, 0);
 	args.modelName = PathManager::Instance()->GetDataPath() + "dragonfly01/dragonfly01.model";
 	args.aiType = eAIType::ZOLDIER;
 	args.radius = 5;
@@ -111,14 +118,18 @@ void GameplayState::SpawnEnemy(bool random_x)
 	args.collisionType = eCOLLISIONTYPE::eEnemy;
 
 	AIGroup* g = GameObjectManager::Instance()->GetAISystem()->CreateAIs(&args, NUMBER_OF_ENEMIES);
-} 
+	// m_Camera->SetPosition(ZMasher::Vector3f(g->GetCurrentObject()->tf->m_Transform.GetTranslation().x, 75, ai_range * 0.5f - 150g->GetCurrentObject()->tf->m_Transform.GetTranslation().x));
+	// m_Camera->SetPosition(ZMasher::Vector3f(g->GetCurrentObject()->tf->m_Transform.GetTranslation().x, 75, g->GetCurrentObject()->tf->m_Transform.GetTranslation().z));
+}
 
 void GameplayState::SpawnAABB()
 {
-	float halfWidth[3] = {10,5,10};
+	float halfWidth[3] = { 10,5,10 };
 	ZMasher::Vector4f position(0, 1, halfWidth[1], 1.f);
 	ZMasher::Matrix44f transform = ZMasher::Matrix44f::Identity();
 	transform.SetTranslation(position + ZMasher::Vector4f(ZMasher::GetRandomFloat(-ai_range, ai_range), position.y, ZMasher::GetRandomFloat(-ai_range, ai_range), 0));
+
+	//transform.SetTranslation(ZMasher::Vector4f( 500, position.y, 15, 0));
 
 	GameObject new_object = GameObjectManager::Instance()->CreateGameObject();
 	GameObjectManager::Instance()->TransformManager()->AddComponent(new_object, transform);
@@ -140,9 +151,9 @@ bool GameplayState::Update(const float dt)
 	static float lazy_timer = GUN_COOLDOWN;
 	lazy_timer -= dt;
 	if ((InputManager::Instance()->IsMouseDown(DIK_LMOUSE) &&
-		lazy_timer <= 0.f))
+		 lazy_timer <= 0.f))
 	{
-		if(lazy_timer < GUN_COOLDOWN)
+		if (lazy_timer < GUN_COOLDOWN)
 		{
 			//ShootBullet();
 			lazy_timer = GUN_COOLDOWN;
@@ -154,7 +165,7 @@ bool GameplayState::Update(const float dt)
 	lazy_timer -= dt;
 	if (lazy_timer <= 0.f)
 	{
-		if(lazy_timer < GUN_COOLDOWN)
+		if (lazy_timer < GUN_COOLDOWN)
 		{
 			//ShootBullet();
 			lazy_timer = GUN_COOLDOWN;
@@ -162,12 +173,12 @@ bool GameplayState::Update(const float dt)
 	}
 #endif // BENCHMARK
 
-	if (GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs() < (NUMBER_OF_ENEMIES/2))
+	if (GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs() < (NUMBER_OF_ENEMIES / 2))
 	{
 		//const short n_ais = GameObjectManager::Instance()->AICompManager()->GetNumberOfAIs();
 		//for (int i = 0; i < NUMBER_OF_ENEMIES - n_ais; i++)
 		//{
-			SpawnEnemy();
+		SpawnEnemy();
 		//}
 	}
 
@@ -186,37 +197,37 @@ const float global_speed = 200.f;
 
 void GameplayState::MoveForward()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveBackwards()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorForward() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveRight()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveLeft()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorLeft() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveUp()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() + ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
 void GameplayState::MoveDown()
 {
-	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp()*global_speed*m_SpeedModifier*m_Dt);
+	ZMasher::Vector3f translation = m_Camera->GetPosition() - ZMasher::Vector3f(m_Camera->GetWorldOrientation().GetVectorUp() * global_speed * m_SpeedModifier * m_Dt);
 	m_Camera->SetPosition(translation);
 }
 
@@ -251,15 +262,15 @@ void GameplayState::MouseRotation(const float dt)
 
 	// Aligning the forward matrix with the camera matrix
 
-	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed*diff_pos.y);
+	cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, global_rotation_speed * diff_pos.y);
 
 	// Means that the camera has rotated further than "straight up" or "straight down". 
 	const ZMasher::Vector4f cam_forw = cam_orientation.GetVectorForward();
 	const ZMasher::Vector4f fowcam_forw = m_CameraForwardMatrix.GetVectorForward();
 	const float rotation_result = ZMasher::Dot(cam_orientation.GetVectorForward(), m_CameraForwardMatrix.GetVectorForward());
-	if ( rotation_result < 0.f)
+	if (rotation_result < 0.f)
 	{
-		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed*diff_pos.y));
+		cam_orientation *= ZMasher::Matrix44f::CreateRotationMatrixAroundAxis(vector_lf, -(global_rotation_speed * diff_pos.y));
 	}
 
 	cam_orientation.SetTranslation(cam_trans);
@@ -274,8 +285,8 @@ void GameplayState::MouseRotation(const float dt)
 
 	m_Camera->SetOrientation(cam_orientation);
 
-	m_Camera->RotateY(global_rotation_speed*diff_pos.x);
-	m_CameraForwardMatrix.RotateY(global_rotation_speed*diff_pos.x);
+	m_Camera->RotateY(global_rotation_speed * diff_pos.x);
+	m_CameraForwardMatrix.RotateY(global_rotation_speed * diff_pos.x);
 
 }
 

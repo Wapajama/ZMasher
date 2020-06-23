@@ -43,8 +43,6 @@ bool AISystem::Destroy()
 	return true;
 }
 
-
-
 AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 {
 	if (count == 0)
@@ -53,7 +51,7 @@ AIGroup* AISystem::CreateAIs(AIObjectArgs* args, int count)
 	}
 	AIGroup* ag = new AIGroup();
 	ag->Allocate(count, args);
-	return nullptr;
+	return ag;
 }
 
 bool AISystem::IsInAnyOfAIGroups(int i)
@@ -122,12 +120,19 @@ void AISystem::HitlerBehaviour(const AIBehaviourArgs& a_args)
 
 	if (length_to_target < ai_type->m_ArrivedDist)
 	{
+		//args->tf->m_Transform.SetTranslation(
+		//	ZMasher::Vector4f(-ai_range, 
+		//					  position.y, 
+		//					  ZMasher::GetRandomFloat(-ai_range, ai_range), 
+		//					  args->tf->m_Transform.GetTranslation().w));
 		args->tf->m_Transform.SetTranslation(
-			ZMasher::Vector4f(-ai_range, 
-							  position.y, 
-							  ZMasher::GetRandomFloat(-ai_range, ai_range), 
-							  args->tf->m_Transform.GetTranslation().w));
-		args->ai->m_TargetPos.z = ai_range * 0.5;
+			ZMasher::Vector4f(ZMasher::Vector4f(ZMasher::GetRandomFloat(-ai_range, ai_range),
+												0, 
+												ZMasher::GetRandomFloat(-ai_range, ai_range), 
+												0.f)));
+		
+		//position + 
+		//args->ai->m_TargetPos.z = ai_range * 0.5;
 		return;
 	}
 	SteeringArgs steer_args{ args->ai, ai_type, args->ai->m_TargetPos - position };
@@ -178,7 +183,7 @@ void AISystem::BasicTurretBehaviour(const AIBehaviourArgs & args)
 			FaceDirection((args.obj->tf->m_Transform), targetTransform->m_Transform.GetTranslation().ToVector3f() - args.obj->tf->m_Transform.GetTranslation().ToVector3f(), args.dt);
 			if (shootTimer <= 0.f)
 			{
-				SpawnBullet(args);
+				//SpawnBullet(args);
 				shootTimer = rof;
 			}
 		}

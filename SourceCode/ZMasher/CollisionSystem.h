@@ -26,7 +26,7 @@ public:
 	~CollisionSystem();
 
 	bool Simulate(const float dt);
-
+	bool Init();
 
 	CollisionInfoStruct* GetCollisionInfo(const int index);
 	CollisionQuery* CreateQuery(eCOLLISIONTYPE type, GameObject owner, float radius, ZMasher::Vector3f pos);
@@ -34,6 +34,8 @@ public:
 	CollisionQuery* GetQuery(GameObject owner, int id = 0);
 
 	void Destroy();
+
+	void AddGameObject(GameObject object);
 
 private:
 
@@ -48,6 +50,7 @@ private:
 	void QuerySphereAgainstAllAABBS(const SphereCollisionComponent& sphere);
 	void ResolveQueries();
 
+	class QuadTree* m_QuadTree;
 	GrowArray<CollisionInfoStruct> m_CollInfos;
 	GrowArray<CollisionQuery> m_Queries;
 	GrowArray<SphereQueryArgs> m_SphereQueries;

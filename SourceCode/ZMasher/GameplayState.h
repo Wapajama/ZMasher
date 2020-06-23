@@ -16,7 +16,9 @@ public:
 	bool Init(const char* args)override;
 	bool Update(const float dt)override;
 	bool Destroy()override;
+
 private:
+
 	//lazy implementation
 	ZMasher::Vector2i m_PrevMousePos;
 	ZMasher::Vector2i m_MousePos;

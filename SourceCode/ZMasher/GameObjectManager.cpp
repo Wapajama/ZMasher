@@ -44,7 +44,7 @@ void GameObjectManager::Update(const float dt)
 bool GameObjectManager::Init()
 {
 	m_AISystem.Init(nullptr);
-
+	m_CollisionSystem.Init();
 	m_ComponentManagers.Add(&m_BulletCompManager);
 	m_ComponentManagers.Add(&m_MeshManager);
 	m_ComponentManagers.Add(&m_TransformManager);
@@ -99,7 +99,8 @@ void GameObjectManager::UpdateAllComponentManagers()
 {
 	for (short i = 0; i < m_ComponentManagers.Size(); i++)
 	{
-		ASSERT(m_ComponentManagers[i]->Update(), "Failed to update a componentmanager!");
+		bool result = m_ComponentManagers[i]->Update();
+		ASSERT(result, "Failed to update a componentmanager!");
 	}
 }
 

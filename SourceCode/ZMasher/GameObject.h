@@ -10,6 +10,8 @@ const GO_ID_TYPE GAMEOBJECT_GEN_MASK = (1i64 << GAMEOBJECT_GEN_BITS) - 1i64;
 #define MAX_GAME_OBJS (1024*64) - 1
 #define MAX_COMPONENTS (1024*64) - 1
 #define GAME_OBJS_INDEX __int32 // For referencing game objects in a list
+#define GO_ARRAY_PARAMS int, MAX_GAME_OBJS
+#define COMP_ARRAY_PARAMS int, MAX_COMPONENTS
 
 struct GameObject
 {

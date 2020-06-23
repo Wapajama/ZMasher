@@ -1,4 +1,5 @@
 #include "AABBComponentManager.h"
+#include <GameObjectManager.h>
 
 AABBComponentManager::AABBComponentManager()
 {
@@ -16,6 +17,7 @@ void AABBComponentManager::AddComponent(const CollisionType filter,
 {
 	ComponentManager::AddComponent({halfwidth[0], halfwidth[1], halfwidth[2],
 		filter, game_object, callback}, game_object);
+	GameObjectManager::Instance()->GetCollisionSystem()->AddGameObject(game_object);
 }
 
 bool AABBComponentManager::Init()

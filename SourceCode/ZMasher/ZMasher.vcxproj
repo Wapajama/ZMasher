@@ -65,6 +65,7 @@
     <ClInclude Include="GameObjectLookup.h" />
     <ClInclude Include="ModelViewerState.h" />
     <ClInclude Include="MomentumComponentManager.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="SphereCollisionComponentManager.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="ComponentManager.h" />
@@ -93,6 +94,7 @@
     <ClCompile Include="DebugLineComponentManager.cpp" />
     <ClCompile Include="ModelViewerState.cpp" />
     <ClCompile Include="MomentumComponentManager.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="SphereCollisionComponentManager.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ComponentManager.cpp" />

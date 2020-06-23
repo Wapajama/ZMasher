@@ -353,7 +353,7 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 														m_Dt});
 	ASSERT(succeded, "shader failed to init!");
 
-	GrowArray<DebugLineInfo>& debugLines = ZMModelFactory::Instance()->m_DebugLines;
+	GrowArray<DebugLineInfo, int, 1024*1024>& debugLines = ZMModelFactory::Instance()->m_DebugLines;
 	for (int i = 0; i < debugLines.Size(); ++i)
 	{
 		DWORD colour;
@@ -367,6 +367,37 @@ void ZMRenderer::RenderDebugLines(ZMD3DInterface& d3dinterface)
 			break;
 		case eColour::GREEN:
 			colour = txtGreen;
+			break;
+		case eColour::YELLOW:
+			colour = txtYellow;
+			break;
+		case eColour::ORANGE:
+			colour = txtOrange;
+			break;
+		case eColour::WHITE:
+			colour = txtWhite;
+			break;
+		case eColour::BLACK:
+			colour = txtBlack;
+			break;
+		case eColour::GREY:
+			colour = txtGrey;
+			break;
+		case eColour::BLUE2:
+			colour = SpecialBlue;
+			break;
+		case eColour::PINK:
+			colour = txtPink;
+			break;
+		case eColour::TUR:
+			colour = txtTur;
+			break;
+		case eColour::GREEN2:
+			colour = EspGreen;
+			break;
+		case eColour::GREY2:
+			colour = EspGrey;
+			break;
 		default:
 			break;
 		}

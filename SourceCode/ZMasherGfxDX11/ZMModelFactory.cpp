@@ -179,7 +179,7 @@ bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 }
 
 ZMModelFactory::ZMModelFactory()
-	:m_DebugLines(1028*128)
+	:m_DebugLines(1024*1024)
 {
 	m_ModelInstances.Resize(1024);
 	m_Materials.Resize(1024);
